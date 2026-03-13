@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "265652761235",
+    "project_id": "hanziilearningapp",
+    "storage_bucket": "hanziilearningapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:265652761235:android:a4c89909e53fca91f25366",
+        "android_client_info": {
+          "package_name": "com.example.hanziilearnapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLYRi1PLZWPn8ytkG0tn3Ybe3o9IrNHPg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
