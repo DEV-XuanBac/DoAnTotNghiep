@@ -38,8 +38,8 @@ class _GiftAnimationState extends State<GiftAnimation>
         onTap: () {},
         child: Image.asset(
           'assets/iconic/giftbox.png',
-          width: 36.w,
-          height: 36.h,
+          width: 32.w,
+          height: 32.h,
         ),
       ),
       builder: (context, child) {
@@ -55,7 +55,7 @@ class _GiftAnimationState extends State<GiftAnimation>
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.yellow.withOpacity(0.5),
+                    color: Colors.yellow.withValues(alpha: 0.5),
                     blurRadius: glow,
                     spreadRadius: glow / 2,
                   ),

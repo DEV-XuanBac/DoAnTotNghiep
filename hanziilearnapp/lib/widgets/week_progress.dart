@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/core/constants.dart';
+import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
 
 class WeekProgress extends StatelessWidget {
   const WeekProgress({super.key});
@@ -24,7 +24,7 @@ class WeekProgress extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isToday
                     ? AppColors.cardDailyOnline
-                    : AppColors.cardDailyOffline.withOpacity(0.8),
+                    : AppColors.cardDailyOffline.withValues(alpha: 0.8),
                 shape: BoxShape.circle,
               ),
               child: isToday
@@ -37,7 +37,7 @@ class WeekProgress extends StatelessWidget {
               style: TextStyle(
                 color: isToday
                     ? AppColors.cardDailyOnline
-                    : AppColors.cardDailyOffline.withOpacity(0.8),
+                    : AppColors.cardDailyOffline.withValues(alpha: 0.8),
                 fontSize: 12.sp,
                 fontWeight: FontWeight.bold,
               ),

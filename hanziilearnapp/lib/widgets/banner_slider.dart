@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/core/constants.dart';
+import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
 
 class BannerSlider extends StatefulWidget {
   const BannerSlider({super.key});
@@ -64,7 +64,7 @@ class _BannerSliderState extends State<BannerSlider> {
                 shape: BoxShape.circle,
                 color: isActive
                     ? AppColors.label
-                    : AppColors.secondaryText.withOpacity(0.6),
+                    : AppColors.secondaryText.withValues(alpha: 0.6),
               ),
             );
           }).toList(),

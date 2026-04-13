@@ -1,0 +1,611 @@
+{
+  "schema_version": 1,
+  "exam_code": "H10901",
+  "level": "HSK1",
+  "title": "Đề thi 1",
+  "total_questions": 40,
+  "sections": [
+    {
+      "part_id": "listening_part_1",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 1 (câu 1–5)",
+      "part_order": 1,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1776092598/1-5_gex1hq.png",
+      "question_count": 5,
+      "questions": [
+        {
+          "question_id": 1,
+          "code": "H10901_Q01",
+          "question_type": "true_false",
+          "question_text": "",
+          "options": [
+            "true",
+            "false"
+          ],
+          "correct_answer": "true"
+        },
+        {
+          "question_id": 2,
+          "code": "H10901_Q02",
+          "question_type": "true_false",
+          "question_text": "",
+          "options": [
+            "true",
+            "false"
+          ],
+          "correct_answer": "false"
+        },
+        {
+          "question_id": 3,
+          "code": "H10901_Q03",
+          "question_type": "true_false",
+          "question_text": "",
+          "options": [
+            "true",
+            "false"
+          ],
+          "correct_answer": "false"
+        },
+        {
+          "question_id": 4,
+          "code": "H10901_Q04",
+          "question_type": "true_false",
+          "question_text": "",
+          "options": [
+            "true",
+            "false"
+          ],
+          "correct_answer": "false"
+        },
+        {
+          "question_id": 5,
+          "code": "H10901_Q05",
+          "question_type": "true_false",
+          "question_text": "",
+          "options": [
+            "true",
+            "false"
+          ],
+          "correct_answer": "true"
+        }
+      ]
+    },
+    {
+      "part_id": "listening_part_2",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 2 (câu 6–10)",
+      "part_order": 2,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1776093607/6-10_cspbbx.png",
+      "question_count": 5,
+      "questions": [
+        {
+          "question_id": 6,
+          "code": "H10901_Q06",
+          "question_type": "single_choice",
+          "question_text": "",
+          "options": [
+            "A",
+            "B",
+            "C"
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "question_id": 7,
+          "code": "H10901_Q07",
+          "question_type": "single_choice",
+          "question_text": "",
+          "options": [
+            "A",
+            "B",
+            "C"
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "question_id": 8,
+          "code": "H10901_Q08",
+          "question_type": "single_choice",
+          "question_text": "",
+          "options": [
+            "A",
+            "B",
+            "C"
+          ],
+          "correct_answer": "C"
+        },
+        {
+          "question_id": 9,
+          "code": "H10901_Q09",
+          "question_type": "single_choice",
+          "question_text": "",
+          "options": [
+            "A",
+            "B",
+            "C"
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "question_id": 10,
+          "code": "H10901_Q10",
+          "question_type": "single_choice",
+          "question_text": "",
+          "options": [
+            "A",
+            "B",
+            "C"
+          ],
+          "correct_answer": "C"
+        }
+      ]
+    },
+    {
+      "part_id": "listening_part_3",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 3 (câu 11–15)",
+      "part_order": 3,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1776092599/11-15_e8kstx.png",
+      "question_count": 5,
+      "questions": [
+        {
+          "question_id": 11,
+          "code": "H10901_Q11",
+          "question_type": "single_choice",
+          "question_text": "",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ],
+          "correct_answer": "D"
+        },
+        {
+          "question_id": 12,
+          "code": "H10901_Q12",
+          "question_type": "single_choice",
+          "question_text": "",
+          "options": [
+            "A",
+            "B",
+            "C"
+          ],
+          "correct_answer": "B"
+        },
+        {
+          "question_id": 13,
+          "code": "H10901_Q13",
+          "question_type": "single_choice",
+          "question_text": "",
+          "options": [
+            "A",
+            "B",
+            "C"
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "question_id": 14,
+          "code": "H10901_Q14",
+          "question_type": "single_choice",
+          "question_text": "",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "correct_answer": "E"
+        },
+        {
+          "question_id": 15,
+          "code": "H10901_Q15",
+          "question_type": "single_choice",
+          "question_text": "",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "correct_answer": "F"
+        }
+      ]
+    },
+    {
+      "part_id": "listening_part_4",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 4 (câu 16–20)",
+      "part_order": 4,
+      "question_count": 5,
+      "questions": [
+        {
+          "question_id": 16,
+          "code": "H10901_Q16",
+          "question_type": "single_choice",
+          "question_text": "",
+          "options": [
+            "A: 他的 (tā de)",
+            "B: 我的 (wǒ de)",
+            "C: 同学的 (tóngxué de)"
+          ],
+          "correct_answer": "B: 我的 (wǒ de)"
+        },
+        {
+          "question_id": 17,
+          "code": "H10901_Q17",
+          "question_type": "single_choice",
+          "question_text": "",
+          "options": [
+            "A: 星期三 (xīngqīsān)",
+            "B: 星期五 (xīngqīwǔ)",
+            "C: 星期六 (xīngqīliù)"
+          ],
+          "correct_answer": "B: 星期五 (xīngqīwǔ)",
+          "source_page": 6
+        },
+        {
+          "question_id": 18,
+          "code": "H10901_Q18",
+          "question_type": "single_choice",
+          "question_text": "",
+          "options": [
+            "A: 5 (wǔ)",
+            "B: 15 (shíwǔ)",
+            "C: 50 (wǔshí)"
+          ],
+          "correct_answer": "C: 50 (wǔshí)"
+        },
+        {
+          "question_id": 19,
+          "code": "H10901_Q19",
+          "question_type": "single_choice",
+          "question_text": "",
+          "options": [
+            "A: 茶 (chá)",
+            "B: 苹果 (píngguǒ)",
+            "C: 杯子 (bēizi)"
+          ],
+          "correct_answer": "C: 杯子 (bēizi)"
+        },
+        {
+          "question_id": 20,
+          "code": "H10901_Q20",
+          "question_type": "single_choice",
+          "question_text": "",
+          "options": [
+            "A: 爱学习 (ài xuéxí)",
+            "B: 很漂亮 (hěn piàoliang)",
+            "C: 想回家 (xiǎng huí jiā)"
+          ],
+          "correct_answer": "B: 很漂亮 (hěn piàoliang)"
+        }
+      ]
+    },
+    {
+      "part_id": "reading_part_1",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 1 (câu 21–25)",
+      "part_order": 5,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1776092600/21-25_zp2ype.png",
+      "question_count": 5,
+      "questions": [
+        {
+          "question_id": 21,
+          "code": "H10901_Q21",
+          "question_type": "true_false",
+          "question_text": "",
+          "options": [
+            "true",
+            "false"
+          ],
+          "correct_answer": "true"
+        },
+        {
+          "question_id": 22,
+          "code": "H10901_Q22",
+          "question_type": "true_false",
+          "question_text": "",
+          "options": [
+            "true",
+            "false"
+          ],
+          "correct_answer": "true"
+        },
+        {
+          "question_id": 23,
+          "code": "H10901_Q23",
+          "question_type": "true_false",
+          "question_text": "",
+          "options": [
+            "true",
+            "false"
+          ],
+          "correct_answer": "false"
+        },
+        {
+          "question_id": 24,
+          "code": "H10901_Q24",
+          "question_type": "true_false",
+          "question_text": "",
+          "options": [
+            "true",
+            "false"
+          ],
+          "correct_answer": "false"
+        },
+        {
+          "question_id": 25,
+          "code": "H10901_Q25",
+          "question_type": "true_false",
+          "question_text": "",
+          "options": [
+            "true",
+            "false"
+          ],
+          "correct_answer": "true"
+        }
+      ]
+    },
+    {
+      "part_id": "reading_part_2",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 2 (câu 26–30)",
+      "part_order": 6,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1776092601/26-30_ujo6wl.png",
+      "question_count": 5,
+      "questions": [
+        {
+          "question_id": 26,
+          "code": "H10901_Q26",
+          "question_type": "single_choice",
+          "question_text": "你好，我能吃一块儿吗？/Nǐ hǎo, wǒ néng chī yī kuàir ma?/",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "correct_answer": "D"
+        },
+        {
+          "question_id": 27,
+          "code": "H10901_Q27",
+          "question_type": "single_choice",
+          "question_text": "她们在买衣服呢。/Tāmen zài mǎi yīfu ne./",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "correct_answer": "F"
+        },
+        {
+          "question_id": 28,
+          "code": "H10901_Q28",
+          "question_type": "single_choice",
+          "question_text": "天气太热了，多吃些水果。/Tiānqì tài rè le, duō chī xiē shuǐguǒ./",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "correct_answer": "C"
+        },
+        {
+          "question_id": 29,
+          "code": "H10901_Q29",
+          "question_type": "single_choice",
+          "question_text": "来，我们看看里面是什么东西。/Lái, wǒmen kànkan lǐmiàn shì shénme dōngxi./",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "question_id": 30,
+          "code": "H10901_Q30",
+          "question_type": "single_choice",
+          "question_text": "喂，你睡觉了吗？/Wéi, nǐ shuìjiào le ma?/",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "correct_answer": "B"
+        }
+      ]
+    },
+    {
+      "part_id": "reading_part_3",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 3 (câu 31–35)",
+      "part_order": 7,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1776092602/31-35_shsokc.png",
+      "question_count": 5,
+      "questions": [
+        {
+          "question_id": 31,
+          "code": "H10901_Q31",
+          "question_type": "single_choice",
+          "question_text": "那个人是谁？/Nàgè rén shì shéi?/",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "correct_answer": "C"
+        },
+        {
+          "question_id": 32,
+          "code": "H10901_Q32",
+          "question_type": "single_choice",
+          "question_text": "他女儿多大了？/Tā nǚ'ér duō dà le?/",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "correct_answer": "D"
+        },
+        {
+          "question_id": 33,
+          "code": "H10901_Q33",
+          "question_type": "single_choice",
+          "question_text": "你的同学在哪儿工作？/Nǐ de tóngxué zài nǎr gōngzuò?/",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "question_id": 34,
+          "code": "H10901_Q34",
+          "question_type": "single_choice",
+          "question_text": "昨天上午天气怎么样？/Zuótiān shàngwǔ tiānqì zěnmeyàng?/",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "correct_answer": "B"
+        },
+        {
+          "question_id": 35,
+          "code": "H10901_Q35",
+          "question_type": "single_choice",
+          "question_text": "爸爸什么时候来北京呢？/ Bàba shénme shíhòu lái Běijīng ne?/",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "correct_answer": "E"
+        }
+      ]
+    },
+    {
+      "part_id": "reading_part_4",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 4 (câu 36–40)",
+      "part_order": 8,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1776092603/36-40_wgs8mp.png",
+      "question_count": 5,
+      "questions": [
+        {
+          "question_id": 36,
+          "code": "H10901_Q36",
+          "question_type": "single_choice",
+          "question_text": "昨天是8（     ）19日。/Zuótiān shì 8 (     ) 19 rì./",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "correct_answer": "F"
+        },
+        {
+          "question_id": 37,
+          "code": "H10901_Q37",
+          "question_type": "single_choice",
+          "question_text": "那个饭馆儿在火车站（     ）。/Nàgè fànguǎn er zài huǒchēzhàn (     )./",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "correct_answer": "B"
+        },
+        {
+          "question_id": 38,
+          "code": "H10901_Q38",
+          "question_type": "single_choice",
+          "question_text": "你会说（     ）吗？/Nǐ huì shuō (     ) ma?/",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "correct_answer": "E"
+        },
+        {
+          "question_id": 39,
+          "code": "H10901_Q39",
+          "question_type": "single_choice",
+          "question_text": "男：你好！王先生在吗？/Nǐ hǎo! Wáng xiānsheng zài ma?/ \n女：在，请（     ），我去叫他。/Zài, qǐng (     ), wǒ qù jiào tā./",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "question_id": 40,
+          "code": "H10901_Q40",
+          "question_type": "single_choice",
+          "question_text": "女：对不起，我不会做饭。/Duìbuqǐ, wǒ bù huì zuò fàn./ \n男：（     ），我会。/(     ), wǒ huì./",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"  
+          ],
+          "correct_answer": "C"
+        }
+      ]
+    }
+  ]
+}
