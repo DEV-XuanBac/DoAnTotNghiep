@@ -1,43 +1,47 @@
-import 'dart:convert';
-
-import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hanziilearnapp/app/models/hsk_exam_model.dart';
 
 class HskExamService {
-  static const String _baseExamPath = 'lib/core/database_HSK_Exam';
+  HskExamService({FirebaseFirestore? firestore})
+    : _firestore = firestore ?? FirebaseFirestore.instance;
+
+  final FirebaseFirestore _firestore;
+  static const String _collection = 'hsk_exams';
 
   Future<List<HskExam>> getExamsByLevel(String level) async {
-    final manifestJson = await rootBundle.loadString('AssetManifest.json');
-    final manifestMap = jsonDecode(manifestJson) as Map<String, dynamic>;
+    final normalizedLevel = level.toUpperCase();
+    final snapshot = await _firestore
+        .collection(_collection)
+        .where('level', isEqualTo: normalizedLevel)
+        .get();
 
-    final examFiles = manifestMap.keys
-        .where((assetPath) {
-          return assetPath.startsWith('$_baseExamPath/') &&
-              assetPath.endsWith('.json');
-        })
-        .toList()
-      ..sort();
+    final exams =
+        snapshot.docs
+            .map((doc) => HskExam.fromFirestore(doc.id, doc.data()))
+            .toList()
+          ..sort((a, b) => a.examCode.compareTo(b.examCode));
 
-    final exams = <HskExam>[];
-    for (final assetPath in examFiles) {
-      final raw = await rootBundle.loadString(assetPath);
-      final decoded = jsonDecode(raw);
-      if (decoded is Map<String, dynamic>) {
-        final exam = HskExam.fromJson(decoded, assetPath);
-        if (exam.level.toUpperCase() == level.toUpperCase()) {
-          exams.add(exam);
-        }
-      }
-    }
     return exams;
   }
 
-  Future<HskExamDetail> getExamDetail(String assetPath) async {
-    final raw = await rootBundle.loadString(assetPath);
-    final decoded = jsonDecode(raw);
-    if (decoded is! Map<String, dynamic>) {
-      throw const FormatException('Invalid exam data format');
+  Future<HskExamDetail> getExamDetail(String examId) async {
+    final doc = await _firestore.collection(_collection).doc(examId).get();
+    if (!doc.exists) {
+      throw Exception('Không tìm thấy đề thi trên Firestore.');
     }
-    return HskExamDetail.fromJson(decoded);
+
+    final data = doc.data();
+    if (data == null) {
+      throw Exception('Dữ liệu đề thi trống.');
+    }
+
+    final examData = data['examData'];
+    if (examData is! Map<String, dynamic>) {
+      throw const FormatException(
+        'Dữ liệu examData không đúng định dạng JSON object.',
+      );
+    }
+
+    return HskExamDetail.fromJson(examData);
   }
 }

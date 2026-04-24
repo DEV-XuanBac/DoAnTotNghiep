@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "exam_code": "H11003",
+  "level": "HSK1",
+  "title": "Đề thi 3",
+  "total_questions": 40,
+  "time_limit_minutes": 50,
+  "audio_listening": "https://res.cloudinary.com/diehvorme/video/upload/v1776240262/H11003_sxpgxp.mp3",
+  "sections": [
+    {
+      "part_id": "listening_part_1",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 1 (câu 1–5)",
+      "part_order": 1,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1776177240/H11003_1-5_j9cgds.png",
+      "question_count": 5,
+      "questions": [
+        { "question_id": 1, "code": "H11003_Q01", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "false" },
+        { "question_id": 2, "code": "H11003_Q02", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "true" },
+        { "question_id": 3, "code": "H11003_Q03", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "true" },
+        { "question_id": 4, "code": "H11003_Q04", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "false" },
+        { "question_id": 5, "code": "H11003_Q05", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "false" }
+      ]
+    },
+    {
+      "part_id": "listening_part_2",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 2 (câu 6–10)",
+      "part_order": 2,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1776177239/H11003_6-10_afxdec.png",
+      "question_count": 5,
+      "questions": [
+        { "question_id": 6, "code": "H11003_Q06", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C"], "correct_answer": "C" },
+        { "question_id": 7, "code": "H11003_Q07", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C"], "correct_answer": "A" },
+        { "question_id": 8, "code": "H11003_Q08", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C"], "correct_answer": "C" },
+        { "question_id": 9, "code": "H11003_Q09", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C"], "correct_answer": "B" },
+        { "question_id": 10, "code": "H11003_Q10", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C"], "correct_answer": "C" }
+      ]
+    },
+    {
+      "part_id": "listening_part_3",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 3 (câu 11–15)",
+      "part_order": 3,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1776177235/H11003_11-15_cmg4to.png",
+      "question_count": 5,
+      "questions": [
+        { "question_id": 11, "code": "H11003_Q11", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "E" },
+        { "question_id": 12, "code": "H11003_Q12", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "F" },
+        { "question_id": 13, "code": "H11003_Q13", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "A" },
+        { "question_id": 14, "code": "H11003_Q14", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "B" },
+        { "question_id": 15, "code": "H11003_Q15", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "D" }
+      ]
+    },
+    {
+      "part_id": "listening_part_4",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 4 (câu 16–20)",
+      "part_order": 4,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1776177233/H11003_16-20_kp5yxa.png",
+      "question_count": 5,
+      "questions": [
+        { "question_id": 16, "code": "H11003_Q16", "question_type": "single_choice", "question_text": "", "options": ["A: 狗 (gǒu)", "B: 猫 (māo)", "C: 猫和狗 (māo hé gǒu)"], "correct_answer": "A: 狗 (gǒu)" },
+        { "question_id": 17, "code": "H11003_Q17", "question_type": "single_choice", "question_text": "", "options": ["A: 零年 (líng nián)", "B: 六年 (liù nián)", "C: 七年 (qī nián)"], "correct_answer": "C: 七年 (qī nián)" },
+        { "question_id": 18, "code": "H11003_Q18", "question_type": "single_choice", "question_text": "", "options": ["A: 桌子上 (zhuōzi shàng)", "B: 椅子上 (yǐzi shàng)", "C: 电脑后面 (diànnǎo hòumiàn)"], "correct_answer": "A: 桌子上 (zhuōzi shàng)" },
+        { "question_id": 19, "code": "H11003_Q19", "question_type": "single_choice", "question_text": "", "options": ["A: 上午 (shàngwǔ)", "B: 明天 (míngtiān)", "C: 下个月 (xià ge yuè)"], "correct_answer": "B: 明天 (míngtiān)" },
+        { "question_id": 20, "code": "H11003_Q20", "question_type": "single_choice", "question_text": "", "options": ["A: 八岁 (bā suì)", "B: 二十岁 (èrshí suì)", "C: 四十岁 (sìshí suì)"], "correct_answer": "B: 二十岁 (èrshí suì)" }
+      ]
+    },
+    {
+      "part_id": "reading_part_1",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 1 (câu 21–25)",
+      "part_order": 5,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1776177237/H11003_21-25_zpre5y.png",
+      "question_count": 5,
+      "questions": [
+        { "question_id": 21, "code": "H11003_Q21", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "false" },
+        { "question_id": 22, "code": "H11003_Q22", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "true" },
+        { "question_id": 23, "code": "H11003_Q23", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "true" },
+        { "question_id": 24, "code": "H11003_Q24", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "true" },
+        { "question_id": 25, "code": "H11003_Q25", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "false" }
+      ]
+    },
+    {
+      "part_id": "reading_part_2",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 2 (câu 26–30)",
+      "part_order": 6,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1776177241/H11003_26-30_b2gamz.png",
+      "question_count": 5,
+      "questions": [
+        { "question_id": 26, "code": "H11003_Q26", "question_type": "single_choice", "question_text": "李老师在打电话呢。/Lǐ lǎoshī zài dǎ diànhuà ne./", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "B" },
+        { "question_id": 27, "code": "H11003_Q27", "question_type": "single_choice", "question_text": "家里有很多苹果。/Jiālǐ yǒu hěn duō píngguǒ./", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "A" },
+        { "question_id": 28, "code": "H11003_Q28", "question_type": "single_choice", "question_text": "我们去前面那个饭馆儿吃饭，怎么样？/Wǒmen qù qiánmiàn nàge fànguǎn er chīfàn ，zěnme yàng ？/", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "F" },
+        { "question_id": 29, "code": "H11003_Q29", "question_type": "single_choice", "question_text": "我和女儿都爱看电影。/Wǒ hé nǚ'ér dōu ài kàn diànyǐng./", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "C" },
+        { "question_id": 30, "code": "H11003_Q30", "question_type": "single_choice", "question_text": "不客气，王先生，请坐。/Bù kèqi, Wáng xiānsheng, qǐng zuò./", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "D" }
+      ]
+    },
+    {
+      "part_id": "reading_part_3",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 3 (câu 31–35)",
+      "part_order": 7,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1776177234/H11003_31-35_wwuze5.png",
+      "question_count": 5,
+      "questions": [
+        { "question_id": 31, "code": "H11003_Q31", "question_type": "single_choice", "question_text": "哪个是你的同学？/Nǎ ge shì nǐ de tóngxué?/", "options": ["A: 没 (méi)", "B: 学校里 (xuéxiào lǐ)", "C: 会说一些 (huì shuō yīxiē)", "D: 这个 (zhège)", "E: 我爸爸妈妈 (wǒ bàba māma)", "F: 好的，谢谢 (hǎo de, xièxie)"], "correct_answer": "D: 这个 (zhège)" },
+        { "question_id": 32, "code": "H11003_Q32", "question_type": "single_choice", "question_text": "你汉语怎么样？/Nǐ Hànyǔ zěnme yàng ？/", "options": ["A: 没 (méi)", "B: 学校里 (xuéxiào lǐ)", "C: 会说一些 (huì shuō yīxiē)", "D: 这个 (zhège)", "E: 我爸爸妈妈 (wǒ bàba māma)", "F: 好的，谢谢 (hǎo de, xièxie)"], "correct_answer": "C: 会说一些 (huì shuō yīxiē)" },
+        { "question_id": 33, "code": "H11003_Q33", "question_type": "single_choice", "question_text": "你看见张小姐了吗？/Nǐ kànjiàn zhāng xiǎojie le ma ？/", "options": ["A: 没 (méi)", "B: 学校里 (xuéxiào lǐ)", "C: 会说一些 (huì shuō yīxiē)", "D: 这个 (zhège)", "E: 我爸爸妈妈 (wǒ bàba māma)", "F: 好的，谢谢 (hǎo de, xièxie)"], "correct_answer": "A: 没 (méi)" },
+        { "question_id": 34, "code": "H11003_Q34", "question_type": "single_choice", "question_text": "对不起，他们是谁？/Duìbuqǐ，tāmen shì shuí ？/", "options": ["A: 没 (méi)", "B: 学校里 (xuéxiào lǐ)", "C: 会说一些 (huì shuō yīxiē)", "D: 这个 (zhège)", "E: 我爸爸妈妈 (wǒ bàba māma)", "F: 好的，谢谢 (hǎo de, xièxie)"], "correct_answer": "E: 我爸爸妈妈 (wǒ bàba māma)" },
+        { "question_id": 35, "code": "H11003_Q35", "question_type": "single_choice", "question_text": "你现在住在哪儿？/Nǐ xiànzài zhù zài nǎr ？/", "options": ["A: 没 (méi)", "B: 学校里 (xuéxiào lǐ)", "C: 会说一些 (huì shuō yīxiē)", "D: 这个 (zhège)", "E: 我爸爸妈妈 (wǒ bàba māma)", "F: 好的，谢谢 (hǎo de, xièxie)"], "correct_answer": "B: 学校里 (xuéxiào lǐ)" }
+      ]
+    },
+    {
+      "part_id": "reading_part_4",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 4 (câu 36–40)",
+      "part_order": 8,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1776177236/H11003_36-40_s9etn4.png",
+      "question_count": 5,
+      "questions": [
+        { "question_id": 36, "code": "H11003_Q36", "question_type": "single_choice", "question_text": "中国人喜欢喝（     ）。/Zhōngguórén xǐhuan hē (     )./", "options": ["A: 冷 (lěng)", "B: 多少 (duōshao)", "C: 写 (xiě)", "D: 名字 (míngzi)", "E: 茶 (chá)", "F: 东西 (dōngxi)"], "correct_answer": "E: 茶 (chá)" },
+        { "question_id": 37, "code": "H11003_Q37", "question_type": "single_choice", "question_text": "喂，中午你买什么（     ）了？/Wèi ，zhōngwǔ nǐ mǎi shénme (     ) le ？/", "options": ["A: 冷 (lěng)", "B: 多少 (duōshao)", "C: 写 (xiě)", "D: 名字 (míngzi)", "E: 茶 (chá)", "F: 东西 (dōngxi)"], "correct_answer": "F: 东西 (dōngxi)" },
+        { "question_id": 38, "code": "H11003_Q38", "question_type": "single_choice", "question_text": "他少（     ）了一个零。/Tā shǎo (     ) le yīgè líng。/", "options": ["A: 冷 (lěng)", "B: 多少 (duōshao)", "C: 写 (xiě)", "D: 名字 (míngzi)", "E: 茶 (chá)", "F: 东西 (dōngxi)"], "correct_answer": "C: 写 (xiě)" },
+        { "question_id": 39, "code": "H11003_Q39", "question_type": "single_choice", "question_text": "女：你开出租车（     ）年了？/Nǐ kāi chūzūchē (     ) nián le ？/ \n男：十九年了。/Shíjiǔ nián le./", "options": ["A: 冷 (lěng)", "B: 多少 (duōshao)", "C: 写 (xiě)", "D: 名字 (míngzi)", "E: 茶 (chá)", "F: 东西 (dōngxi)"], "correct_answer": "B: 多少 (duōshao)" },
+        { "question_id": 40, "code": "H11003_Q40", "question_type": "single_choice", "question_text": "男：北京昨天天气怎么样？/Běijīng zuótiān tiānqì zěnme yàng ？/ \n女：很（    ）。/Hěn ( )./", "options": ["A: 冷 (lěng)", "B: 多少 (duōshao)", "C: 写 (xiě)", "D: 名字 (míngzi)", "E: 茶 (chá)", "F: 东西 (dōngxi)"],"correct_answer": "A: 冷 (lěng)" }
+      ]
+    }
+  ]
+}

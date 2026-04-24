@@ -749,7 +749,7 @@ class _ConversationPracticeViewState
                     backgroundColor: AppColors.borderDefault.withValues(
                       alpha: 0.45,
                     ),
-                    valueColor: const AlwaysStoppedAnimation(
+                    valueColor: AlwaysStoppedAnimation(
                       AppColors.darkBlueCard,
                     ),
                     minHeight: 6.h,
@@ -939,7 +939,7 @@ class _ConversationPracticeViewState
                 label: const Text('Chủ đề khác'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.darkBlueCard,
-                  side: const BorderSide(color: AppColors.darkBlueCard),
+                  side: BorderSide(color: AppColors.darkBlueCard),
                   padding: EdgeInsets.symmetric(vertical: 12.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14.r),

@@ -5,6 +5,7 @@ import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
 import 'package:hanziilearnapp/app/providers/lesson_provider.dart';
 import 'package:hanziilearnapp/app/views/exam/hsk_exam_list_view.dart';
 import 'package:hanziilearnapp/app/views/hsk_vocab/hsk_vocab_view.dart';
+import 'package:hanziilearnapp/app/views/lesson/notebook_view.dart';
 import 'package:provider/provider.dart';
 
 class LessonView extends StatefulWidget {
@@ -33,7 +34,12 @@ class _LessonViewState extends State<LessonView> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
-        await context.read<LessonProvider>().loadHskLevelCounts(_hskLevels);
+        final provider = context.read<LessonProvider>();
+        await Future.wait([
+          provider.loadHskLevelCounts(_hskLevels),
+          provider.loadHskExamCounts(_hskLevels),
+          provider.loadNotebookStats(),
+        ]);
       } finally {
         if (!completer.isCompleted) {
           completer.complete();
@@ -139,18 +145,20 @@ class _LessonViewState extends State<LessonView> {
   }
 
   Widget _buildHorizontalExamSection() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final cardWidth = (constraints.maxWidth - 12.w) / 2;
+    return Consumer<LessonProvider>(
+      builder: (context, provider, _) => LayoutBuilder(
+        builder: (context, constraints) {
+          final cardWidth = (constraints.maxWidth - 12.w) / 2;
 
-        return Wrap(
-          spacing: 12.w,
-          runSpacing: 12.h,
-          children: _hskLevels
-              .map((level) => _buildExamCard(level, cardWidth))
-              .toList(),
-        );
-      },
+          return Wrap(
+            spacing: 12.w,
+            runSpacing: 12.h,
+            children: _hskLevels
+                .map((level) => _buildExamCard(level, cardWidth, provider))
+                .toList(),
+          );
+        },
+      ),
     );
   }
 
@@ -175,10 +183,13 @@ class _LessonViewState extends State<LessonView> {
     );
   }
 
-  Widget _buildExamCard(String level, double width) {
+  Widget _buildExamCard(String level, double width, LessonProvider provider) {
+    final count = provider.levelExamCounts[level];
+    final countLabel = count == null ? 'Đang tải...' : '$count đề thi';
+
     return _ExamLevelCard(
       level: level,
-      countLabel: '10 đề thi',
+      countLabel: countLabel,
       width: width,
       onTap: () {
         Navigator.push(
@@ -201,7 +212,8 @@ class _LessonViewState extends State<LessonView> {
   }
 
   Widget _buildNotebookCard() {
-    return Container(
+    return Consumer<LessonProvider>(
+      builder: (context, provider, _) => Container(
       width: double.infinity,
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
@@ -214,8 +226,13 @@ class _LessonViewState extends State<LessonView> {
           Row(
             children: [
               GestureDetector(
-                onTap: () {
-                  // Handle tap event
+                onTap: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const NotebookView()),
+                  );
+                  if (!context.mounted) return;
+                  await context.read<LessonProvider>().loadNotebookStats();
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -257,13 +274,13 @@ class _LessonViewState extends State<LessonView> {
                 children: [
                   _CounterTag(
                     color: AppColors.greenCard,
-                    text: '5',
+                    text: '${provider.notebookSavedCount}',
                     label: 'đã học',
                   ),
                   SizedBox(height: 12.h),
                   _CounterTag(
                     color: AppColors.darkBlueCard,
-                    text: '3',
+                    text: '${provider.notebookFavoriteCount}',
                     label: 'yêu thích',
                   ),
                 ],
@@ -286,7 +303,7 @@ class _LessonViewState extends State<LessonView> {
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Text(
-              '+0 từ mới hôm nay',
+              '+${provider.notebookSavedCount} từ đã lưu',
               style: TextStyle(
                 color: AppColors.whiteText,
                 fontSize: 13.sp,
@@ -296,6 +313,7 @@ class _LessonViewState extends State<LessonView> {
           ),
         ],
       ),
+    ),
     );
   }
 }

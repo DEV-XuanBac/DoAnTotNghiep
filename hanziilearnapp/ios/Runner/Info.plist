@@ -47,6 +47,10 @@
 	<string>Ứng dụng cần microphone để nhận diện giọng nói và dịch.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Ứng dụng cần quyền nhận diện giọng nói để chuyển lời nói thành văn bản.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Ứng dụng cần quyền camera để chụp ảnh dịch và cập nhật ảnh đại diện.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Ứng dụng cần quyền thư viện ảnh để chọn ảnh dịch và cập nhật ảnh đại diện.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 </dict>

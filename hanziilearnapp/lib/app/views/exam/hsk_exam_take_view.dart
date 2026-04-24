@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -9,13 +11,9 @@ import 'package:hanziilearnapp/app/datasource/network_services/hsk_exam_service.
 import 'package:hanziilearnapp/app/models/hsk_exam_model.dart';
 
 class HskExamTakeView extends StatefulWidget {
-  const HskExamTakeView({
-    super.key,
-    required this.examAssetPath,
-    required this.level,
-  });
+  const HskExamTakeView({super.key, required this.examId, required this.level});
 
-  final String examAssetPath;
+  final String examId;
   final String level;
 
   @override
@@ -24,6 +22,7 @@ class HskExamTakeView extends StatefulWidget {
 
 class _HskExamTakeViewState extends State<HskExamTakeView> {
   final HskExamService _examService = HskExamService();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late final Future<HskExamDetail> _examFuture;
   late final AudioPlayer _audioPlayer;
 
@@ -37,7 +36,7 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
   @override
   void initState() {
     super.initState();
-    _examFuture = _examService.getExamDetail(widget.examAssetPath);
+    _examFuture = _examService.getExamDetail(widget.examId);
     _audioPlayer = AudioPlayer();
     _audioPlayer.onDurationChanged.listen((duration) {
       if (mounted) {
@@ -119,7 +118,10 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
 
           final currentSection = sections[_currentSectionIndex];
           final isListeningSection = _isListeningSection(currentSection);
-          final sectionAudioPath = _resolveSectionAudioPath(exam, currentSection);
+          final sectionAudioPath = _resolveSectionAudioPath(
+            exam,
+            currentSection,
+          );
           final progressText =
               'Phần ${_currentSectionIndex + 1}/${sections.length} - Đã làm ${_selectedAnswers.length}/${questions.length} câu';
 
@@ -174,7 +176,9 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
                             color: AppColors.backgroundWhite,
                             borderRadius: BorderRadius.circular(12.r),
                             border: Border.all(
-                              color: AppColors.borderDefault.withValues(alpha: 0.7),
+                              color: AppColors.borderDefault.withValues(
+                                alpha: 0.7,
+                              ),
                             ),
                           ),
                           child: Column(
@@ -243,7 +247,9 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
         decoration: BoxDecoration(
           color: AppColors.backgroundWhite,
           borderRadius: BorderRadius.circular(10.r),
-          border: Border.all(color: AppColors.borderDefault.withValues(alpha: 0.7)),
+          border: Border.all(
+            color: AppColors.borderDefault.withValues(alpha: 0.7),
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -278,7 +284,10 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
                     });
                   },
                   child: Ink(
-                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 9.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.w,
+                      vertical: 9.h,
+                    ),
                     decoration: BoxDecoration(
                       color: selected == option
                           ? AppColors.lightCardBackground
@@ -363,7 +372,9 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
       decoration: BoxDecoration(
         color: AppColors.lightCardBackground,
         borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(color: AppColors.borderDefault.withValues(alpha: 0.7)),
+        border: Border.all(
+          color: AppColors.borderDefault.withValues(alpha: 0.7),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -380,10 +391,7 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
           if (audioAssetPath == null) ...[
             Text(
               'Phần nghe này chưa được cập nhật file audio.',
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: AppColors.secondaryText,
-              ),
+              style: TextStyle(fontSize: 12.sp, color: AppColors.secondaryText),
             ),
           ] else ...[
             Row(
@@ -410,10 +418,7 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
             alignment: Alignment.centerRight,
             child: Text(
               '${_formatDuration(_audioPosition)} / ${_formatDuration(_audioDuration)}',
-              style: TextStyle(
-                fontSize: 11.sp,
-                color: AppColors.secondaryText,
-              ),
+              style: TextStyle(fontSize: 11.sp, color: AppColors.secondaryText),
             ),
           ),
         ],
@@ -460,25 +465,21 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
       }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'Không phát được audio: $audioAssetPath\n$error',
-          ),
+          content: Text('Không phát được audio: $audioAssetPath\n$error'),
         ),
       );
     }
   }
 
   Future<void> _playFromAssetPath(String audioAssetPath) async {
+    if (audioAssetPath.startsWith('http://') ||
+        audioAssetPath.startsWith('https://')) {
+      await _audioPlayer.play(UrlSource(audioAssetPath));
+      return;
+    }
+
     final data = await _loadAudioBytes(audioAssetPath);
     await _audioPlayer.play(BytesSource(data.buffer.asUint8List()));
-  }
-
-  void _stopAudioPlayback() {
-    _audioPlayer.stop();
-    setState(() {
-      _isAudioPlaying = false;
-      _audioPosition = Duration.zero;
-    });
   }
 
   void _goToSection(HskExamDetail exam, int nextIndex) {
@@ -564,6 +565,7 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
+                _recordExamCompletion(exam);
                 Navigator.pop(context);
               },
               child: const Text('Hoàn thành'),
@@ -572,5 +574,40 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
         );
       },
     );
+  }
+
+  Future<void> _recordExamCompletion(HskExamDetail exam) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return;
+    }
+
+    final attemptRef = _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('exam_attempts')
+        .doc(widget.examId);
+    final userRef = _firestore.collection('users').doc(user.uid);
+
+    await _firestore.runTransaction((transaction) async {
+      final attemptSnapshot = await transaction.get(attemptRef);
+      final alreadyCompleted = (attemptSnapshot.data()?['completed'] ?? false) ==
+          true;
+
+      transaction.set(attemptRef, {
+        'exam_id': widget.examId,
+        'exam_code': exam.examCode,
+        'level': exam.level,
+        'completed': true,
+        'completed_at': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      if (!alreadyCompleted) {
+        transaction.set(userRef, {
+          'hsk_exam_completed_count': FieldValue.increment(1),
+          'updated_at': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+      }
+    });
   }
 }

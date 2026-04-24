@@ -3,4 +3,6 @@ abstract class AppConfig {
   AppConfig._();
 
   static const String appName = 'Hanzi Learn';
+  static const String cloudinaryCloudName = 'diehvorme';
+  static const String cloudinaryUploadPreset = 'uploadPictures';
 }

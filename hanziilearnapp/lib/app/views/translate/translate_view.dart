@@ -3,11 +3,14 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
 import 'package:hanziilearnapp/app/datasource/network_services/translate_service.dart';
+import 'package:hanziilearnapp/app/views/common/in_app_camera_view.dart';
 import 'package:hanziilearnapp/widgets/handwriting_pad_sheet.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lpinyin/lpinyin.dart';
@@ -24,6 +27,8 @@ class _TranslateViewState extends State<TranslateView> {
   final TextEditingController _inputController = TextEditingController();
   final TranslationService _translationService = TranslationService();
   final SpeechToText _speechToText = SpeechToText();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   String _translatedText = '';
   String _pinyinText = '';
@@ -36,6 +41,9 @@ class _TranslateViewState extends State<TranslateView> {
   bool _isListening = false;
   bool _isVietnameseToChinese = true;
   bool _skipNextInputChange = false;
+  String _lastTranslationInput = '';
+  String _lastTranslationOutput = '';
+  String _currentTranslationType = 'chữ viết';
 
   Timer? _debounceTimer;
 
@@ -103,6 +111,11 @@ class _TranslateViewState extends State<TranslateView> {
         );
         _isLoading = false;
       });
+      await _saveTranslationHistory(
+        sourceText: text,
+        translatedText: translatedText,
+        translationType: 'chữ viết',
+      );
     } catch (_) {
       if (!mounted) return;
 
@@ -114,6 +127,18 @@ class _TranslateViewState extends State<TranslateView> {
   }
 
   Future<void> _scanText(ImageSource source) async {
+    if (source == ImageSource.camera) {
+      final capturedPath = await Navigator.push<String>(
+        context,
+        MaterialPageRoute(builder: (_) => const InAppCameraView()),
+      );
+      if (capturedPath == null || capturedPath.trim().isEmpty) {
+        return;
+      }
+      await _translateRecognizedImageFile(capturedPath);
+      return;
+    }
+
     final picker = ImagePicker();
     final image = await picker.pickImage(
       source: source,
@@ -125,7 +150,6 @@ class _TranslateViewState extends State<TranslateView> {
     if (image == null) {
       return;
     }
-
     await _translateRecognizedImageFile(image.path);
   }
 
@@ -133,6 +157,7 @@ class _TranslateViewState extends State<TranslateView> {
     String imagePath, {
     Size? overrideImageSize,
     bool showOverlayOnImage = true,
+    String translationType = 'hình ảnh',
   }) async {
     if (!mounted) {
       return;
@@ -179,6 +204,11 @@ class _TranslateViewState extends State<TranslateView> {
         );
         _isImageScanning = false;
       });
+      await _saveTranslationHistory(
+        sourceText: translationResult.sourceText,
+        translatedText: translationResult.translatedText,
+        translationType: translationType,
+      );
     } on FormatException catch (error) {
       if (!mounted) return;
 
@@ -325,6 +355,222 @@ class _TranslateViewState extends State<TranslateView> {
       submission.imagePath,
       overrideImageSize: submission.imageSize,
       showOverlayOnImage: false,
+      translationType: 'nét vẽ',
+    );
+  }
+
+  Future<void> _saveTranslationHistory({
+    required String sourceText,
+    required String translatedText,
+    required String translationType,
+  }) async {
+    final user = _auth.currentUser;
+    final normalizedSource = sourceText.trim();
+    final normalizedTranslated = translatedText.trim();
+    if (user == null ||
+        normalizedSource.isEmpty ||
+        normalizedTranslated.isEmpty) {
+      return;
+    }
+
+    // Avoid duplicate writes when the same result is emitted repeatedly.
+    if (_lastTranslationInput == normalizedSource &&
+        _lastTranslationOutput == normalizedTranslated &&
+        _currentTranslationType == translationType) {
+      return;
+    }
+
+    _lastTranslationInput = normalizedSource;
+    _lastTranslationOutput = normalizedTranslated;
+    _currentTranslationType = translationType;
+
+    final doc = _firestore.collection('translation_history').doc();
+    await doc.set({
+      'history_id': doc.id,
+      'user_id': user.uid,
+      'source_text': normalizedSource,
+      'translated_text': normalizedTranslated,
+      'translation_type': translationType,
+      'source_language': _sourceLanguage,
+      'target_language': _targetLanguage,
+      'created_at': FieldValue.serverTimestamp(),
+    });
+  }
+
+  void _showTranslationHistorySheet() {
+    final user = _auth.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Vui lòng đăng nhập để xem lịch sử dịch.')),
+      );
+      return;
+    }
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.backgroundWhite,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+      ),
+      builder: (_) {
+        return SafeArea(
+          child: SizedBox(
+            height: 560.h,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 10.h),
+              child: Column(
+                children: [
+                  Container(
+                    width: 52.w,
+                    height: 4.h,
+                    decoration: BoxDecoration(
+                      color: AppColors.borderDefault,
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                  ),
+                  SizedBox(height: 10.h),
+                  Text(
+                    'Lịch sử dịch',
+                    style: TextStyle(
+                      color: AppColors.primaryText,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18.sp,
+                    ),
+                  ),
+                  SizedBox(height: 10.h),
+                  Expanded(
+                    child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                      stream: _firestore
+                          .collection('translation_history')
+                          .where('user_id', isEqualTo: user.uid)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                        if (snapshot.hasError) {
+                          final errorText = snapshot.error?.toString() ?? '';
+                          return Center(
+                            child: Text(
+                              errorText.contains('failed-precondition')
+                                  ? 'Thiếu Firestore index cho lịch sử dịch.'
+                                  : 'Không tải được lịch sử dịch.',
+                              style: TextStyle(
+                                color: AppColors.errorText,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                        }
+
+                        final docs = [...(snapshot.data?.docs ?? const [])];
+                        docs.sort((a, b) {
+                          final aTs = a.data()['created_at'];
+                          final bTs = b.data()['created_at'];
+                          final aMs = aTs is Timestamp
+                              ? aTs.millisecondsSinceEpoch
+                              : 0;
+                          final bMs = bTs is Timestamp
+                              ? bTs.millisecondsSinceEpoch
+                              : 0;
+                          return bMs.compareTo(aMs);
+                        });
+                        if (docs.isEmpty) {
+                          return Center(
+                            child: Text(
+                              'Chưa có bản dịch nào',
+                              style: TextStyle(
+                                color: AppColors.secondaryText,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          );
+                        }
+
+                        return ListView.separated(
+                          itemCount: docs.length,
+                          separatorBuilder: (_, __) => SizedBox(height: 8.h),
+                          itemBuilder: (context, index) {
+                            final item = docs[index].data();
+                            final sourceText =
+                                (item['source_text'] ?? '').toString().trim();
+                            final translatedText =
+                                (item['translated_text'] ?? '').toString().trim();
+                            final translationType =
+                                (item['translation_type'] ?? 'chữ viết')
+                                    .toString()
+                                    .trim();
+
+                            return Container(
+                              padding: EdgeInsets.all(10.w),
+                              decoration: BoxDecoration(
+                                color: AppColors.backgroundLight.withValues(alpha: 0.45),
+                                borderRadius: BorderRadius.circular(10.r),
+                                border: Border.all(
+                                  color: AppColors.borderDefault.withValues(alpha: 0.5),
+                                ),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Kiểu dịch: $translationType',
+                                    style: TextStyle(
+                                      color: AppColors.blueDarkText,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 12.sp,
+                                    ),
+                                  ),
+                                  SizedBox(height: 6.h),
+                                  Text(
+                                    'Văn bản gốc:',
+                                    style: TextStyle(
+                                      color: AppColors.secondaryText,
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    sourceText.isEmpty ? '-' : sourceText,
+                                    style: TextStyle(
+                                      color: AppColors.primaryText,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Text(
+                                    'Bản dịch:',
+                                    style: TextStyle(
+                                      color: AppColors.secondaryText,
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    translatedText.isEmpty ? '-' : translatedText,
+                                    style: TextStyle(
+                                      color: AppColors.primaryText,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -596,7 +842,7 @@ class _TranslateViewState extends State<TranslateView> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: _showTranslationHistorySheet,
                     child: Container(
                       padding: EdgeInsets.all(10.w),
                       decoration: BoxDecoration(
@@ -690,7 +936,7 @@ class _TranslateViewState extends State<TranslateView> {
                       SizedBox(
                         width: 24.w,
                         height: 24.h,
-                        child: const CircularProgressIndicator(
+                        child: CircularProgressIndicator(
                           strokeWidth: 2,
                           color: AppColors.blueDarkText,
                         ),

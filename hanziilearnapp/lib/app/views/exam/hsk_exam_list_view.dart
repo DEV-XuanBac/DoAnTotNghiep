@@ -87,7 +87,7 @@ class _HskExamListViewState extends State<HskExamListView> {
                     context,
                     MaterialPageRoute(
                       builder: (_) => HskExamTakeView(
-                        examAssetPath: exam.assetPath,
+                        examId: exam.id,
                         level: widget.hskLevel,
                       ),
                     ),

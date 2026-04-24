@@ -1,25 +1,31 @@
 class HskExam {
   const HskExam({
+    required this.id,
     required this.examCode,
     required this.level,
     required this.title,
     required this.totalQuestions,
-    required this.assetPath,
   });
 
+  final String id;
   final String examCode;
   final String level;
   final String title;
   final int totalQuestions;
-  final String assetPath;
 
-  factory HskExam.fromJson(Map<String, dynamic> json, String assetPath) {
+  factory HskExam.fromFirestore(String id, Map<String, dynamic> json) {
+    final examData = (json['examData'] as Map<String, dynamic>?) ?? json;
     return HskExam(
-      examCode: (json['exam_code'] ?? '').toString(),
-      level: (json['level'] ?? '').toString(),
-      title: (json['title'] ?? '').toString(),
-      totalQuestions: (json['total_questions'] as num?)?.toInt() ?? 0,
-      assetPath: assetPath,
+      id: id,
+      examCode:
+          (examData['exam_code'] ?? json['examCode'] ?? json['exam_code'] ?? '')
+              .toString(),
+      level: (examData['level'] ?? json['level'] ?? '').toString(),
+      title: (examData['title'] ?? json['title'] ?? '').toString(),
+      totalQuestions:
+          (examData['total_questions'] as num?)?.toInt() ??
+          (json['totalQuestions'] as num?)?.toInt() ??
+          0,
     );
   }
 }
@@ -56,10 +62,10 @@ class HskExamDetail {
       title: (json['title'] ?? '').toString(),
       totalQuestions: (json['total_questions'] as num?)?.toInt() ?? 0,
       sections: rawSections.map(HskExamSection.fromJson).toList(),
-      listeningAudioAsset: _readNullableString(
-            json['listening_audio_asset'],
-          ) ??
-          _readNullableString(json['listening_audio']),
+      listeningAudioAsset:
+          _readNullableString(json['listening_audio_asset']) ??
+          _readNullableString(json['listening_audio']) ??
+          _readNullableString(json['audio_listening']),
     );
   }
 
@@ -97,10 +103,12 @@ class HskExamSection {
       skill: (json['skill'] ?? '').toString(),
       questions: rawQuestions.map(HskExamQuestion.fromJson).toList(),
       questionImage: _readNullableString(json['question_image']),
-      audioAsset: _readNullableString(json['audio_asset']) ??
+      audioAsset:
+          _readNullableString(json['audio_asset']) ??
           _readNullableString(json['question_audio']) ??
           _readNullableString(json['listening_audio_asset']) ??
-          _readNullableString(json['listening_audio']),
+          _readNullableString(json['listening_audio']) ??
+          _readNullableString(json['audio_listening']),
     );
   }
 
