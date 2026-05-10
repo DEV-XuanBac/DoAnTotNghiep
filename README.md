@@ -15,13 +15,14 @@ Các đặc điểm chính:
 - Hỗ trợ nhận diện văn bản từ ảnh (OCR) và xử lý giọng nói.
 - Tích hợp chuyển đổi văn bản, phát âm và các tiện ích luyện đọc.
 
--------------------------
-# Demo giao diện
-## Một số màn hình chính
-| Trang chủ | Dịch thuật | Học tập | Cộng đồng
-| ![](docs/home.png) | ![](docs/trans.png) | ![](docs/lesson.png) | ![](docs/comm.png)
--------------------------
-# Tính năng chính
+---
+## Demo giao diện
+### Một số màn hình chính
+| Trang chủ | Dịch thuật | Học tập | Cộng đồng |
+|---|---|---|---|
+| ![](docs/home.png) | ![](docs/trans.png) | ![](docs/lesson.png) | ![](docs/comm.png) |
+---
+## Tính năng chính
 - Đăng nhập và xác thực người dùng bằng Firebase Authentication
 - Học từ vựng tiếng Trung theo chủ đề / HSK
 - Quản lý tiến trình và trạng thái học tập
@@ -32,28 +33,28 @@ Các đặc điểm chính:
 - Community trao đổi và tương tác giữa người dùng
 - Đồng bộ dữ liệu học tập qua Firebase
 
--------------------------
-# Kiến trúc công nghệ
-## Frontend
+---
+## Kiến trúc công nghệ
+### Frontend
 - Flutter
 - Provider
 
-## Backend & Cloud
+### Backend & Cloud
 - Firebase Authentication
 - Cloud Firestore
 
-## AI & Xử lý dữ liệu
+### AI & Xử lý dữ liệu
 - Google ML Kit OCR
 - Gemini AI
 - Speech-to-Text
 - Text-to-Speech
 - Translator API
 
-## Local Storage
+### Local Storage
 - SQLite
 - SharedPreferences
 
--------------------------
+---
 ## Hướng dẫn cài đặt
 ### 1) Yêu cầu môi trường
 - Flutter SDK (khuyến nghị bản ổn định mới nhất, tương thích Dart SDK `^3.9.2`)
@@ -75,7 +76,7 @@ copy dart_defines.example.json dart_defines.json
 ```
 Sau đó điền các giá trị cấu hình phù hợp (API key, thông tin môi trường...).
 
--------------------------
+---
 ## Cách dùng và ví dụ
 ### Chạy ứng dụng ở chế độ phát triển
 ```bash
@@ -95,7 +96,7 @@ cd hanziilearnapp
 flutter build apk --release
 ```
 
--------------------------
+---
 ## Phần phụ thuộc
 Các thư viện/package chính dùng để chạy dự án (hanziilearnapp/pubspec.yaml):
 
@@ -114,8 +115,9 @@ Dev dependencies:
 - `flutter_test`
 - `flutter_lints`
 
--------------------------
+---
 ## Sơ đồ kiến trúc
+```text
 +---------------------------+
 |      Flutter UI Layer     |
 | Screens / Widgets / State |
@@ -140,6 +142,7 @@ Dev dependencies:
 | Camera, OCR, |             | Gemini, Translator  |
 | TTS, STT     |             | HTTP integrations   |
 +--------------+             +---------------------+
+```
 
 Mô tả nhanh:
 - `UI Layer`: hiển thị giao diện học tập, điều hướng và nhận thao tác người dùng.
@@ -148,8 +151,9 @@ Mô tả nhanh:
 - `Cloud Services`: xác thực, đồng bộ và lưu trữ dữ liệu trên Firebase.
 - `Device APIs` và `External AI/APIs`: tích hợp camera, OCR, giọng nói và các dịch vụ AI.
 
--------------------------
+---
 ## Cấu trúc thư mục
+```text
 DATN/
 |-- README.md
 `-- hanziilearnapp/
@@ -166,8 +170,9 @@ DATN/
     |-- pubspec.lock               # Khóa phiên bản package
     |-- firebase.json              # Cấu hình Firebase (nếu dùng)
     `-- run_admin_web.bat          # Script hỗ trợ chạy nhanh môi trường web
+```
 
--------------------------
+---
 ## Roadmap phát triển
 ### Giai đoạn 1 - Nền tảng hệ thống
 - [x] Khởi tạo dự án Flutter đa nền tảng.
@@ -191,8 +196,8 @@ DATN/
 - [ ] Hoàn thiện bộ tài liệu kỹ thuật/báo cáo đầy đủ cho nghiệm thu.
 - [ ] Đóng gói bản phát hành phục vụ nghiệm thu.
 
--------------------------
-# Hạn chế hiện tại
+---
+## Hạn chế hiện tại
 - Chưa tối ưu hoàn toàn cho iOS
 - Một số tính năng AI phụ thuộc API bên thứ ba
 - Bộ test tự động còn hạn chế
