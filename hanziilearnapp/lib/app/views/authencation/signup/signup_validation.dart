@@ -4,10 +4,10 @@ import 'package:hanziilearnapp/app/core/constants/auth_constants.dart';
 String? validateSignupEmail(String? value) {
   final email = value?.trim() ?? '';
   if (email.isEmpty) {
-    return AuthConstants.msgEmailRequired;
+    return AuthConstants.errEmailRequired;
   }
-  if (!AuthConstants.emailRegex.hasMatch(email)) {
-    return AuthConstants.msgEmailInvalid;
+  if (!AuthConstants.emailRx.hasMatch(email)) {
+    return AuthConstants.errEmailInvalid;
   }
   return null;
 }
@@ -15,10 +15,10 @@ String? validateSignupEmail(String? value) {
 String? validateSignupPassword(String? value) {
   final password = value ?? '';
   if (password.isEmpty) {
-    return AuthConstants.msgPasswordRequired;
+    return AuthConstants.errPwRequired;
   }
-  if (password.length < AuthConstants.minPasswordLength) {
-    return AuthConstants.msgPasswordMinLengthSignup;
+  if (password.length < AuthConstants.minPwLen) {
+    return AuthConstants.errPwMinLenSignup;
   }
   return null;
 }
@@ -29,10 +29,10 @@ String? validateSignupConfirmPassword({
 }) {
   final confirmPassword = value ?? '';
   if (confirmPassword.isEmpty) {
-    return AuthConstants.msgConfirmPasswordRequired;
+    return AuthConstants.errConfirmPwRequired;
   }
   if (confirmPassword != originalPassword) {
-    return AuthConstants.msgConfirmPasswordMismatch;
+    return AuthConstants.errConfirmPwMismatch;
   }
   return null;
 }
@@ -40,10 +40,10 @@ String? validateSignupConfirmPassword({
 String? validateSignupUsername(String? value) {
   final username = value?.trim() ?? '';
   if (username.isEmpty) {
-    return AuthConstants.msgUsernameRequired;
+    return AuthConstants.errUserRequired;
   }
-  if (!AuthConstants.usernameRegex.hasMatch(username)) {
-    return AuthConstants.msgUsernameInvalid;
+  if (!AuthConstants.userRx.hasMatch(username)) {
+    return AuthConstants.errUserInvalid;
   }
   return null;
 }
@@ -53,7 +53,7 @@ String mapRegisterError(FirebaseAuthException error) {
     case 'email-already-in-use':
       return 'Email đã được đăng ký trong hệ thống.';
     case 'invalid-email':
-      return AuthConstants.msgEmailInvalid;
+      return AuthConstants.errEmailInvalid;
     case 'weak-password':
       return 'Mật khẩu quá yếu, vui lòng dùng mật khẩu mạnh hơn.';
     default:

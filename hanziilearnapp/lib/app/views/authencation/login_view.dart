@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuthException;
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
 import 'package:hanziilearnapp/app/providers/auth_provider.dart';
 import 'package:hanziilearnapp/app/routes/app_routes.dart';
+import 'package:hanziilearnapp/app/views/authencation/controllers/login_controller.dart';
 import 'package:hanziilearnapp/app/views/authencation/login/login_form_section.dart';
-import 'package:hanziilearnapp/app/views/authencation/login/login_validation.dart';
 import 'package:hanziilearnapp/app/views/authencation/signup_view.dart';
+import 'package:hanziilearnapp/app/views/authencation/widgets/auth_header.dart';
 import 'package:provider/provider.dart';
 
 class LoginView extends StatefulWidget {
@@ -17,16 +15,11 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  bool _obscurePassword = true;
+  final LoginController _ctl = LoginController();
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    _ctl.dispose();
     super.dispose();
   }
 
@@ -40,41 +33,28 @@ class _LoginViewState extends State<LoginView> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 20.h),
-              Image.asset(
-                'assets/logo/logo_login_signin.jpg',
-                width: 260.w,
-                height: 260.h,
-              ),
-              Text(
-                'ĐĂNG NHẬP',
-                style: TextStyle(
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.blueDarkText,
-                ),
-              ),
-              SizedBox(height: 10.h),
-              LoginFormSection(
-                formKey: _formKey,
-                emailController: _emailController,
-                passwordController: _passwordController,
-                obscurePassword: _obscurePassword,
-                isLoading: isLoading,
-                onTogglePassword: () {
-                  setState(() {
-                    _obscurePassword = !_obscurePassword;
-                  });
-                },
-                onLoginPressed: _onLoginPressed,
-                onGoToSignup: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const SigninView()),
+              const AuthHeader(title: 'ĐĂNG NHẬP'),
+              ListenableBuilder(
+                listenable: _ctl,
+                builder: (context, _) {
+                  return LoginFormSection(
+                    formK: _ctl.formK,
+                    emailCtrl: _ctl.emailCtrl,
+                    passCtrl: _ctl.passCtrl,
+                    hidePw: _ctl.hidePw,
+                    loading: isLoading,
+                    onTogglePw: _ctl.togglePw,
+                    onLogin: _onLoginPressed,
+                    onGoSignup: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SigninView()),
+                      );
+                    },
+                    validateMail: _ctl.validateEmail,
+                    validatePass: _ctl.validatePassword,
                   );
                 },
-                validateEmail: validateLoginEmail,
-                validatePassword: validateLoginPassword,
               ),
             ],
           ),
@@ -85,32 +65,19 @@ class _LoginViewState extends State<LoginView> {
 
   Future<void> _onLoginPressed() async {
     FocusScope.of(context).unfocus();
-    if (!(_formKey.currentState?.validate() ?? false)) {
-      return;
-    }
-
-    final authProvider = context.read<AuthProvider>();
-    try {
-      await authProvider.signInWithEmail(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-      if (!mounted) return;
+    final authPrv = context.read<AuthProvider>();
+    final errMsg = await _ctl.submit(authPrv);
+    if (!mounted) return;
+    if (errMsg == null) {
       Navigator.pushNamedAndRemoveUntil(
         context,
         AppRoutes.main,
         (route) => false,
       );
-    } on FirebaseAuthException catch (error) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(mapLoginError(error))));
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Không thể đăng nhập, vui lòng thử lại.')),
-      );
+      return;
     }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(errMsg)));
   }
 }

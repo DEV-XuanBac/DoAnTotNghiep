@@ -5,33 +5,33 @@ import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
 class LoginFormSection extends StatelessWidget {
   const LoginFormSection({
     super.key,
-    required this.formKey,
-    required this.emailController,
-    required this.passwordController,
-    required this.obscurePassword,
-    required this.isLoading,
-    required this.onTogglePassword,
-    required this.onLoginPressed,
-    required this.onGoToSignup,
-    required this.validateEmail,
-    required this.validatePassword,
+    required this.formK,
+    required this.emailCtrl,
+    required this.passCtrl,
+    required this.hidePw,
+    required this.loading,
+    required this.onTogglePw,
+    required this.onLogin,
+    required this.onGoSignup,
+    required this.validateMail,
+    required this.validatePass,
   });
 
-  final GlobalKey<FormState> formKey;
-  final TextEditingController emailController;
-  final TextEditingController passwordController;
-  final bool obscurePassword;
-  final bool isLoading;
-  final VoidCallback onTogglePassword;
-  final VoidCallback onLoginPressed;
-  final VoidCallback onGoToSignup;
-  final String? Function(String?) validateEmail;
-  final String? Function(String?) validatePassword;
+  final GlobalKey<FormState> formK;
+  final TextEditingController emailCtrl;
+  final TextEditingController passCtrl;
+  final bool hidePw;
+  final bool loading;
+  final VoidCallback onTogglePw;
+  final VoidCallback onLogin;
+  final VoidCallback onGoSignup;
+  final String? Function(String?) validateMail;
+  final String? Function(String?) validatePass;
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
+      key: formK,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Column(
@@ -40,9 +40,9 @@ class LoginFormSection extends StatelessWidget {
             _buildLabel('Email:'),
             SizedBox(height: 5.h),
             TextFormField(
-              controller: emailController,
+              controller: emailCtrl,
               keyboardType: TextInputType.emailAddress,
-              validator: validateEmail,
+              validator: validateMail,
               decoration: _inputDecoration(
                 hint: 'Nhập email của bạn',
                 icon: Icons.email_outlined,
@@ -52,20 +52,20 @@ class LoginFormSection extends StatelessWidget {
             _buildLabel('Mật khẩu:'),
             SizedBox(height: 5.h),
             TextFormField(
-              controller: passwordController,
-              obscureText: obscurePassword,
-              validator: validatePassword,
+              controller: passCtrl,
+              obscureText: hidePw,
+              validator: validatePass,
               decoration: _inputDecoration(
                 hint: 'Nhập mật khẩu của bạn',
                 icon: Icons.lock_outline,
                 suffix: IconButton(
                   icon: Icon(
-                    obscurePassword
+                    hidePw
                         ? Icons.visibility_off_outlined
                         : Icons.visibility_outlined,
                     color: AppColors.secondaryText,
                   ),
-                  onPressed: onTogglePassword,
+                  onPressed: onTogglePw,
                 ),
               ),
             ),
@@ -74,7 +74,7 @@ class LoginFormSection extends StatelessWidget {
               width: double.infinity,
               height: 50.h,
               child: ElevatedButton(
-                onPressed: isLoading ? null : onLoginPressed,
+                onPressed: loading ? null : onLogin,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.blueDarkText.withValues(alpha: 0.8),
                   shape: RoundedRectangleBorder(
@@ -82,7 +82,7 @@ class LoginFormSection extends StatelessWidget {
                   ),
                   elevation: 2,
                 ),
-                child: isLoading
+                child: loading
                     ? const CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       )
@@ -108,7 +108,7 @@ class LoginFormSection extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: onGoToSignup,
+                  onTap: onGoSignup,
                   child: Text(
                     "Đăng ký",
                     style: TextStyle(

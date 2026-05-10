@@ -3,15 +3,15 @@ import 'package:hanziilearnapp/app/models/word_model.dart';
 
 /// Truy cập từ điển trên Firestore.
 class DictionaryService {
-  final db = FirebaseFirestore.instance;
+  final dbFs = FirebaseFirestore.instance;
 
   Future<List<Word>> searchWord(String keyWord) async {
-    final result = await db
+    final rs = await dbFs
         .collection('dictionary')
         .where('hanzi', isGreaterThanOrEqualTo: keyWord)
         .limit(10)
         .get();
-    return result.docs.map(_toWord).toList();
+    return rs.docs.map(_toWord).toList();
   }
 
   Future<List<Word>> searchByHanziPrefix(
@@ -23,14 +23,14 @@ class DictionaryService {
       return const [];
     }
 
-    final result = await db
+    final rs = await dbFs
         .collection('dictionary')
         .where('hanzi', isGreaterThanOrEqualTo: normalized)
         .where('hanzi', isLessThanOrEqualTo: '$normalized\uf8ff')
         .limit(limit)
         .get();
 
-    return result.docs.map(_toWord).toList();
+    return rs.docs.map(_toWord).toList();
   }
 
   Future<List<Word>> searchByMeaningPrefix(
@@ -42,28 +42,28 @@ class DictionaryService {
       return const [];
     }
 
-    final result = await db
+    final rs = await dbFs
         .collection('dictionary')
         .where('meaning', isGreaterThanOrEqualTo: normalized)
         .where('meaning', isLessThanOrEqualTo: '$normalized\uf8ff')
         .limit(limit)
         .get();
 
-    return result.docs.map(_toWord).toList();
+    return rs.docs.map(_toWord).toList();
   }
 
   Future<List<Word>> getRelatedWords(Word word, {int limit = 10}) async {
     Query<Map<String, dynamic>> query;
     if (word.topic.trim().isNotEmpty) {
-      query = db.collection('dictionary').where('topic', isEqualTo: word.topic);
+      query = dbFs.collection('dictionary').where('topic', isEqualTo: word.topic);
     } else {
-      query = db
+      query = dbFs
           .collection('dictionary')
           .where('hskLevel', isEqualTo: word.hskLevel);
     }
 
-    final result = await query.limit(limit + 1).get();
-    final words = result.docs
+    final rs = await query.limit(limit + 1).get();
+    final words = rs.docs
         .map(_toWord)
         .where((item) => item.id != word.id)
         .take(limit)
@@ -72,12 +72,12 @@ class DictionaryService {
   }
 
   Future<List<Word>> getWordsByHskLevel(String hskLevel) async {
-    final result = await db
+    final rs = await dbFs
         .collection('dictionary')
         .where('hskLevel', isEqualTo: hskLevel)
         .get();
 
-    final words = result.docs.map(_toWord).toList();
+    final words = rs.docs.map(_toWord).toList();
     words.sort((a, b) {
       final left = int.tryParse(a.stt) ?? 0;
       final right = int.tryParse(b.stt) ?? 0;
@@ -88,12 +88,12 @@ class DictionaryService {
   }
 
   Future<List<String>> getTopicsByHskLevel(String hskLevel) async {
-    final result = await db
+    final rs = await dbFs
         .collection('dictionary')
         .where('hskLevel', isEqualTo: hskLevel)
         .get();
 
-    final topics = result.docs
+    final topics = rs.docs
         .map((doc) => _toString(doc.data()['topic']).trim())
         .where((topic) => topic.isNotEmpty)
         .toSet()
@@ -108,7 +108,7 @@ class DictionaryService {
     String topic,
   ) async {
     final normalizedTopic = topic.trim();
-    Query<Map<String, dynamic>> query = db
+    Query<Map<String, dynamic>> query = dbFs
         .collection('dictionary')
         .where('hskLevel', isEqualTo: hskLevel);
 
@@ -116,8 +116,8 @@ class DictionaryService {
       query = query.where('topic', isEqualTo: normalizedTopic);
     }
 
-    final result = await query.get();
-    final words = result.docs.map(_toWord).toList();
+    final rs = await query.get();
+    final words = rs.docs.map(_toWord).toList();
     words.sort((a, b) {
       final left = int.tryParse(a.stt) ?? 0;
       final right = int.tryParse(b.stt) ?? 0;
@@ -126,12 +126,12 @@ class DictionaryService {
     return words;
   }
 
-  Future<int> getWordCountByHskLevel(String hskLevel) async {
-    final result = await db
+  Future<int> getWordCountByLvl(String hskLevel) async {
+    final rs = await dbFs
         .collection('dictionary')
         .where('hskLevel', isEqualTo: hskLevel)
         .get();
-    return result.docs.length;
+    return rs.docs.length;
   }
 
   Word _toWord(QueryDocumentSnapshot<Map<String, dynamic>> doc) {

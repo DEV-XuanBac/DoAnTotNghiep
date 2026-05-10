@@ -6,19 +6,19 @@ class AdminExamService {
 
   final FirebaseFirestore _firestore;
 
-  Stream<List<Map<String, dynamic>>> watchExamsByLevel(String level) {
+  Stream<List<Map<String, dynamic>>> watchExamsByLvl(String level) {
     return _firestore
         .collection('hsk_exams')
         .where('level', isEqualTo: level)
         .snapshots()
         .map((snapshot) {
-          final docs = snapshot.docs.map((doc) => doc.data()).toList();
-          docs.sort((a, b) {
+          final rows = snapshot.docs.map((doc) => doc.data()).toList();
+          rows.sort((a, b) {
             final left = (a['examCode'] ?? '').toString();
             final right = (b['examCode'] ?? '').toString();
             return left.compareTo(right);
           });
-          return docs;
+          return rows;
         });
   }
 }

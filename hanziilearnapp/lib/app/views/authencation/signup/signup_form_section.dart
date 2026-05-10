@@ -5,45 +5,45 @@ import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
 class SignupFormSection extends StatelessWidget {
   const SignupFormSection({
     super.key,
-    required this.formKey,
-    required this.emailController,
-    required this.nameController,
-    required this.passwordController,
-    required this.confirmPasswordController,
-    required this.obscurePassword,
-    required this.obscureConfirmPassword,
-    required this.isLoading,
-    required this.onTogglePassword,
-    required this.onToggleConfirmPassword,
-    required this.onRegisterPressed,
-    required this.onGoToLogin,
-    required this.validateEmail,
-    required this.validateUsername,
-    required this.validatePassword,
-    required this.validateConfirmPassword,
+    required this.formK,
+    required this.emailCtrl,
+    required this.nameCtrl,
+    required this.passCtrl,
+    required this.confirmPassCtrl,
+    required this.hidePw,
+    required this.hideConfirmPw,
+    required this.loading,
+    required this.onTogglePw,
+    required this.onToggleConfirmPw,
+    required this.onRegister,
+    required this.onGoLogin,
+    required this.validateMail,
+    required this.validateName,
+    required this.validatePass,
+    required this.validateConfirmPass,
   });
 
-  final GlobalKey<FormState> formKey;
-  final TextEditingController emailController;
-  final TextEditingController nameController;
-  final TextEditingController passwordController;
-  final TextEditingController confirmPasswordController;
-  final bool obscurePassword;
-  final bool obscureConfirmPassword;
-  final bool isLoading;
-  final VoidCallback onTogglePassword;
-  final VoidCallback onToggleConfirmPassword;
-  final VoidCallback onRegisterPressed;
-  final VoidCallback onGoToLogin;
-  final String? Function(String?) validateEmail;
-  final String? Function(String?) validateUsername;
-  final String? Function(String?) validatePassword;
-  final String? Function(String?) validateConfirmPassword;
+  final GlobalKey<FormState> formK;
+  final TextEditingController emailCtrl;
+  final TextEditingController nameCtrl;
+  final TextEditingController passCtrl;
+  final TextEditingController confirmPassCtrl;
+  final bool hidePw;
+  final bool hideConfirmPw;
+  final bool loading;
+  final VoidCallback onTogglePw;
+  final VoidCallback onToggleConfirmPw;
+  final VoidCallback onRegister;
+  final VoidCallback onGoLogin;
+  final String? Function(String?) validateMail;
+  final String? Function(String?) validateName;
+  final String? Function(String?) validatePass;
+  final String? Function(String?) validateConfirmPass;
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
+      key: formK,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Column(
@@ -52,9 +52,9 @@ class SignupFormSection extends StatelessWidget {
             _buildLabel('Email:'),
             SizedBox(height: 5.h),
             TextFormField(
-              controller: emailController,
+              controller: emailCtrl,
               keyboardType: TextInputType.emailAddress,
-              validator: validateEmail,
+              validator: validateMail,
               decoration: _inputDecoration(
                 hint: 'Nhập email của bạn',
                 icon: Icons.email_outlined,
@@ -64,8 +64,8 @@ class SignupFormSection extends StatelessWidget {
             _buildLabel('Tên người dùng:'),
             SizedBox(height: 5.h),
             TextFormField(
-              controller: nameController,
-              validator: validateUsername,
+              controller: nameCtrl,
+              validator: validateName,
               decoration: _inputDecoration(
                 hint: 'Nhập tên người dùng tiếng Việt',
                 icon: Icons.person_outline,
@@ -75,20 +75,20 @@ class SignupFormSection extends StatelessWidget {
             _buildLabel('Mật khẩu:'),
             SizedBox(height: 5.h),
             TextFormField(
-              controller: passwordController,
-              obscureText: obscurePassword,
-              validator: validatePassword,
+              controller: passCtrl,
+              obscureText: hidePw,
+              validator: validatePass,
               decoration: _inputDecoration(
                 hint: 'Mật khẩu tối thiểu 8 ký tự',
                 icon: Icons.lock_outline,
                 suffix: IconButton(
                   icon: Icon(
-                    obscurePassword
+                    hidePw
                         ? Icons.visibility_off_outlined
                         : Icons.visibility_outlined,
                     color: AppColors.secondaryText,
                   ),
-                  onPressed: onTogglePassword,
+                  onPressed: onTogglePw,
                 ),
               ),
             ),
@@ -96,20 +96,20 @@ class SignupFormSection extends StatelessWidget {
             _buildLabel('Nhập lại mật khẩu:'),
             SizedBox(height: 5.h),
             TextFormField(
-              controller: confirmPasswordController,
-              obscureText: obscureConfirmPassword,
-              validator: validateConfirmPassword,
+              controller: confirmPassCtrl,
+              obscureText: hideConfirmPw,
+              validator: validateConfirmPass,
               decoration: _inputDecoration(
                 hint: 'Nhập lại mật khẩu',
                 icon: Icons.lock_outline,
                 suffix: IconButton(
                   icon: Icon(
-                    obscureConfirmPassword
+                    hideConfirmPw
                         ? Icons.visibility_off_outlined
                         : Icons.visibility_outlined,
                     color: AppColors.secondaryText,
                   ),
-                  onPressed: onToggleConfirmPassword,
+                  onPressed: onToggleConfirmPw,
                 ),
               ),
             ),
@@ -118,7 +118,7 @@ class SignupFormSection extends StatelessWidget {
               width: double.infinity,
               height: 50.h,
               child: ElevatedButton(
-                onPressed: isLoading ? null : onRegisterPressed,
+                onPressed: loading ? null : onRegister,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.blueDarkText.withValues(alpha: 0.8),
                   shape: RoundedRectangleBorder(
@@ -126,7 +126,7 @@ class SignupFormSection extends StatelessWidget {
                   ),
                   elevation: 2,
                 ),
-                child: isLoading
+                child: loading
                     ? const CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       )
@@ -152,7 +152,7 @@ class SignupFormSection extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: onGoToLogin,
+                  onTap: onGoLogin,
                   child: Text(
                     "Đăng nhập",
                     style: TextStyle(

@@ -4,10 +4,10 @@ import 'package:hanziilearnapp/app/core/constants/auth_constants.dart';
 String? validateLoginEmail(String? value) {
   final email = value?.trim() ?? '';
   if (email.isEmpty) {
-    return AuthConstants.msgEmailRequired;
+    return AuthConstants.errEmailRequired;
   }
-  if (!AuthConstants.emailRegex.hasMatch(email)) {
-    return AuthConstants.msgEmailInvalid;
+  if (!AuthConstants.emailRx.hasMatch(email)) {
+    return AuthConstants.errEmailInvalid;
   }
   return null;
 }
@@ -15,10 +15,10 @@ String? validateLoginEmail(String? value) {
 String? validateLoginPassword(String? value) {
   final password = value ?? '';
   if (password.isEmpty) {
-    return AuthConstants.msgPasswordRequired;
+    return AuthConstants.errPwRequired;
   }
-  if (password.length < AuthConstants.minPasswordLength) {
-    return AuthConstants.msgPasswordMinLength;
+  if (password.length < AuthConstants.minPwLen) {
+    return AuthConstants.errPwMinLen;
   }
   return null;
 }
@@ -33,7 +33,7 @@ String mapLoginError(FirebaseAuthException error) {
     case 'invalid-credential':
       return 'Email hoặc mật khẩu không chính xác.';
     case 'invalid-email':
-      return AuthConstants.msgEmailInvalid;
+      return AuthConstants.errEmailInvalid;
     case 'too-many-requests':
       return 'Bạn thử sai quá nhiều lần, vui lòng thử lại sau.';
     default:

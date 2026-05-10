@@ -83,4 +83,5 @@ class _BottomNavState extends State<BottomNav> {
       _bottomNavKey.currentState?.setPage(safeIndex);
     }
   }
+
 }

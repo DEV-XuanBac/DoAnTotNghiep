@@ -36,6 +36,7 @@ class HskExamDetail {
     required this.level,
     required this.title,
     required this.totalQuestions,
+    required this.timeLimitMinutes,
     required this.sections,
     this.listeningAudioAsset,
   });
@@ -44,6 +45,7 @@ class HskExamDetail {
   final String level;
   final String title;
   final int totalQuestions;
+  final int timeLimitMinutes;
   final List<HskExamSection> sections;
   final String? listeningAudioAsset;
 
@@ -61,6 +63,7 @@ class HskExamDetail {
       level: (json['level'] ?? '').toString(),
       title: (json['title'] ?? '').toString(),
       totalQuestions: (json['total_questions'] as num?)?.toInt() ?? 0,
+      timeLimitMinutes: (json['time_limit_minutes'] as num?)?.toInt() ?? 0,
       sections: rawSections.map(HskExamSection.fromJson).toList(),
       listeningAudioAsset:
           _readNullableString(json['listening_audio_asset']) ??

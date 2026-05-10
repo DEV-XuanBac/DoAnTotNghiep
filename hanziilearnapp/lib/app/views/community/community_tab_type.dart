@@ -1,14 +1,16 @@
+import 'package:hanziilearnapp/app/core/constants/community_constants.dart';
+
 enum CommunityTabType { all, interacted, manage }
 
 extension CommunityTabTypeX on CommunityTabType {
   String get label {
     switch (this) {
       case CommunityTabType.all:
-        return 'Tất cả';
+        return CommunityConstants.tabAll;
       case CommunityTabType.interacted:
-        return 'Đã tương tác';
+        return CommunityConstants.tabTouched;
       case CommunityTabType.manage:
-        return 'Quản lý';
+        return CommunityConstants.tabManage;
     }
   }
 }

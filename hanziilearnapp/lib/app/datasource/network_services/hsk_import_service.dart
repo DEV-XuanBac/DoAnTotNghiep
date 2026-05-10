@@ -12,12 +12,12 @@ class HskImportService {
 
   final FirebaseFirestore _firestore;
 
-  Future<int> importFromAsset() async {
-    final rawJson = await rootBundle.loadString(_assetPath);
-    final decoded = jsonDecode(rawJson) as List<dynamic>;
+  Future<int> importAsset() async {
+    final raw = await rootBundle.loadString(_assetPath);
+    final decoded = jsonDecode(raw) as List<dynamic>;
 
-    var importedCount = 0;
-    var operationCount = 0;
+    var imported = 0;
+    var opCount = 0;
     var batch = _firestore.batch();
 
     for (final item in decoded) {
@@ -31,21 +31,21 @@ class HskImportService {
           .doc(_buildDocumentId(data));
 
       batch.set(docRef, data, SetOptions(merge: true));
-      importedCount++;
-      operationCount++;
+      imported++;
+      opCount++;
 
-      if (operationCount == 450) {
+      if (opCount == 450) {
         await batch.commit();
         batch = _firestore.batch();
-        operationCount = 0;
+        opCount = 0;
       }
     }
 
-    if (operationCount > 0) {
+    if (opCount > 0) {
       await batch.commit();
     }
 
-    return importedCount;
+    return imported;
   }
 
   Map<String, dynamic> _mapWord(Map<String, dynamic> raw) {

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hanziilearnapp/app/models/parsed_hsk_exam_model.dart';
 
 abstract class IHskExamAdminRepository {
-  Future<void> uploadExam({
+  Future<void> upload({
     required ParsedHskExam parsed,
     String? sourceFileName,
   });
@@ -16,16 +16,16 @@ class HskExamAdminRepository implements IHskExamAdminRepository {
   static const String _collection = 'hsk_exams';
 
   @override
-  Future<void> uploadExam({
+  Future<void> upload({
     required ParsedHskExam parsed,
     String? sourceFileName,
   }) async {
-    final docId = '${parsed.level}_${parsed.examCode}'.toLowerCase().replaceAll(
+    final id = '${parsed.level}_${parsed.examCode}'.toLowerCase().replaceAll(
       RegExp(r'\s+'),
       '_',
     );
 
-    await _firestore.collection(_collection).doc(docId).set({
+    await _firestore.collection(_collection).doc(id).set({
       'examCode': parsed.examCode,
       'level': parsed.level,
       'title': parsed.title,

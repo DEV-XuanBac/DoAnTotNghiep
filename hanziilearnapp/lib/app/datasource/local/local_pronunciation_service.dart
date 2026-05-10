@@ -12,35 +12,35 @@ class LocalPronunciationService {
   final SpeechToText _stt = SpeechToText();
   bool _isInitialized = false;
 
-  String _recognizedText = '';
-  double _confidence = 0.0;
+  String _recText = '';
+  double _conf = 0.0;
 
   bool get isListening => _stt.isListening;
 
-  Future<bool> initialize() async {
+  Future<bool> init() async {
     if (_isInitialized) return true;
     _isInitialized = await _stt.initialize();
     return _isInitialized;
   }
 
-  Future<void> startListening({
+  Future<void> startListen({
     required void Function(String partialText) onPartialResult,
   }) async {
     if (!_isInitialized) {
-      final ok = await initialize();
+      final ok = await init();
       if (!ok) throw Exception('Không thể khởi tạo nhận dạng giọng nói');
     }
 
-    _recognizedText = '';
-    _confidence = 0.0;
+    _recText = '';
+    _conf = 0.0;
 
     await _stt.listen(
       onResult: (SpeechRecognitionResult result) {
-        _recognizedText = result.recognizedWords;
+        _recText = result.recognizedWords;
         if (result.hasConfidenceRating) {
-          _confidence = result.confidence;
+          _conf = result.confidence;
         }
-        onPartialResult(_recognizedText);
+        onPartialResult(_recText);
       },
       localeId: _listenLocaleId,
       listenOptions: SpeechListenOptions(
@@ -51,14 +51,14 @@ class LocalPronunciationService {
     );
   }
 
-  Future<PronunciationResult> stopAndAssess(String referenceText) async {
+  Future<PronunciationResult> stopAssess(String referenceText) async {
     await _stt.stop();
 
-    if (_recognizedText.isEmpty) {
+    if (_recText.isEmpty) {
       return _emptyResult('Không nhận dạng được giọng nói. Hãy thử lại.');
     }
 
-    return _evaluate(referenceText, _recognizedText, _confidence);
+    return _evaluate(referenceText, _recText, _conf);
   }
 
   Future<void> cancel() async {

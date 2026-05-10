@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hanziilearnapp/app/core/constants/community_constants.dart';
 import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
 import 'package:hanziilearnapp/app/models/community_post_model.dart';
 import 'package:hanziilearnapp/app/providers/post_provider.dart';
@@ -22,6 +24,9 @@ class _CommunityViewState extends State<CommunityView> {
   CommunityTabType _currentTab = CommunityTabType.all;
 
   Future<void> _openCreatePostDialog() async {
+    if (!_ensureLoggedIn('Vui lòng đăng nhập để đăng bài.')) {
+      return;
+    }
     final created = await showDialog<bool>(
       context: context,
       builder: (_) => const CommunityCreatePostDialog(),
@@ -32,6 +37,9 @@ class _CommunityViewState extends State<CommunityView> {
   }
 
   Future<void> _openCommentSheet(CommunityPostModel post) async {
+    if (!_ensureLoggedIn('Vui lòng đăng nhập để bình luận.')) {
+      return;
+    }
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -44,6 +52,9 @@ class _CommunityViewState extends State<CommunityView> {
   }
 
   Future<void> _toggleLike(CommunityPostModel post) async {
+    if (!_ensureLoggedIn('Vui lòng đăng nhập để tương tác bài viết.')) {
+      return;
+    }
     try {
       await context.read<PostProvider>().toggleLike(post);
     } catch (error) {
@@ -52,6 +63,16 @@ class _CommunityViewState extends State<CommunityView> {
         context,
       ).showSnackBar(SnackBar(content: Text(error.toString())));
     }
+  }
+
+  bool _ensureLoggedIn(String message) {
+    if (FirebaseAuth.instance.currentUser != null) {
+      return true;
+    }
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(SnackBar(content: Text(message)));
+    return false;
   }
 
   Future<void> _deletePost(String postId) async {
@@ -111,7 +132,7 @@ class _CommunityViewState extends State<CommunityView> {
                     ),
                   ),
                   child: Text(
-                    'Bạn đang thắc mắc điều gì?',
+                    CommunityConstants.askHint,
                     style: TextStyle(
                       color: AppColors.secondaryText,
                       fontSize: 12.sp,
@@ -151,7 +172,7 @@ class _CommunityViewState extends State<CommunityView> {
         if (posts.isEmpty) {
           return Center(
             child: Text(
-              'Chưa có bài viết nào',
+              CommunityConstants.noPosts,
               style: TextStyle(
                 color: AppColors.secondaryText,
                 fontSize: 14.sp,
@@ -190,7 +211,7 @@ class _CommunityViewState extends State<CommunityView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Cộng đồng Hanzii',
+                CommunityConstants.title,
                 style: TextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w700,

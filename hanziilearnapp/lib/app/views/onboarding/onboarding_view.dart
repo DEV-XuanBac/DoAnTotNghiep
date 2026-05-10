@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
 import 'package:hanziilearnapp/app/routes/app_routes.dart';
 
@@ -27,6 +28,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -39,7 +41,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                 Text(
                   '汉字',
                   style: TextStyle(
-                    fontSize: 72,
+                    fontSize: 72.sp,
                     fontWeight: FontWeight.bold,
                     color: AppColors.label,
                     shadows: [
@@ -55,7 +57,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                 Text(
                   'Hanzi Learn',
                   style: TextStyle(
-                    fontSize: 28,
+                    fontSize: 28.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.labelOnboarding,
                     letterSpacing: 2,
@@ -64,7 +66,10 @@ class _OnboardingViewState extends State<OnboardingView> {
                 const SizedBox(height: 400),
                 Text(
                   'Học tiếng Trung mỗi ngày',
-                  style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: Colors.grey.shade700,
+                  ),
                 ),
                 const Spacer(flex: 2),
                 Padding(

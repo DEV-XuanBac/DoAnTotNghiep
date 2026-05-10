@@ -134,7 +134,8 @@ class _VocabularyCreateTabState extends State<VocabularyCreateTab> {
   Widget _buildHskLevelDropdown() => Padding(
     padding: EdgeInsets.only(bottom: 8.h),
     child: DropdownButtonFormField<String>(
-      value: _selectedHskLevel,
+      key: ValueKey(_selectedHskLevel),
+      initialValue: _selectedHskLevel,
       decoration: InputDecoration(
         labelText: 'Level',
         filled: true,
@@ -194,7 +195,7 @@ class _VocabularyCreateTabState extends State<VocabularyCreateTab> {
         ),
         SizedBox(height: 10.h),
         StreamBuilder<List<Map<String, dynamic>>>(
-          stream: _vocabularyService.watchWordsByLevel(_selectedHskLevel),
+          stream: _vocabularyService.watchWordsByLvl(_selectedHskLevel),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
             if (snapshot.hasError) return Text('Không tải được danh sách từ vựng.', style: TextStyle(color: AppColors.errorText));
@@ -230,7 +231,7 @@ class _VocabularyCreateTabState extends State<VocabularyCreateTab> {
   Future<void> _loadNextStt() async {
     setState(() => _loadingStt = true);
     try {
-      final nextStt = await _vocabularyService.getNextStt(_selectedHskLevel);
+      final nextStt = await _vocabularyService.nextStt(_selectedHskLevel);
       if (!mounted) return;
       _sttController.text = nextStt.toString();
     } catch (_) {
@@ -248,7 +249,7 @@ class _VocabularyCreateTabState extends State<VocabularyCreateTab> {
       final hskLevel = _selectedHskLevel;
       final stt = _sttController.text.trim();
       final hanzi = _hanziController.text.trim();
-      await _vocabularyService.saveVocabulary(
+      await _vocabularyService.saveVocab(
         hskLevel: hskLevel,
         stt: stt,
         hanzi: hanzi,

@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:hanziilearnapp/app/models/parsed_hsk_exam_model.dart';
 
 abstract class IHskExamValidator {
-  ParsedHskExam parseAndValidate(String rawJson);
+  ParsedHskExam parseValid(String rawJson);
 }
 
 class HskExamValidator implements IHskExamValidator {
   @override
-  ParsedHskExam parseAndValidate(String rawJson) {
+  ParsedHskExam parseValid(String rawJson) {
     final decoded = jsonDecode(rawJson);
     if (decoded is! Map<String, dynamic>) {
       throw const FormatException('JSON đề thi phải là object ở root.');

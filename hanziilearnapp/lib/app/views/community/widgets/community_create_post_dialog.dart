@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/constants/community_constants.dart';
 import 'package:hanziilearnapp/app/providers/post_provider.dart';
 import 'package:hanziilearnapp/app/views/community/widgets/community_avatar.dart';
 import 'package:provider/provider.dart';
@@ -27,12 +28,12 @@ class _CommunityCreatePostDialogState extends State<CommunityCreatePostDialog> {
   Widget build(BuildContext context) {
     final postProvider = context.read<PostProvider>();
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.r)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       child: Container(
-        padding: EdgeInsets.all(14.w),
+        padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
           color: AppColors.backgroundWhite,
-          borderRadius: BorderRadius.circular(18.r),
+          borderRadius: BorderRadius.circular(16.r),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -49,14 +50,14 @@ class _CommunityCreatePostDialogState extends State<CommunityCreatePostDialog> {
                 final avatar = (profile['avatar'] ?? '').trim();
                 return Row(
                   children: [
-                    CommunityAvatar(avatar: avatar, size: 52),
+                    CommunityAvatar(avatar: avatar, size: 46.w),
                     SizedBox(width: 10.w),
                     Expanded(
                       child: Text(
                         displayName,
                         style: TextStyle(
                           color: AppColors.primaryText,
-                          fontSize: 18.sp,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -78,13 +79,13 @@ class _CommunityCreatePostDialogState extends State<CommunityCreatePostDialog> {
                   fontStyle: FontStyle.italic,
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(18.r),
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(18.r),
+                  borderRadius: BorderRadius.circular(16.r),
                   borderSide: BorderSide(
                     color: AppColors.borderFocus,
-                    width: 1.1.w,
+                    width: 1.w,
                   ),
                 ),
               ),
@@ -169,7 +170,7 @@ class _CommunityCreatePostDialogState extends State<CommunityCreatePostDialog> {
                             color: AppColors.blueDarkText,
                           ),
                         )
-                      : const Text('Đăng bài'),
+                      : const Text(CommunityConstants.createPost),
                 ),
               ],
             ),

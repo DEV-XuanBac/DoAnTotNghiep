@@ -1,26 +1,27 @@
 import 'dart:async';
-import 'dart:convert';
+import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:hanziilearnapp/app/core/config/api_config.dart';
 import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
-import 'package:hanziilearnapp/app/datasource/local/cn_vi_dictionary_db_service.dart';
-import 'package:hanziilearnapp/app/models/lookup_history_item.dart';
-import 'package:hanziilearnapp/app/models/word_model.dart';
+import 'package:hanziilearnapp/app/datasource/network_services/google_vision_handwriting_service.dart';
+import 'package:hanziilearnapp/app/datasource/network_services/vocabulary_context_ai_service.dart';
 import 'package:hanziilearnapp/app/providers/theme_provider.dart';
-import 'package:hanziilearnapp/app/views/authencation/login_view.dart';
 import 'package:hanziilearnapp/app/views/conversation/conversation_practice_view.dart';
+import 'package:hanziilearnapp/app/views/home/controllers/home_controller.dart';
 import 'package:hanziilearnapp/app/views/home/lookup_history_view.dart';
-import 'package:hanziilearnapp/app/views/profile/profile_view.dart';
+import 'package:hanziilearnapp/app/views/home/widgets/home_search_card.dart';
+import 'package:hanziilearnapp/app/views/home/widgets/home_user_info.dart';
+import 'package:hanziilearnapp/app/views/home/widgets/home_utilities_section.dart';
+import 'package:hanziilearnapp/app/views/home/widgets/word_tile.dart';
 import 'package:hanziilearnapp/app/views/shell/bottom_nav.dart';
 import 'package:hanziilearnapp/widgets/banner_slider.dart';
 import 'package:hanziilearnapp/widgets/handwriting_pad_sheet.dart';
 import 'package:hanziilearnapp/widgets/week_progress.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:speech_to_text/speech_to_text.dart';
 import 'package:provider/provider.dart';
 
 class HomeView extends StatefulWidget {
@@ -33,344 +34,148 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  static const _streakKey = 'home.login.streak';
-  static const _loginDatesKey = 'home.login.dates';
-  static const _historyKey = 'home.lookup.history';
-
-  final TextEditingController _searchController = TextEditingController();
-  final CnViDictionaryDbService _dictionaryDbService =
-      CnViDictionaryDbService();
-  final SpeechToText _speechToText = SpeechToText();
-
-  bool _searchToggleVi = true;
-  bool _isSearching = false;
-  bool _isListening = false;
-  bool _isHandwritingLoading = false;
-  bool _hasSubmittedSearch = false;
-
-  String? _searchError;
-  Word? _selectedWord;
-  List<Word> _suggestions = [];
-  List<Word> _relatedWords = [];
-  List<LookupHistoryItem> _historyItems = [];
-
-  int _streakDays = 1;
-  Set<int> _checkedWeekdayIndexes = {DateTime.now().weekday - 1};
-
-  Timer? _debounceTimer;
-  Timer? _onlineTimer;
-  late DateTime _sessionStartedAt;
-  int _onlineMinutes = 0;
-  int _lastSyncedOnlineMinutes = 0;
+  final TextEditingController _searchCtrl = TextEditingController();
+  final HomeController _ctl = HomeController();
+  final FlutterTts _tts = FlutterTts();
+  final GoogleVisionHandwritingService _visionOcr =
+      GoogleVisionHandwritingService(apiKey: ApiConfig.googleVisionKey);
+  final VocabularyContextAiService _vocabAi = VocabularyContextAiService(
+    apiKey: ApiConfig.geminiKey,
+  );
+  Timer? _debounce;
+  String _usageExplain = '';
+  String _usageWordId = '';
+  bool _usageLoading = false;
+  static const String _usageNetworkErrMsg =
+      'Cần có kết nối mạng để hiển thị phần giải thích.';
 
   @override
   void initState() {
     super.initState();
-    _sessionStartedAt = DateTime.now();
-    _searchController.addListener(_onSearchChanged);
-    _onlineTimer = Timer.periodic(const Duration(seconds: 20), (_) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _onlineMinutes = DateTime.now().difference(_sessionStartedAt).inMinutes;
-      });
-      _syncOnlineTimeIfNeeded();
-    });
-    _initializeLocalState();
+    _searchCtrl.addListener(_onSearchChanged);
+    unawaited(_initTts());
+    unawaited(_ctl.initialize());
   }
 
   @override
   void dispose() {
-    unawaited(_syncOnlineTimeIfNeeded(force: true));
-    _debounceTimer?.cancel();
-    _onlineTimer?.cancel();
-    _speechToText.cancel();
-    _searchController.dispose();
+    _debounce?.cancel();
+    _tts.stop();
+    unawaited(_ctl.disposeCtrl());
+    _ctl.dispose();
+    _searchCtrl.dispose();
     super.dispose();
   }
 
-  Future<void> _initializeLocalState() async {
-    final prefs = await SharedPreferences.getInstance();
-    await _loadLoginStreak(prefs);
-    await _loadHistory(prefs);
+  Future<void> _initTts() async {
+    await _tts.setLanguage('zh-CN');
+    await _tts.setSpeechRate(0.45);
   }
 
-  Future<void> _loadLoginStreak(SharedPreferences prefs) async {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final storedDates = prefs.getStringList(_loginDatesKey) ?? [];
-
-    final parsedDates =
-        storedDates
-            .map(DateTime.tryParse)
-            .whereType<DateTime>()
-            .map((date) => DateTime(date.year, date.month, date.day))
-            .toList()
-          ..sort();
-
-    final hasToday = parsedDates.any((date) => date == today);
-    final previousDate = parsedDates.isEmpty ? null : parsedDates.last;
-
-    var streak = prefs.getInt(_streakKey) ?? 0;
-    if (!hasToday) {
-      if (previousDate == null) {
-        streak = 1;
-      } else {
-        final diff = today.difference(previousDate).inDays;
-        streak = diff == 1 ? streak + 1 : 1;
-      }
-      parsedDates.add(today);
-    }
-
-    final latestDates = parsedDates.length > 60
-        ? parsedDates.sublist(parsedDates.length - 60)
-        : parsedDates;
-
-    final thisWeekMonday = today.subtract(Duration(days: today.weekday - 1));
-    final checkedIndexes = latestDates
-        .where((date) => !date.isBefore(thisWeekMonday) && !date.isAfter(today))
-        .map((date) => date.weekday - 1)
-        .toSet();
-
-    await prefs.setInt(_streakKey, streak);
-    await prefs.setStringList(
-      _loginDatesKey,
-      latestDates.map((date) => date.toIso8601String()).toList(),
-    );
-
-    if (!mounted) return;
-    setState(() {
-      _streakDays = streak;
-      _checkedWeekdayIndexes = checkedIndexes;
-    });
-
-    await _syncLoginDateToFirestore(today);
-  }
-
-  Future<void> _syncLoginDateToFirestore(DateTime today) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
+  Future<void> _speakWord(String hanzi) async {
+    final text = hanzi.trim();
+    if (text.isEmpty) {
       return;
     }
-    final key =
-        '${today.year.toString().padLeft(4, '0')}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
-    await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-      'login_dates': FieldValue.arrayUnion([key]),
-      'updated_at': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
-  }
-
-  Future<void> _syncOnlineTimeIfNeeded({bool force = false}) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      return;
-    }
-    final delta = _onlineMinutes - _lastSyncedOnlineMinutes;
-    if (!force && delta < 1) {
-      return;
-    }
-    if (delta <= 0) {
-      return;
-    }
-
-    _lastSyncedOnlineMinutes = _onlineMinutes;
-    await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-      'total_online_minutes': FieldValue.increment(delta),
-      'updated_at': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
-  }
-
-  Future<void> _loadHistory(SharedPreferences prefs) async {
-    final raw = prefs.getString(_historyKey);
-    if (raw == null || raw.isEmpty) {
-      return;
-    }
-
-    try {
-      final decoded = jsonDecode(raw);
-      if (decoded is! List) {
-        return;
-      }
-      final items =
-          decoded
-              .whereType<Map>()
-              .map(
-                (item) =>
-                    LookupHistoryItem.fromJson(item.cast<String, dynamic>()),
-              )
-              .toList()
-            ..sort((a, b) => b.searchedAt.compareTo(a.searchedAt));
-
-      if (!mounted) return;
-      setState(() => _historyItems = items);
-    } catch (_) {}
-  }
-
-  Future<void> _persistHistory() async {
-    final prefs = await SharedPreferences.getInstance();
-    final payload = _historyItems.map((item) => item.toJson()).toList();
-    await prefs.setString(_historyKey, jsonEncode(payload));
+    await _tts.stop();
+    await _tts.speak(text);
   }
 
   void _onSearchChanged() {
-    _debounceTimer?.cancel();
-    final keyword = _searchController.text.trim();
-    if (keyword.isEmpty) {
+    _debounce?.cancel();
+    if (_usageExplain.isNotEmpty || _usageWordId.isNotEmpty || _usageLoading) {
       setState(() {
-        _suggestions = [];
-        _selectedWord = null;
-        _relatedWords = [];
-        _searchError = null;
-        _hasSubmittedSearch = false;
+        _usageExplain = '';
+        _usageWordId = '';
+        _usageLoading = false;
       });
+    }
+    final keyword = _searchCtrl.text.trim();
+    if (keyword.isEmpty) {
+      _ctl.clearSearch();
       return;
     }
-
-    if (_hasSubmittedSearch) {
-      setState(() => _hasSubmittedSearch = false);
-    }
-
-    _debounceTimer = Timer(
+    _ctl.clearSubmittedFlag();
+    _debounce = Timer(
       const Duration(milliseconds: 350),
-      () => _fetchSuggestions(keyword),
+      () => _ctl.loadSuggestions(keyword),
     );
-  }
-
-  Future<void> _fetchSuggestions(String keyword) async {
-    setState(() {
-      _isSearching = true;
-      _searchError = null;
-    });
-    try {
-      final words = await _dictionaryDbService.searchWords(
-        keyword: keyword,
-        searchByVietnamese: _searchToggleVi,
-      );
-      if (!mounted) return;
-      setState(() {
-        _suggestions = words;
-        _isSearching = false;
-      });
-    } catch (_) {
-      if (!mounted) return;
-      setState(() {
-        _isSearching = false;
-        _searchError = 'Không nhận diện được mặt chữ';
-      });
-    }
   }
 
   Future<void> _onSearchPressed() async {
-    final keyword = _searchController.text.trim();
-    if (keyword.isEmpty) {
-      setState(() {
-        _searchError = 'Không nhận diện được mặt chữ';
-        _hasSubmittedSearch = true;
-      });
+    final keyword = _searchCtrl.text.trim();
+    final ok = await _ctl.submit(keyword);
+    if (!ok) {
       return;
     }
+    final word = _ctl.sugWords.first;
+    await _ctl.pickWord(word, saveToHistory: true, query: keyword);
 
-    setState(() => _hasSubmittedSearch = true);
-
-    if (_suggestions.isEmpty) {
-      await _fetchSuggestions(keyword);
-    }
-    if (_suggestions.isEmpty) {
-      setState(() => _searchError = 'Không nhận diện được mặt chữ');
+    if (!ApiConfig.hasGemini) {
       return;
     }
-
-    await _selectWord(_suggestions.first, saveToHistory: true, query: keyword);
-  }
-
-  Future<void> _selectWord(
-    Word word, {
-    required bool saveToHistory,
-    required String query,
-  }) async {
     setState(() {
-      _selectedWord = word;
-      _searchError = null;
+      _usageLoading = true;
+      _usageExplain = '';
+      _usageWordId = word.id;
     });
-
-    final related = await _dictionaryDbService.getRelatedWords(word);
-    if (!mounted) return;
-    setState(() => _relatedWords = related);
-
-    if (!saveToHistory) {
-      return;
+    try {
+      final explain = await _vocabAi
+          .explainUsage(word: word, userQuery: keyword)
+          .timeout(const Duration(seconds: 20));
+      if (!mounted || _ctl.pickedWord?.id != word.id) {
+        return;
+      }
+      setState(() {
+        _usageExplain = explain;
+      });
+    } on TimeoutException {
+      if (!mounted || _ctl.pickedWord?.id != word.id) {
+        return;
+      }
+      setState(() {
+        _usageExplain = _usageNetworkErrMsg;
+      });
+    } on SocketException {
+      if (!mounted || _ctl.pickedWord?.id != word.id) {
+        return;
+      }
+      setState(() {
+        _usageExplain = _usageNetworkErrMsg;
+      });
+    } catch (e) {
+      if (!mounted || _ctl.pickedWord?.id != word.id) {
+        return;
+      }
+      final msg = e.toString().toLowerCase();
+      final isNetworkIssue =
+          msg.contains('socket') ||
+          msg.contains('network') ||
+          msg.contains('timed out') ||
+          msg.contains('timeout') ||
+          msg.contains('connection');
+      setState(() {
+        _usageExplain = isNetworkIssue ? _usageNetworkErrMsg : '';
+      });
+    } finally {
+      if (!mounted || _ctl.pickedWord?.id != word.id) {
+        return;
+      }
+      setState(() {
+        _usageLoading = false;
+      });
     }
-
-    final item = LookupHistoryItem(
-      word: word,
-      searchedAt: DateTime.now(),
-      searchMode: _searchToggleVi ? 'vietnamese' : 'hanzi',
-      query: query,
-    );
-
-    _historyItems.removeWhere((history) => history.word.id == item.word.id);
-    _historyItems.insert(0, item);
-    if (_historyItems.length > 100) {
-      _historyItems = _historyItems.sublist(0, 100);
-    }
-    await _persistHistory();
   }
 
   Future<void> _toggleListening() async {
-    if (_isListening) {
-      await _speechToText.stop();
-      if (!mounted) return;
-      setState(() => _isListening = false);
-      return;
-    }
-
-    final available = await _speechToText.initialize(
-      onStatus: (status) {
-        if (!mounted) return;
-        setState(() => _isListening = status == 'listening');
-      },
-      onError: (_) {
-        if (!mounted) return;
-        setState(() {
-          _isListening = false;
-          _searchError = 'Không nhận diện được mặt chữ';
-        });
-      },
-    );
-
-    if (!available) {
-      setState(() => _searchError = 'Không nhận diện được mặt chữ');
-      return;
-    }
-
-    final locales = await _speechToText.locales();
-    final locale = _searchToggleVi
-        ? _firstWhereOrNull(locales, (item) => item.localeId.startsWith('vi'))
-        : _firstWhereOrNull(locales, (item) => item.localeId.startsWith('zh'));
-
-    await _speechToText.listen(
-      localeId: locale?.localeId,
-      onResult: (result) {
-        final text = result.recognizedWords.trim();
-        if (text.isEmpty) {
-          return;
-        }
-        _searchController.value = TextEditingValue(
+    await _ctl.toggleMic(
+      onRecognizedText: (text) {
+        _searchCtrl.value = TextEditingValue(
           text: text,
           selection: TextSelection.collapsed(offset: text.length),
         );
       },
     );
-  }
-
-  T? _firstWhereOrNull<T>(Iterable<T> items, bool Function(T) predicate) {
-    for (final item in items) {
-      if (predicate(item)) {
-        return item;
-      }
-    }
-    return null;
   }
 
   Future<void> _openHandwritingPad() async {
@@ -384,314 +189,211 @@ class _HomeViewState extends State<HomeView> {
       return;
     }
 
-    setState(() {
-      _isHandwritingLoading = true;
-      _searchError = null;
-    });
+    await _ctl.setHandwritingBusy(true);
+    _ctl.setErr(null);
+
+    try {
+      final text = await _recognizeHandwriting(submission.imagePath);
+      if (text.isEmpty) {
+        throw const FormatException('Không nhận diện được mặt chữ');
+      }
+      _searchCtrl.value = TextEditingValue(
+        text: text,
+        selection: TextSelection.collapsed(offset: text.length),
+      );
+    } catch (_) {
+      _ctl.setErr('Không nhận diện được mặt chữ');
+    } finally {
+      await _ctl.setHandwritingBusy(false);
+    }
+  }
+
+  Future<String> _recognizeHandwriting(String imagePath) async {
+    final isViMode = _ctl.isViMode;
+    if (_visionOcr.isEnabled) {
+      try {
+        final cloudText = await _visionOcr.recognizeFromImagePath(
+          imagePath,
+          isViMode: isViMode,
+        );
+        final normalized = _normalizeHwQuery(cloudText, isViMode: isViMode);
+        if (normalized.isNotEmpty) {
+          return normalized;
+        }
+      } catch (_) {}
+    }
 
     final recognizer = TextRecognizer(
-      script: _searchToggleVi
+      script: isViMode
           ? TextRecognitionScript.latin
           : TextRecognitionScript.chinese,
     );
     try {
       final result = await recognizer.processImage(
-        InputImage.fromFilePath(submission.imagePath),
+        InputImage.fromFilePath(imagePath),
       );
-      final text = result.text.trim();
-      if (text.isEmpty) {
-        throw const FormatException('Không nhận diện được mặt chữ');
-      }
-      _searchController.value = TextEditingValue(
-        text: text,
-        selection: TextSelection.collapsed(offset: text.length),
-      );
-    } catch (_) {
-      setState(() => _searchError = 'Không nhận diện được mặt chữ');
+      return _extractHwQuery(result, isViMode: isViMode);
     } finally {
       recognizer.close();
-      if (mounted) {
-        setState(() => _isHandwritingLoading = false);
-      }
     }
+  }
+
+  String _extractHwQuery(RecognizedText recognized, {required bool isViMode}) {
+    final lines = recognized.blocks
+        .expand((block) => block.lines)
+        .map((line) => line.text.trim())
+        .where((line) => line.isNotEmpty)
+        .toList();
+
+    if (lines.isEmpty) {
+      return '';
+    }
+
+    if (isViMode) {
+      final merged = lines.join(' ');
+      return _normalizeHwQuery(merged, isViMode: true);
+    }
+
+    final merged = lines.join('');
+    return _normalizeHwQuery(merged, isViMode: false);
+  }
+
+  String _normalizeHwQuery(String raw, {required bool isViMode}) {
+    if (isViMode) {
+      return raw.replaceAll(RegExp(r'\s+'), ' ').trim();
+    }
+    return raw
+        .replaceAll(RegExp(r'\s+'), '')
+        .replaceAll(RegExp(r'[^\p{Script=Han}a-zA-Z0-9]', unicode: true), '')
+        .trim();
   }
 
   @override
   Widget build(BuildContext context) {
     context.watch<ThemeProvider>().isDarkMode;
-    return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
+    return ListenableBuilder(
+      listenable: _ctl,
+      builder: (context, _) {
+        return Scaffold(
+          backgroundColor: AppColors.backgroundLight,
+          body: SingleChildScrollView(
+            child: Column(
               children: [
-                Positioned(
-                  child: ClipRRect(
-                    child: Image.asset(
-                      'assets/logo/bg_home.jpg',
-                      fit: BoxFit.fill,
-                      width: double.infinity,
-                      height: 230.h,
-                    ),
-                  ),
-                ),
-
-                Positioned(top: 175.h, left: 10.w, child: _buildUserInfo()),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(12.w, 10.h, 12.w, 20.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildSearchCard(),
-                  if (_searchError != null) ...[
-                    SizedBox(height: 8.h),
-                    Text(
-                      _searchError!,
-                      style: TextStyle(
-                        color: AppColors.errorText,
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w600,
+                Stack(
+                  children: [
+                    Positioned(
+                      child: ClipRRect(
+                        child: Image.asset(
+                          'assets/logo/bg_home.jpg',
+                          fit: BoxFit.fill,
+                          width: double.infinity,
+                          height: 230.h,
+                        ),
                       ),
                     ),
+                    Positioned(
+                      top: 175.h,
+                      left: 10.w,
+                      child: const HomeUserInfo(),
+                    ),
                   ],
-                  SizedBox(height: 8.h),
-                  _buildSuggestionPanel(),
-                  SizedBox(height: 12.h),
-                  _buildResultPanel(),
-                  SizedBox(height: 12.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4.w),
-                    child: BannerSlider(),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(12.w, 10.h, 12.w, 20.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      HomeSearchCard(
+                        textCtrl: _searchCtrl,
+                        isViMode: _ctl.isViMode,
+                        listening: _ctl.listening,
+                        handwritingBusy: _ctl.handwritingBusy,
+                        onSearch: _onSearchPressed,
+                        onToggleMic: _toggleListening,
+                        onHandwriting: _openHandwritingPad,
+                        onToggleMode: (isVi) async {
+                          if (_ctl.listening) {
+                            await _ctl.toggleMic(onRecognizedText: (_) {});
+                          }
+                          _ctl.setViMode(isVi);
+                        },
+                      ),
+                      if (_ctl.errMsg != null) ...[
+                        SizedBox(height: 8.h),
+                        Text(
+                          _ctl.errMsg!,
+                          style: TextStyle(
+                            color: AppColors.errorText,
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                      SizedBox(height: 8.h),
+                      _buildSuggestionPanel(),
+                      SizedBox(height: 12.h),
+                      _buildResultPanel(),
+                      SizedBox(height: 12.h),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 4.w),
+                        child: BannerSlider(),
+                      ),
+                      SizedBox(height: 16.h),
+                      _buildPersonalSection(),
+                      SizedBox(height: 8.h),
+                      HomeUtilitiesSection(
+                        onConversation: () {
+                          if (!_ensureLoggedIn('Vui lòng đăng nhập.')) {
+                            return;
+                          }
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const ConversationPracticeView(),
+                            ),
+                          );
+                        },
+                        onHistory: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  LookupHistoryView(items: _ctl.history),
+                            ),
+                          );
+                        },
+                        onVocabulary: () {
+                          if (widget.onRequestTabChange != null) {
+                            widget.onRequestTabChange!(2);
+                            return;
+                          }
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const BottomNav(initialIndex: 2),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 16.h),
-                  _buildPersonalSection(),
-                  SizedBox(height: 8.h),
-                  _buildUtilitiesSection(),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildUserInfo() {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, authSnapshot) {
-        final currentUser = authSnapshot.data;
-        if (currentUser == null) {
-          return _buildUserInfoRow(
-            displayName: 'Đăng nhập',
-            avatar: '',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const LoginView()),
-              );
-            },
-          );
-        }
-
-        return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-          future: FirebaseFirestore.instance
-              .collection('users')
-              .doc(currentUser.uid)
-              .get(),
-          builder: (context, profileSnapshot) {
-            final profile = profileSnapshot.data?.data();
-            final displayName = (profile?['usename_vie'] ?? '')
-                .toString()
-                .trim();
-            final avatar = (profile?['avatar'] ?? '').toString().trim();
-
-            return _buildUserInfoRow(
-              displayName: displayName.isEmpty
-                  ? currentUser.email ?? 'Người dùng'
-                  : displayName,
-              avatar: avatar,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ProfileDemoView()),
-                );
-              },
-            );
-          },
+          ),
         );
       },
     );
   }
 
-  Widget _buildUserInfoRow({
-    required String displayName,
-    required String avatar,
-    required VoidCallback onTap,
-  }) {
-    return Row(
-      children: [
-        GestureDetector(
-          onTap: onTap,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(50),
-            child: _buildAvatarImage(avatar),
-          ),
-        ),
-        SizedBox(width: 10.w),
-        GestureDetector(
-          onTap: onTap,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-            decoration: BoxDecoration(
-              color: AppColors.lightCardBackground.withValues(alpha: 0.8),
-              borderRadius: BorderRadius.circular(20.w),
-            ),
-            child: Text(
-              displayName,
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAvatarImage(String avatar) {
-    const defaultAvatarPath = 'assets/logo/friend_logo.png';
-    if (avatar.isEmpty) {
-      return Image.asset(
-        defaultAvatarPath,
-        width: 48.w,
-        height: 48.h,
-        fit: BoxFit.cover,
-      );
-    }
-    if (avatar.startsWith('http://') || avatar.startsWith('https://')) {
-      return Image.network(
-        avatar,
-        width: 48.w,
-        height: 48.h,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Image.asset(
-          defaultAvatarPath,
-          width: 48.w,
-          height: 48.h,
-          fit: BoxFit.cover,
-        ),
-      );
-    }
-    return Image.asset(
-      avatar,
-      width: 48.w,
-      height: 48.h,
-      fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) => Image.asset(
-        defaultAvatarPath,
-        width: 48.w,
-        height: 48.h,
-        fit: BoxFit.cover,
-      ),
-    );
-  }
-
-  Widget _buildSearchCard() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        color: AppColors.lightCardBackground,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: AppColors.borderDefault.withValues(alpha: 0.35),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              IconButton(
-                onPressed: _onSearchPressed,
-                icon: Icon(
-                  Icons.search,
-                  color: AppColors.secondaryText,
-                  size: 30.w,
-                ),
-              ),
-              Expanded(
-                child: TextField(
-                  controller: _searchController,
-                  onSubmitted: (_) => _onSearchPressed(),
-                  decoration: InputDecoration(
-                    hintText: _searchToggleVi
-                        ? 'Nhập tiếng Việt'
-                        : 'Nhập tiếng Hán',
-                    hintStyle: TextStyle(
-                      color: AppColors.secondaryText.withValues(alpha: 0.8),
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    border: InputBorder.none,
-                  ),
-                  style: TextStyle(
-                    color: AppColors.primaryText,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(right: 8.w),
-                decoration: BoxDecoration(
-                  color: AppColors.toggleBackgrouund,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildToggleChip('CN', !_searchToggleVi),
-                    _buildToggleChip('VI', _searchToggleVi),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildActionButton(
-                'assets/iconic/microphone_ic.png',
-                onTap: _toggleListening,
-                isActive: _isListening,
-              ),
-              _buildActionButton(
-                'assets/iconic/pen_ic.png',
-                onTap: _openHandwritingPad,
-                isActive: _isHandwritingLoading,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildSuggestionPanel() {
-    if (_isSearching) {
+    if (_ctl.searching) {
       return const Center(child: CircularProgressIndicator());
     }
-    if (_hasSubmittedSearch) {
+    if (_ctl.searchSubmitted) {
       return const SizedBox.shrink();
     }
-    if (_searchController.text.trim().isEmpty || _suggestions.isEmpty) {
+    if (_searchCtrl.text.trim().isEmpty || _ctl.sugWords.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -715,16 +417,19 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
           SizedBox(height: 8.h),
-          ..._suggestions.take(6).map((word) {
+          ..._ctl.sugWords.take(6).map((word) {
             return InkWell(
-              onTap: () => _selectWord(
+              onTap: () => _ctl.pickWord(
                 word,
                 saveToHistory: false,
-                query: _searchController.text.trim(),
+                query: _searchCtrl.text.trim(),
               ),
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 6.h),
-                child: _WordTile(word: word),
+                child: WordTile(
+                  word: word,
+                  onSpeak: () => unawaited(_speakWord(word.hanzi)),
+                ),
               ),
             );
           }),
@@ -734,7 +439,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _buildResultPanel() {
-    if (_selectedWord == null) {
+    if (_ctl.pickedWord == null) {
       return const SizedBox.shrink();
     }
     return Container(
@@ -757,8 +462,53 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
           SizedBox(height: 8.h),
-          _WordTile(word: _selectedWord!),
-          if (_relatedWords.isNotEmpty) ...[
+          WordTile(
+            word: _ctl.pickedWord!,
+            onSpeak: () => unawaited(_speakWord(_ctl.pickedWord!.hanzi)),
+          ),
+          if (_usageWordId == _ctl.pickedWord!.id &&
+              (_usageLoading || _usageExplain.isNotEmpty)) ...[
+            SizedBox(height: 8.h),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(8.w),
+              decoration: BoxDecoration(
+                color: AppColors.lightCardBackground.withValues(alpha: 0.65),
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: _usageLoading
+                  ? Row(
+                      children: [
+                        SizedBox(
+                          width: 14.w,
+                          height: 14.w,
+                          child: const CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        Expanded(
+                          child: Text(
+                            'Đang tải...',
+                            style: TextStyle(
+                              fontSize: 10.sp,
+                              color: AppColors.secondaryText,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Text(
+                      _usageExplain,
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        height: 1.45,
+                        color: AppColors.primaryText,
+                      ),
+                    ),
+            ),
+          ],
+          if (_ctl.relWords.isNotEmpty) ...[
             SizedBox(height: 10.h),
             Text(
               'Từ liên quan',
@@ -769,10 +519,13 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
             SizedBox(height: 4.h),
-            ..._relatedWords.take(8).map((word) {
+            ..._ctl.relWords.take(8).map((word) {
               return Padding(
                 padding: EdgeInsets.symmetric(vertical: 4.h),
-                child: _WordTile(word: word),
+                child: WordTile(
+                  word: word,
+                  onSpeak: () => unawaited(_speakWord(word.hanzi)),
+                ),
               );
             }),
           ],
@@ -834,7 +587,7 @@ class _HomeViewState extends State<HomeView> {
                           children: [
                             Expanded(
                               child: Text(
-                                'Đã online được $_onlineMinutes phút',
+                                'Đã online được ${_ctl.onlineMins} phút',
                                 style: TextStyle(
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w600,
@@ -853,7 +606,7 @@ class _HomeViewState extends State<HomeView> {
                   Row(
                     children: [
                       Text(
-                        '$_streakDays',
+                        '${_ctl.streak}',
                         style: TextStyle(
                           fontSize: 20.sp,
                           fontWeight: FontWeight.w600,
@@ -873,7 +626,7 @@ class _HomeViewState extends State<HomeView> {
               SizedBox(height: 8.h),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 4.w),
-                child: WeekProgress(checkedDayIndexes: _checkedWeekdayIndexes),
+                child: WeekProgress(checkedDayIndexes: _ctl.checkedDays),
               ),
             ],
           ),
@@ -882,253 +635,13 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _buildUtilitiesSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(left: 4.w),
-          child: Text(
-            'Tiện ích',
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primaryText,
-            ),
-          ),
-        ),
-        SizedBox(height: 8.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const ConversationPracticeView(),
-                  ),
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 4.h),
-                decoration: BoxDecoration(
-                  color: AppColors.talkButton.withValues(alpha: 0.8),
-                  borderRadius: BorderRadius.circular(16.w),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Image.asset(
-                      'assets/logo/panda_talking_ic.png',
-                      width: 70.w,
-                      height: 70.h,
-                    ),
-                    Text(
-                      'Luyện nói',
-                      style: TextStyle(
-                        color: AppColors.whiteText,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Column(
-              children: [
-                // Lịch sử tìm kiếm
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => LookupHistoryView(items: _historyItems),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 4.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.historyButton,
-                      borderRadius: BorderRadius.circular(16.w),
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Lịch sử',
-                          style: TextStyle(
-                            color: AppColors.blueDarkText,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        SizedBox(width: 20.w),
-                        Image.asset(
-                          'assets/iconic/history_search_ic.png',
-                          width: 36.w,
-                          height: 36.h,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 12.h),
-                // Từ vựng HSK
-                GestureDetector(
-                  onTap: () {
-                    if (widget.onRequestTabChange != null) {
-                      widget.onRequestTabChange!(2);
-                      return;
-                    }
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const BottomNav(initialIndex: 2),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 17.w,
-                      vertical: 4.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.vocabularyButton,
-                      borderRadius: BorderRadius.circular(16.w),
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Từ vựng',
-                          style: TextStyle(
-                            color: AppColors.vocabDarkText,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        SizedBox(width: 14.w),
-                        Image.asset(
-                          'assets/logo/dict_hsk_ic.png',
-                          width: 36.w,
-                          height: 36.h,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        SizedBox(height: 12.h),
-      ],
-    );
-  }
-
-  Widget _buildToggleChip(String label, bool isSelected) {
-    return GestureDetector(
-      onTap: () async {
-        if (_isListening) {
-          await _speechToText.stop();
-        }
-        setState(() {
-          _searchToggleVi = label == 'VI';
-          _searchError = null;
-          _selectedWord = null;
-          _relatedWords = [];
-          _suggestions = [];
-        });
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.toggleSelected
-              : AppColors.toggleBackgrouund,
-          borderRadius: BorderRadius.circular(14.w),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.white : Colors.grey.shade600,
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActionButton(
-    String img, {
-    required VoidCallback onTap,
-    bool isActive = false,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: isActive
-              ? AppColors.blueDarkText.withValues(alpha: 0.85)
-              : AppColors.cardItem.withValues(alpha: 0.8),
-          borderRadius: BorderRadius.circular(14.w),
-        ),
-        child: Image.asset(
-          img,
-          width: 20.w,
-          height: 20.h,
-          color: isActive
-              ? AppColors.whiteText
-              : AppColors.lightBlackText.withValues(alpha: 0.8),
-        ),
-      ),
-    );
-  }
-}
-
-class _WordTile extends StatelessWidget {
-  const _WordTile({required this.word});
-
-  final Word word;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(8.w),
-      decoration: BoxDecoration(
-        color: AppColors.lightCardBackground.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(10.r),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            word.hanzi,
-            style: TextStyle(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primaryText,
-            ),
-          ),
-          SizedBox(height: 2.h),
-          Text(
-            word.pinyin,
-            style: TextStyle(fontSize: 13.sp, color: AppColors.secondaryText),
-          ),
-          SizedBox(height: 2.h),
-          Text(
-            word.meaning,
-            style: TextStyle(fontSize: 14.sp, color: AppColors.primaryText),
-          ),
-        ],
-      ),
-    );
+  bool _ensureLoggedIn(String message) {
+    if (FirebaseAuth.instance.currentUser != null) {
+      return true;
+    }
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(SnackBar(content: Text(message)));
+    return false;
   }
 }

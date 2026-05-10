@@ -160,7 +160,8 @@ class _ExamUploadTabState extends State<ExamUploadTab> {
         Text('Danh sách đề thi theo cấp độ', style: TextStyle(color: AppColors.primaryText, fontWeight: FontWeight.w700, fontSize: 14.sp)),
         SizedBox(height: 8.h),
         DropdownButtonFormField<String>(
-          value: _examListLevel,
+          key: ValueKey(_examListLevel),
+          initialValue: _examListLevel,
           decoration: InputDecoration(labelText: 'Cấp độ HSK', isDense: true, border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r))),
           items: _hskLevels.map((level) => DropdownMenuItem(value: level, child: Text(level))).toList(),
           onChanged: (value) {
@@ -170,7 +171,7 @@ class _ExamUploadTabState extends State<ExamUploadTab> {
         ),
         SizedBox(height: 10.h),
         StreamBuilder<List<Map<String, dynamic>>>(
-          stream: _examService.watchExamsByLevel(_examListLevel),
+          stream: _examService.watchExamsByLvl(_examListLevel),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
             if (snapshot.hasError) return Text('Không tải được danh sách đề thi.', style: TextStyle(color: AppColors.errorText));
@@ -230,7 +231,7 @@ class _ExamUploadTabState extends State<ExamUploadTab> {
     final raw = _jsonController.text.trim();
     if (raw.isEmpty) return _showSnackBar('Bạn cần chọn file JSON trước khi kiểm tra.');
     try {
-      final parsed = _adminService.parseAndValidate(raw);
+      final parsed = _adminService.parseValid(raw);
       if (!mounted) return;
       setState(() => _validatedExam = parsed);
       _showSnackBar('JSON hợp lệ theo cấu trúc đề thi HSK.');
@@ -244,8 +245,8 @@ class _ExamUploadTabState extends State<ExamUploadTab> {
     if (raw.isEmpty) return _showSnackBar('Bạn cần chọn file JSON trước khi upload.');
     setState(() => _isBusy = true);
     try {
-      final parsed = _adminService.parseAndValidate(raw);
-      await _adminService.uploadExam(parsed: parsed, sourceFileName: _pickedFileName);
+      final parsed = _adminService.parseValid(raw);
+      await _adminService.upload(parsed: parsed, sourceFileName: _pickedFileName);
       if (!mounted) return;
       setState(() => _validatedExam = parsed);
       _showSnackBar('Upload thành công đề ${parsed.examCode} (${parsed.level}).');

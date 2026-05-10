@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 /// Màu sắc dùng trong app.
 class AppColors {
   AppColors._();
-  static bool _isDarkMode = false;
+  static bool _dark = false;
 
   static void setDarkMode(bool value) {
-    _isDarkMode = value;
+    _dark = value;
   }
 
-  static Color _pick(Color light, Color dark) => _isDarkMode ? dark : light;
+  static Color _pick(Color light, Color dark) => _dark ? dark : light;
 
   static Color get backgroundLight =>
       _pick(const Color(0xFFE0FFFF), const Color(0xFF0F1D2B));
@@ -40,7 +40,7 @@ class AppColors {
       _pick(const Color(0xFF1589FF), const Color(0xFF4BA3FF));
   static Color get cardDailyOffline =>
       _pick(const Color(0xFFA8A9AD), const Color(0xFF738395));
-  static Color get toggleBackgrouund =>
+  static Color get toggleBg =>
       _pick(const Color(0xFFC0E0DA), const Color(0xFF274159));
   static Color get toggleSelected =>
       _pick(const Color(0xFF1F88A7), const Color(0xFF45B3D8));

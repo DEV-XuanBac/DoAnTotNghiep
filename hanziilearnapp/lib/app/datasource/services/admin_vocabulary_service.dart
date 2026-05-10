@@ -6,31 +6,31 @@ class AdminVocabularyService {
 
   final FirebaseFirestore _firestore;
 
-  Stream<List<Map<String, dynamic>>> watchWordsByLevel(String hskLevel) {
+  Stream<List<Map<String, dynamic>>> watchWordsByLvl(String hskLevel) {
     return _firestore
         .collection('dictionary')
         .where('hskLevel', isEqualTo: hskLevel)
         .snapshots()
         .map((snapshot) {
-          final docs = snapshot.docs.map((doc) => doc.data()).toList();
-          docs.sort((a, b) {
+          final rows = snapshot.docs.map((doc) => doc.data()).toList();
+          rows.sort((a, b) {
             final left = int.tryParse((a['stt'] ?? '').toString()) ?? 0;
             final right = int.tryParse((b['stt'] ?? '').toString()) ?? 0;
             return left.compareTo(right);
           });
-          return docs;
+          return rows;
         });
   }
 
-  Future<int> getNextStt(String hskLevel) async {
-    final result = await _firestore
+  Future<int> nextStt(String hskLevel) async {
+    final rs = await _firestore
         .collection('dictionary')
         .where('hskLevel', isEqualTo: hskLevel)
         .get();
-    return result.docs.length + 1;
+    return rs.docs.length + 1;
   }
 
-  Future<void> saveVocabulary({
+  Future<void> saveVocab({
     required String hskLevel,
     required String stt,
     required String hanzi,

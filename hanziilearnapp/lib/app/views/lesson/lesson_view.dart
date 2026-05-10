@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
 import 'package:hanziilearnapp/app/providers/lesson_provider.dart';
@@ -50,6 +51,26 @@ class _LessonViewState extends State<LessonView> {
 
   @override
   Widget build(BuildContext context) {
+    if (FirebaseAuth.instance.currentUser == null) {
+      return Scaffold(
+        backgroundColor: AppColors.backgroundLight,
+        body: Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.w),
+            child: Text(
+              'Cần đăng nhập để truy cập trang này.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColors.primaryText,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return FutureBuilder<void>(
       future: _initialLoadFuture,
       builder: (context, snapshot) {

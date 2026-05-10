@@ -12,6 +12,9 @@ import 'package:hanziilearnapp/app/providers/auth_provider.dart' as app_auth;
 import 'package:hanziilearnapp/app/providers/theme_provider.dart';
 import 'package:hanziilearnapp/app/routes/app_routes.dart';
 import 'package:hanziilearnapp/app/views/common/in_app_camera_view.dart';
+import 'package:hanziilearnapp/app/views/profile/widgets/change_pw_dialog.dart';
+import 'package:hanziilearnapp/app/views/profile/widgets/profile_avatar.dart';
+import 'package:hanziilearnapp/app/views/profile/widgets/profile_name_row.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
@@ -25,19 +28,19 @@ class ProfileDemoView extends StatefulWidget {
 }
 
 class _ProfileDemoViewState extends State<ProfileDemoView> {
-  late final _InlineNameEditor _vieEditor = _InlineNameEditor(
-    fieldKey: 'usename_vie',
+  late final _InlineNameEditor _vieEd = _InlineNameEditor(
+    key: 'usename_vie',
     label: 'Họ tên',
-    placeholder: 'Nhập họ tên tiếng Việt',
+    hint: 'Nhập họ tên tiếng Việt',
   );
-  late final _InlineNameEditor _cnEditor = _InlineNameEditor(
-    fieldKey: 'usename_cn',
+  late final _InlineNameEditor _cnEd = _InlineNameEditor(
+    key: 'usename_cn',
     label: '姓名',
-    placeholder: '请输入中文姓名',
+    hint: '请输入中文姓名',
   );
-  bool _isUploadingAvatar = false;
+  bool _uploadingAvt = false;
 
-  String _formatDateTime(dynamic value) {
+  String _fmtDate(dynamic value) {
     if (value is! Timestamp) {
       return '--/--/----';
     }
@@ -48,7 +51,7 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
     return '$day/$month/$year';
   }
 
-  String _formatDurationFromMinutes(int totalMinutes) {
+  String _fmtMins(int totalMinutes) {
     final hours = totalMinutes ~/ 60;
     final minutes = totalMinutes % 60;
     if (hours <= 0) {
@@ -57,14 +60,14 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
     return '$hours giờ $minutes phút';
   }
 
-  int _readIntValue(dynamic value) {
+  int _readInt(dynamic value) {
     if (value is int) return value;
     if (value is num) return value.toInt();
     return 0;
   }
 
-  int _extractCompletedExamCount(Map<String, dynamic> profile) {
-    final directCount = _readIntValue(profile['hsk_exam_completed_count']);
+  int _examDoneCnt(Map<String, dynamic> profile) {
+    final directCount = _readInt(profile['hsk_exam_completed_count']);
     if (directCount > 0) return directCount;
     final completedIds = profile['hsk_exam_completed_ids'];
     if (completedIds is List) {
@@ -73,7 +76,7 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
     return 0;
   }
 
-  int _extractLoginDays(Map<String, dynamic> profile) {
+  int _loginDays(Map<String, dynamic> profile) {
     final loginDates = profile['login_dates'];
     if (loginDates is List) {
       return loginDates.length;
@@ -81,54 +84,54 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
     return 0;
   }
 
-  int _extractOnlineMinutes(Map<String, dynamic> profile) {
-    return _readIntValue(profile['total_online_minutes']);
+  int _onlineMins(Map<String, dynamic> profile) {
+    return _readInt(profile['total_online_minutes']);
   }
 
   @override
   void dispose() {
-    _vieEditor.dispose();
-    _cnEditor.dispose();
+    _vieEd.dispose();
+    _cnEd.dispose();
     super.dispose();
   }
 
-  void _syncEditorValue(_InlineNameEditor editor, String serverValue) {
-    if (editor.focusNode.hasFocus || editor.isSaving) return;
-    if (editor.initialValue == serverValue) return;
-    editor.initialValue = serverValue;
-    editor.controller.text = serverValue;
+  void _syncEdVal(_InlineNameEditor ed, String serverValue) {
+    if (ed.node.hasFocus || ed.saving) return;
+    if (ed.initVal == serverValue) return;
+    ed.initVal = serverValue;
+    ed.ctrl.text = serverValue;
   }
 
-  bool _hasChanged(_InlineNameEditor editor) {
-    return editor.controller.text.trim() != editor.initialValue.trim();
+  bool _isEdChanged(_InlineNameEditor ed) {
+    return ed.ctrl.text.trim() != ed.initVal.trim();
   }
 
-  Future<void> _saveInlineName({
+  Future<void> _saveName({
     required String userId,
-    required _InlineNameEditor editor,
+    required _InlineNameEditor ed,
   }) async {
-    final value = editor.controller.text.trim();
+    final value = ed.ctrl.text.trim();
     if (value.isEmpty) return;
 
-    setState(() => editor.isSaving = true);
+    setState(() => ed.saving = true);
 
     try {
       await FirebaseFirestore.instance.collection('users').doc(userId).set({
-        editor.fieldKey: value,
+        ed.key: value,
         'updated_at': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
       if (!mounted) return;
-      setState(() => editor.initialValue = value);
-      editor.focusNode.unfocus();
+      setState(() => ed.initVal = value);
+      ed.node.unfocus();
     } finally {
       if (mounted) {
-        setState(() => editor.isSaving = false);
+        setState(() => ed.saving = false);
       }
     }
   }
 
-  Future<void> _onAvatarTap(String userId) async {
-    if (userId.isEmpty || _isUploadingAvatar) return;
+  Future<void> _onAvtTap(String userId) async {
+    if (userId.isEmpty || _uploadingAvt) return;
     await showModalBottomSheet<void>(
       context: context,
       builder: (context) {
@@ -141,7 +144,7 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
                 title: const Text('Chọn từ thư viện'),
                 onTap: () {
                   Navigator.pop(context);
-                  _pickAvatarAndUpload(userId, ImageSource.gallery);
+                  _pickAvtAndUpload(userId, ImageSource.gallery);
                 },
               ),
               ListTile(
@@ -149,7 +152,7 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
                 title: const Text('Chụp ảnh'),
                 onTap: () {
                   Navigator.pop(context);
-                  _pickAvatarAndUpload(userId, ImageSource.camera);
+                  _pickAvtAndUpload(userId, ImageSource.camera);
                 },
               ),
             ],
@@ -159,7 +162,7 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
     );
   }
 
-  Future<void> _pickAvatarAndUpload(String userId, ImageSource source) async {
+  Future<void> _pickAvtAndUpload(String userId, ImageSource source) async {
     String? imagePath;
     if (source == ImageSource.camera) {
       final capturedPath = await Navigator.push<String>(
@@ -182,15 +185,15 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
       imagePath = picked.path;
     }
 
-    setState(() => _isUploadingAvatar = true);
+    setState(() => _uploadingAvt = true);
     try {
       final squaredFile = await _cropImageToSquare(File(imagePath));
-      final imageUrl = await _uploadImageToCloudinary(squaredFile);
+      final imageUrl = await _uploadCloudinary(squaredFile);
       await FirebaseFirestore.instance.collection('users').doc(userId).set({
         'avatar': imageUrl,
         'updated_at': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
-      await _syncAvatarToCommunity(userId: userId, avatarUrl: imageUrl);
+      await _syncAvtToCommunity(userId: userId, avatarUrl: imageUrl);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Cập nhật ảnh đại diện thành công.')),
@@ -202,12 +205,12 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
       );
     } finally {
       if (mounted) {
-        setState(() => _isUploadingAvatar = false);
+        setState(() => _uploadingAvt = false);
       }
     }
   }
 
-  Future<void> _syncAvatarToCommunity({
+  Future<void> _syncAvtToCommunity({
     required String userId,
     required String avatarUrl,
   }) async {
@@ -217,7 +220,7 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
         .collection('posts')
         .where('user_id', isEqualTo: userId)
         .get();
-    await _batchUpdateAvatar(
+    await _batchUpdateAvt(
       references: authoredPosts.docs.map((doc) => doc.reference).toList(),
       avatarUrl: avatarUrl,
     );
@@ -226,13 +229,13 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
         .collectionGroup('comments')
         .where('user_id', isEqualTo: userId)
         .get();
-    await _batchUpdateAvatar(
+    await _batchUpdateAvt(
       references: authoredComments.docs.map((doc) => doc.reference).toList(),
       avatarUrl: avatarUrl,
     );
   }
 
-  Future<void> _batchUpdateAvatar({
+  Future<void> _batchUpdateAvt({
     required List<DocumentReference<Map<String, dynamic>>> references,
     required String avatarUrl,
   }) async {
@@ -274,9 +277,9 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
     return outputFile;
   }
 
-  Future<String> _uploadImageToCloudinary(File imageFile) async {
-    final cloudName = AppConfig.cloudinaryCloudName.trim();
-    final uploadPreset = AppConfig.cloudinaryUploadPreset.trim();
+  Future<String> _uploadCloudinary(File imageFile) async {
+    final cloudName = AppConfig.cloudName.trim();
+    final uploadPreset = AppConfig.uploadPreset.trim();
     if (cloudName.isEmpty || uploadPreset.isEmpty) {
       throw Exception(
         'Thiếu cấu hình Cloudinary. Cập nhật cloudName/uploadPreset trong AppConfig.',
@@ -299,7 +302,7 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      final errorMsg = _extractCloudinaryErrorMessage(response.body);
+      final errorMsg = _parseCloudErr(response.body);
       throw Exception('Upload thất bại (${response.statusCode}): $errorMsg');
     }
     final decoded = jsonDecode(response.body);
@@ -310,7 +313,7 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
     return imageUrl;
   }
 
-  String _extractCloudinaryErrorMessage(String responseBody) {
+  String _parseCloudErr(String responseBody) {
     try {
       final parsed = jsonDecode(responseBody);
       if (parsed is Map<String, dynamic>) {
@@ -324,166 +327,31 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
     return 'Không rõ nguyên nhân';
   }
 
-  Widget _buildProfileAvatar(String avatarUrl) {
-    const fallbackAsset = 'assets/logo/friend_logo.png';
-    Widget imageWidget;
-    if (avatarUrl.isEmpty) {
-      imageWidget = Image.asset(
-        fallbackAsset,
-        width: 80.w,
-        height: 80.w,
-        fit: BoxFit.cover,
-      );
-    } else if (avatarUrl.startsWith('http://') || avatarUrl.startsWith('https://')) {
-      imageWidget = Image.network(
-        avatarUrl,
-        width: 80.w,
-        height: 80.w,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Image.asset(
-          fallbackAsset,
-          width: 80.w,
-          height: 80.w,
-          fit: BoxFit.cover,
-        ),
-      );
-    } else {
-      imageWidget = Image.asset(
-        avatarUrl,
-        width: 80.w,
-        height: 80.w,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Image.asset(
-          fallbackAsset,
-          width: 80.w,
-          height: 80.w,
-          fit: BoxFit.cover,
-        ),
-      );
-    }
-
-    return Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.borderDefault, width: 1.w),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(50.r),
-            child: imageWidget,
-          ),
-        ),
-        Positioned(
-          bottom: 0,
-          right: 0,
-          child: Container(
-            width: 24.w,
-            height: 24.w,
-            decoration: BoxDecoration(
-              color: AppColors.blueDarkText,
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.whiteText, width: 1.w),
-            ),
-            child: _isUploadingAvatar
-                ? Padding(
-                    padding: EdgeInsets.all(5.w),
-                    child: CircularProgressIndicator(
-                      strokeWidth: 1.8,
-                      color: AppColors.whiteText,
-                    ),
-                  )
-                : Icon(Icons.camera_alt_rounded, size: 14.sp, color: Colors.white),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildEditableNameInputRow({
-    required _InlineNameEditor editor,
+  Widget _buildNameRow({
+    required _InlineNameEditor ed,
     required String userId,
     required Color textColor,
     required Color borderColor,
   }) {
     final canEdit = userId.isNotEmpty;
-    final hasChanged = _hasChanged(editor);
-    return Row(
-      children: [
-        SizedBox(
-          width: 60.w,
-          child: Text(
-            editor.label,
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-              color: textColor,
-            ),
-          ),
-        ),
-        SizedBox(width: 8.w),
-        Expanded(
-          child: TextField(
-            controller: editor.controller,
-            focusNode: editor.focusNode,
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-              color: textColor,
-            ),
-            readOnly: !canEdit,
-            onChanged: (_) => setState(() {}),
-            onSubmitted: (_) {
-              if (canEdit && hasChanged && !editor.isSaving) {
-                _saveInlineName(
-                  userId: userId,
-                  editor: editor,
-                );
-              }
-            },
-            decoration: InputDecoration(
-              hintText: editor.placeholder,
-              isDense: true,
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: 10.w,
-                vertical: 10.h,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.r),
-                borderSide: BorderSide(color: borderColor),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.r),
-                borderSide: BorderSide(color: borderColor),
-              ),
-            ),
-          ),
-        ),
-        SizedBox(width: 4.w),
-        if (editor.isSaving)
-          SizedBox(
-            width: 20.w,
-            height: 20.h,
-            child: const CircularProgressIndicator(strokeWidth: 2),
-          )
-        else if (hasChanged)
-          IconButton(
-            tooltip: 'Xác nhận ${editor.label}',
-            onPressed: canEdit
-                ? () => _saveInlineName(
-                    userId: userId,
-                    editor: editor,
-                  )
-                : null,
-            icon: Icon(
-              Icons.check_circle_rounded,
-              size: 22.sp,
-              color: AppColors.greenText,
-            ),
-          )
-        else
-          SizedBox(width: 40.w),
-      ],
+    final changed = _isEdChanged(ed);
+    return ProfileNameRow(
+      label: ed.label,
+      hint: ed.hint,
+      ctrl: ed.ctrl,
+      node: ed.node,
+      saving: ed.saving,
+      changed: changed,
+      canEdit: canEdit,
+      textColor: textColor,
+      borderColor: borderColor,
+      onChanged: (_) => setState(() {}),
+      onSubmit: (_) {
+        if (canEdit && changed && !ed.saving) {
+          _saveName(userId: userId, ed: ed);
+        }
+      },
+      onSaveTap: () => _saveName(userId: userId, ed: ed),
     );
   }
 
@@ -497,176 +365,6 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
       AppRoutes.main,
       (route) => false,
     );
-  }
-
-  Future<void> _showChangePasswordDialog() async {
-    final oldPasswordController = TextEditingController();
-    final newPasswordController = TextEditingController();
-    final confirmPasswordController = TextEditingController();
-    bool isSubmitting = false;
-    String? errorText;
-
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            Future<void> submit() async {
-              final user = FirebaseAuth.instance.currentUser;
-              final email = (user?.email ?? '').trim();
-              final oldPassword = oldPasswordController.text.trim();
-              final newPassword = newPasswordController.text.trim();
-              final confirmPassword = confirmPasswordController.text.trim();
-
-              if (email.isEmpty || user == null) {
-                setDialogState(() {
-                  errorText = 'Không tìm thấy tài khoản đăng nhập.';
-                });
-                return;
-              }
-              if (oldPassword.isEmpty || newPassword.isEmpty) {
-                setDialogState(() {
-                  errorText = 'Vui lòng nhập đầy đủ thông tin.';
-                });
-                return;
-              }
-              if (newPassword.length < 6) {
-                setDialogState(() {
-                  errorText = 'Mật khẩu mới cần ít nhất 6 ký tự.';
-                });
-                return;
-              }
-              if (newPassword != confirmPassword) {
-                setDialogState(() {
-                  errorText = 'Xác nhận mật khẩu mới không khớp.';
-                });
-                return;
-              }
-              if (oldPassword == newPassword) {
-                setDialogState(() {
-                  errorText = 'Mật khẩu mới phải khác mật khẩu cũ.';
-                });
-                return;
-              }
-
-              setDialogState(() {
-                isSubmitting = true;
-                errorText = null;
-              });
-
-              try {
-                final credential = EmailAuthProvider.credential(
-                  email: email,
-                  password: oldPassword,
-                );
-                await user.reauthenticateWithCredential(credential);
-                await user.updatePassword(newPassword);
-                if (!mounted) return;
-                Navigator.pop(dialogContext);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Đổi mật khẩu thành công.')),
-                );
-              } on FirebaseAuthException catch (e) {
-                setDialogState(() {
-                  if (e.code == 'wrong-password' ||
-                      e.code == 'invalid-credential') {
-                    errorText = 'Mật khẩu cũ không chính xác.';
-                  } else if (e.code == 'weak-password') {
-                    errorText = 'Mật khẩu mới quá yếu.';
-                  } else {
-                    errorText = 'Không thể đổi mật khẩu (${e.code}).';
-                  }
-                });
-              } catch (_) {
-                setDialogState(() {
-                  errorText = 'Không thể đổi mật khẩu. Vui lòng thử lại.';
-                });
-              } finally {
-                setDialogState(() {
-                  isSubmitting = false;
-                });
-              }
-            }
-
-            InputDecoration buildInputDecoration(String hintText) {
-              return InputDecoration(
-                hintText: hintText,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-                isDense: true,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 10.w,
-                  vertical: 10.h,
-                ),
-              );
-            }
-
-            return AlertDialog(
-              title: const Text('Đổi mật khẩu'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: oldPasswordController,
-                    obscureText: true,
-                    enabled: !isSubmitting,
-                    decoration: buildInputDecoration('Mật khẩu cũ'),
-                  ),
-                  SizedBox(height: 10.h),
-                  TextField(
-                    controller: newPasswordController,
-                    obscureText: true,
-                    enabled: !isSubmitting,
-                    decoration: buildInputDecoration('Mật khẩu mới'),
-                  ),
-                  SizedBox(height: 10.h),
-                  TextField(
-                    controller: confirmPasswordController,
-                    obscureText: true,
-                    enabled: !isSubmitting,
-                    decoration: buildInputDecoration('Xác nhận mật khẩu mới'),
-                  ),
-                  if (errorText != null) ...[
-                    SizedBox(height: 8.h),
-                    Text(
-                      errorText!,
-                      style: TextStyle(
-                        color: AppColors.errorText,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12.sp,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: isSubmitting
-                      ? null
-                      : () => Navigator.pop(dialogContext),
-                  child: const Text('Hủy'),
-                ),
-                ElevatedButton(
-                  onPressed: isSubmitting ? null : submit,
-                  child: isSubmitting
-                      ? SizedBox(
-                          width: 16.w,
-                          height: 16.w,
-                          child: const CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Xác nhận'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-
-    oldPasswordController.dispose();
-    newPasswordController.dispose();
-    confirmPasswordController.dispose();
   }
 
   @override
@@ -698,12 +396,12 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
           final usernameVie = (profile['usename_vie'] ?? '').toString().trim();
           final usernameCn = (profile['usename_cn'] ?? '').toString().trim();
           final avatarUrl = (profile['avatar'] ?? '').toString().trim();
-          _syncEditorValue(_vieEditor, usernameVie);
-          _syncEditorValue(_cnEditor, usernameCn);
-          final updatedAt = _formatDateTime(profile['updated_at']);
-          final loginDays = _extractLoginDays(profile);
-          final onlineMinutes = _extractOnlineMinutes(profile);
-          final completedExams = _extractCompletedExamCount(profile);
+          _syncEdVal(_vieEd, usernameVie);
+          _syncEdVal(_cnEd, usernameCn);
+          final updatedAt = _fmtDate(profile['updated_at']);
+          final loginDays = _loginDays(profile);
+          final onlineMinutes = _onlineMins(profile);
+          final completedExams = _examDoneCnt(profile);
 
           return SingleChildScrollView(
             padding: EdgeInsets.all(16.w),
@@ -722,19 +420,19 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       GestureDetector(
-                        onTap: () => _onAvatarTap(user?.uid ?? ''),
-                        child: _buildProfileAvatar(avatarUrl),
+                        onTap: () => _onAvtTap(user?.uid ?? ''),
+                        child: ProfileAvatar(url: avatarUrl, uploading: _uploadingAvt),
                       ),
                       SizedBox(height: 15.h),
-                      _buildEditableNameInputRow(
-                        editor: _vieEditor,
+                      _buildNameRow(
+                        ed: _vieEd,
                         userId: user?.uid ?? '',
                         textColor: textColor,
                         borderColor: borderColor,
                       ),
                       SizedBox(height: 10.h),
-                      _buildEditableNameInputRow(
-                        editor: _cnEditor,
+                      _buildNameRow(
+                        ed: _cnEd,
                         userId: user?.uid ?? '',
                         textColor: textColor,
                         borderColor: borderColor,
@@ -792,7 +490,7 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
                       ),
                       SizedBox(height: 12.h),
                       Text(
-                        'Thời gian trực tuyến: ${_formatDurationFromMinutes(onlineMinutes)}',
+                        'Thời gian trực tuyến: ${_fmtMins(onlineMinutes)}',
                         style: TextStyle(fontSize: 14.sp, color: textColor),
                       ),
                       SizedBox(height: 12.h),
@@ -872,7 +570,7 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
                         width: 190.w,
                         height: 45.h,
                         child: ElevatedButton.icon(
-                          onPressed: _showChangePasswordDialog,
+                          onPressed: () => showChangePwDlg(context),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.blueDarkText.withValues(
                               alpha: 0.9,
@@ -937,21 +635,21 @@ class _ProfileDemoViewState extends State<ProfileDemoView> {
 
 class _InlineNameEditor {
   _InlineNameEditor({
-    required this.fieldKey,
+    required this.key,
     required this.label,
-    required this.placeholder,
+    required this.hint,
   });
 
-  final String fieldKey;
+  final String key;
   final String label;
-  final String placeholder;
-  final TextEditingController controller = TextEditingController();
-  final FocusNode focusNode = FocusNode();
-  String initialValue = '';
-  bool isSaving = false;
+  final String hint;
+  final TextEditingController ctrl = TextEditingController();
+  final FocusNode node = FocusNode();
+  String initVal = '';
+  bool saving = false;
 
   void dispose() {
-    controller.dispose();
-    focusNode.dispose();
+    ctrl.dispose();
+    node.dispose();
   }
 }

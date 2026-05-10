@@ -8,20 +8,20 @@ class HskExamAdminService {
   HskExamAdminService({
     IHskExamValidator? validator,
     IHskExamAdminRepository? repository,
-  }) : _validator = validator ?? HskExamValidator(),
-       _repository = repository ?? HskExamAdminRepository();
+  }) : _val = validator ?? HskExamValidator(),
+       _repo = repository ?? HskExamAdminRepository();
 
-  final IHskExamValidator _validator;
-  final IHskExamAdminRepository _repository;
+  final IHskExamValidator _val;
+  final IHskExamAdminRepository _repo;
 
-  ParsedHskExam parseAndValidate(String rawJson) {
-    return _validator.parseAndValidate(rawJson);
+  ParsedHskExam parseValid(String rawJson) {
+    return _val.parseValid(rawJson);
   }
 
-  Future<void> uploadExam({
+  Future<void> upload({
     required ParsedHskExam parsed,
     String? sourceFileName,
   }) async {
-    await _repository.uploadExam(parsed: parsed, sourceFileName: sourceFileName);
+    await _repo.upload(parsed: parsed, sourceFileName: sourceFileName);
   }
 }

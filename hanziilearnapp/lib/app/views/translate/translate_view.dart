@@ -1,20 +1,16 @@
-import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:ui' as ui;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
-import 'package:hanziilearnapp/app/datasource/network_services/translate_service.dart';
 import 'package:hanziilearnapp/app/views/common/in_app_camera_view.dart';
+import 'package:hanziilearnapp/app/views/translate/controllers/translate_controller.dart';
+import 'package:hanziilearnapp/app/views/translate/widgets/translate_language_tools.dart';
+import 'package:hanziilearnapp/app/views/translate/widgets/translate_result_card.dart';
+import 'package:hanziilearnapp/app/views/translate/widgets/translation_history_sheet.dart';
 import 'package:hanziilearnapp/widgets/handwriting_pad_sheet.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lpinyin/lpinyin.dart';
-import 'package:speech_to_text/speech_to_text.dart';
 
 class TranslateView extends StatefulWidget {
   const TranslateView({super.key});
@@ -24,106 +20,18 @@ class TranslateView extends StatefulWidget {
 }
 
 class _TranslateViewState extends State<TranslateView> {
-  final TextEditingController _inputController = TextEditingController();
-  final TranslationService _translationService = TranslationService();
-  final SpeechToText _speechToText = SpeechToText();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  String _translatedText = '';
-  String _pinyinText = '';
-  String? _errorMessage;
-  String? _scannedImagePath;
-  Size? _imageSize;
-
-  bool _isLoading = false;
-  bool _isImageScanning = false;
-  bool _isListening = false;
-  bool _isVietnameseToChinese = true;
-  bool _skipNextInputChange = false;
-  String _lastTranslationInput = '';
-  String _lastTranslationOutput = '';
-  String _currentTranslationType = 'chữ viết';
-
-  Timer? _debounceTimer;
-
-  String get _sourceLanguage => _isVietnameseToChinese ? 'vi' : 'zh-cn';
-  String get _targetLanguage => _isVietnameseToChinese ? 'zh-cn' : 'vi';
+  late final TranslateController _controller;
 
   @override
   void initState() {
     super.initState();
-    _inputController.addListener(_onInputChanged);
+    _controller = TranslateController()..initialize();
   }
 
   @override
   void dispose() {
-    _debounceTimer?.cancel();
-    _speechToText.cancel();
-    _inputController.dispose();
+    _controller.dispose();
     super.dispose();
-  }
-
-  void _onInputChanged() {
-    if (_skipNextInputChange) {
-      _skipNextInputChange = false;
-      return;
-    }
-
-    _debounceTimer?.cancel();
-    final text = _inputController.text.trim();
-
-    if (text.isEmpty) {
-      setState(() {
-        _translatedText = '';
-        _pinyinText = '';
-        _errorMessage = null;
-      });
-      return;
-    }
-
-    _debounceTimer = Timer(
-      const Duration(milliseconds: 500),
-      () => _translateText(text),
-    );
-  }
-
-  Future<void> _translateText(String text) async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final translatedText = await _translationService.translateText(
-        text,
-        from: _sourceLanguage,
-        to: _targetLanguage,
-      );
-
-      if (!mounted) return;
-
-      setState(() {
-        _translatedText = translatedText;
-        _pinyinText = _buildPinyinIfNeeded(
-          translatedText,
-          targetLanguage: _targetLanguage,
-        );
-        _isLoading = false;
-      });
-      await _saveTranslationHistory(
-        sourceText: text,
-        translatedText: translatedText,
-        translationType: 'chữ viết',
-      );
-    } catch (_) {
-      if (!mounted) return;
-
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'Không thể dịch.';
-      });
-    }
   }
 
   Future<void> _scanText(ImageSource source) async {
@@ -135,7 +43,7 @@ class _TranslateViewState extends State<TranslateView> {
       if (capturedPath == null || capturedPath.trim().isEmpty) {
         return;
       }
-      await _translateRecognizedImageFile(capturedPath);
+      await _controller.translateRecognizedImageFile(capturedPath);
       return;
     }
 
@@ -150,193 +58,7 @@ class _TranslateViewState extends State<TranslateView> {
     if (image == null) {
       return;
     }
-    await _translateRecognizedImageFile(image.path);
-  }
-
-  Future<void> _translateRecognizedImageFile(
-    String imagePath, {
-    Size? overrideImageSize,
-    bool showOverlayOnImage = true,
-    String translationType = 'hình ảnh',
-  }) async {
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _isImageScanning = true;
-      _errorMessage = null;
-    });
-
-    final textRecognizer = TextRecognizer(script: _recognitionScript);
-
-    try {
-      final recognizedText = await textRecognizer.processImage(
-        InputImage.fromFilePath(imagePath),
-      );
-
-      if (recognizedText.text.trim().isEmpty) {
-        throw const FormatException('Không nhận diện được chữ.');
-      }
-
-      final imageSize = showOverlayOnImage
-          ? (overrideImageSize ?? await _getImageSize(imagePath))
-          : null;
-      final translationResult = await _translationService
-          .translateRecognizedText(
-            recognizedText,
-            from: _sourceLanguage,
-            to: _targetLanguage,
-          );
-
-      _skipNextInputChange = true;
-      _inputController.text = translationResult.sourceText;
-
-      if (!mounted) return;
-
-      setState(() {
-        _scannedImagePath = showOverlayOnImage ? imagePath : null;
-        _imageSize = imageSize;
-        _translatedText = translationResult.translatedText;
-        _pinyinText = _buildPinyinIfNeeded(
-          translationResult.translatedText,
-          targetLanguage: _targetLanguage,
-        );
-        _isImageScanning = false;
-      });
-      await _saveTranslationHistory(
-        sourceText: translationResult.sourceText,
-        translatedText: translationResult.translatedText,
-        translationType: translationType,
-      );
-    } on FormatException catch (error) {
-      if (!mounted) return;
-
-      setState(() {
-        _isImageScanning = false;
-        _errorMessage = error.message;
-      });
-    } catch (_) {
-      if (!mounted) return;
-
-      setState(() {
-        _isImageScanning = false;
-        _errorMessage = 'Không thể xử lý ảnh.';
-      });
-    } finally {
-      textRecognizer.close();
-    }
-  }
-
-  Future<void> _toggleListening() async {
-    if (_isListening) {
-      await _stopListening();
-      return;
-    }
-
-    setState(() {
-      _errorMessage = null;
-    });
-
-    final available = await _speechToText.initialize(
-      onStatus: (status) {
-        if (!mounted) {
-          return;
-        }
-
-        final isListening = status == 'listening';
-        if (_isListening != isListening) {
-          setState(() {
-            _isListening = isListening;
-          });
-        }
-      },
-      onError: (_) {
-        if (!mounted) {
-          return;
-        }
-
-        setState(() {
-          _isListening = false;
-          _errorMessage = 'Không thể nhận diện giọng nói.';
-        });
-      },
-    );
-
-    if (!available) {
-      if (!mounted) return;
-
-      setState(() {
-        _errorMessage = 'Thiết bị không hỗ trợ nhận diện giọng nói.';
-      });
-      return;
-    }
-
-    final localeId = await _resolveSpeechLocaleId();
-
-    await _speechToText.listen(
-      localeId: localeId,
-      listenOptions: SpeechListenOptions(
-        partialResults: true,
-        cancelOnError: true,
-      ),
-      onResult: (result) {
-        final recognizedWords = result.recognizedWords.trim();
-        if (recognizedWords.isEmpty) {
-          return;
-        }
-
-        _inputController.value = TextEditingValue(
-          text: recognizedWords,
-          selection: TextSelection.collapsed(offset: recognizedWords.length),
-        );
-
-        if (!mounted) return;
-
-        if (!_isListening) {
-          setState(() {
-            _isListening = true;
-          });
-        }
-      },
-    );
-
-    if (!mounted) return;
-
-    setState(() {
-      _isListening = true;
-    });
-  }
-
-  Future<void> _stopListening() async {
-    await _speechToText.stop();
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _isListening = false;
-    });
-  }
-
-  Future<String?> _resolveSpeechLocaleId() async {
-    final locales = await _speechToText.locales();
-    final systemLocale = await _speechToText.systemLocale();
-    final preferredPrefixes = _sourceLanguage == 'vi'
-        ? const ['vi', 'en']
-        : const ['zh', 'cmn', 'yue'];
-
-    for (final prefix in preferredPrefixes) {
-      for (final locale in locales) {
-        final localeId = locale.localeId.toLowerCase();
-        final name = locale.name.toLowerCase();
-        if (localeId.startsWith(prefix) || name.contains(prefix)) {
-          return locale.localeId;
-        }
-      }
-    }
-
-    return systemLocale?.localeId;
+    await _controller.translateRecognizedImageFile(image.path);
   }
 
   Future<void> _openHandwritingPad() async {
@@ -351,7 +73,7 @@ class _TranslateViewState extends State<TranslateView> {
       return;
     }
 
-    await _translateRecognizedImageFile(
+    await _controller.translateRecognizedImageFile(
       submission.imagePath,
       overrideImageSize: submission.imageSize,
       showOverlayOnImage: false,
@@ -359,49 +81,13 @@ class _TranslateViewState extends State<TranslateView> {
     );
   }
 
-  Future<void> _saveTranslationHistory({
-    required String sourceText,
-    required String translatedText,
-    required String translationType,
-  }) async {
-    final user = _auth.currentUser;
-    final normalizedSource = sourceText.trim();
-    final normalizedTranslated = translatedText.trim();
-    if (user == null ||
-        normalizedSource.isEmpty ||
-        normalizedTranslated.isEmpty) {
-      return;
-    }
-
-    // Avoid duplicate writes when the same result is emitted repeatedly.
-    if (_lastTranslationInput == normalizedSource &&
-        _lastTranslationOutput == normalizedTranslated &&
-        _currentTranslationType == translationType) {
-      return;
-    }
-
-    _lastTranslationInput = normalizedSource;
-    _lastTranslationOutput = normalizedTranslated;
-    _currentTranslationType = translationType;
-
-    final doc = _firestore.collection('translation_history').doc();
-    await doc.set({
-      'history_id': doc.id,
-      'user_id': user.uid,
-      'source_text': normalizedSource,
-      'translated_text': normalizedTranslated,
-      'translation_type': translationType,
-      'source_language': _sourceLanguage,
-      'target_language': _targetLanguage,
-      'created_at': FieldValue.serverTimestamp(),
-    });
-  }
-
   void _showTranslationHistorySheet() {
-    final user = _auth.currentUser;
+    final user = _controller.currentUser;
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vui lòng đăng nhập để xem lịch sử dịch.')),
+        const SnackBar(
+          content: Text('Vui lòng đăng nhập để xem lịch sử dịch.'),
+        ),
       );
       return;
     }
@@ -413,200 +99,11 @@ class _TranslateViewState extends State<TranslateView> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
       ),
-      builder: (_) {
-        return SafeArea(
-          child: SizedBox(
-            height: 560.h,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 10.h),
-              child: Column(
-                children: [
-                  Container(
-                    width: 52.w,
-                    height: 4.h,
-                    decoration: BoxDecoration(
-                      color: AppColors.borderDefault,
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                  ),
-                  SizedBox(height: 10.h),
-                  Text(
-                    'Lịch sử dịch',
-                    style: TextStyle(
-                      color: AppColors.primaryText,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18.sp,
-                    ),
-                  ),
-                  SizedBox(height: 10.h),
-                  Expanded(
-                    child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                      stream: _firestore
-                          .collection('translation_history')
-                          .where('user_id', isEqualTo: user.uid)
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
-                        }
-                        if (snapshot.hasError) {
-                          final errorText = snapshot.error?.toString() ?? '';
-                          return Center(
-                            child: Text(
-                              errorText.contains('failed-precondition')
-                                  ? 'Thiếu Firestore index cho lịch sử dịch.'
-                                  : 'Không tải được lịch sử dịch.',
-                              style: TextStyle(
-                                color: AppColors.errorText,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          );
-                        }
-
-                        final docs = [...(snapshot.data?.docs ?? const [])];
-                        docs.sort((a, b) {
-                          final aTs = a.data()['created_at'];
-                          final bTs = b.data()['created_at'];
-                          final aMs = aTs is Timestamp
-                              ? aTs.millisecondsSinceEpoch
-                              : 0;
-                          final bMs = bTs is Timestamp
-                              ? bTs.millisecondsSinceEpoch
-                              : 0;
-                          return bMs.compareTo(aMs);
-                        });
-                        if (docs.isEmpty) {
-                          return Center(
-                            child: Text(
-                              'Chưa có bản dịch nào',
-                              style: TextStyle(
-                                color: AppColors.secondaryText,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          );
-                        }
-
-                        return ListView.separated(
-                          itemCount: docs.length,
-                          separatorBuilder: (_, __) => SizedBox(height: 8.h),
-                          itemBuilder: (context, index) {
-                            final item = docs[index].data();
-                            final sourceText =
-                                (item['source_text'] ?? '').toString().trim();
-                            final translatedText =
-                                (item['translated_text'] ?? '').toString().trim();
-                            final translationType =
-                                (item['translation_type'] ?? 'chữ viết')
-                                    .toString()
-                                    .trim();
-
-                            return Container(
-                              padding: EdgeInsets.all(10.w),
-                              decoration: BoxDecoration(
-                                color: AppColors.backgroundLight.withValues(alpha: 0.45),
-                                borderRadius: BorderRadius.circular(10.r),
-                                border: Border.all(
-                                  color: AppColors.borderDefault.withValues(alpha: 0.5),
-                                ),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Kiểu dịch: $translationType',
-                                    style: TextStyle(
-                                      color: AppColors.blueDarkText,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 12.sp,
-                                    ),
-                                  ),
-                                  SizedBox(height: 6.h),
-                                  Text(
-                                    'Văn bản gốc:',
-                                    style: TextStyle(
-                                      color: AppColors.secondaryText,
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  Text(
-                                    sourceText.isEmpty ? '-' : sourceText,
-                                    style: TextStyle(
-                                      color: AppColors.primaryText,
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.h),
-                                  Text(
-                                    'Bản dịch:',
-                                    style: TextStyle(
-                                      color: AppColors.secondaryText,
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  Text(
-                                    translatedText.isEmpty ? '-' : translatedText,
-                                    style: TextStyle(
-                                      color: AppColors.primaryText,
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+      builder: (_) => TranslationHistorySheet(
+        firestore: _controller.firestore,
+        userId: user.uid,
+      ),
     );
-  }
-
-  TextRecognitionScript get _recognitionScript {
-    return _sourceLanguage == 'zh-cn'
-        ? TextRecognitionScript.chinese
-        : TextRecognitionScript.latin;
-  }
-
-  String _buildPinyinIfNeeded(
-    String translatedText, {
-    required String targetLanguage,
-  }) {
-    if (targetLanguage != 'zh-cn' || translatedText.trim().isEmpty) {
-      return '';
-    }
-
-    return PinyinHelper.getPinyin(
-      translatedText,
-      separator: ' ',
-      format: PinyinFormat.WITH_TONE_MARK,
-    );
-  }
-
-  Future<Size> _getImageSize(String path) async {
-    final bytes = await File(path).readAsBytes();
-    final codec = await ui.instantiateImageCodec(bytes);
-    final frame = await codec.getNextFrame();
-
-    final size = Size(
-      frame.image.width.toDouble(),
-      frame.image.height.toDouble(),
-    );
-
-    frame.image.dispose();
-    return size;
   }
 
   void _showImageSourceDialog() {
@@ -641,13 +138,13 @@ class _TranslateViewState extends State<TranslateView> {
   }
 
   Widget _buildImageOverlay() {
-    if (_scannedImagePath == null || _imageSize == null) {
+    if (_controller.scannedImagePath == null || _controller.imageSize == null) {
       return const SizedBox();
     }
 
-    final imageFile = File(_scannedImagePath!);
-    final imageWidth = _imageSize!.width;
-    final imageHeight = _imageSize!.height;
+    final imageFile = File(_controller.scannedImagePath!);
+    final imageWidth = _controller.imageSize!.width;
+    final imageHeight = _controller.imageSize!.height;
 
     return Padding(
       padding: EdgeInsets.only(top: 20.h),
@@ -667,7 +164,7 @@ class _TranslateViewState extends State<TranslateView> {
                   height: height,
                   fit: BoxFit.fill,
                 ),
-                if (_translatedText.trim().isNotEmpty)
+                if (_controller.translatedText.trim().isNotEmpty)
                   _buildOverlaySummary(
                     maxWidth: constraints.maxWidth,
                     maxHeight: height,
@@ -676,12 +173,7 @@ class _TranslateViewState extends State<TranslateView> {
                   top: 10.h,
                   right: 10.w,
                   child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _scannedImagePath = null;
-                        _imageSize = null;
-                      });
-                    },
+                    onTap: _controller.clearImageOverlay,
                     child: Container(
                       padding: EdgeInsets.all(6.w),
                       decoration: BoxDecoration(
@@ -713,7 +205,7 @@ class _TranslateViewState extends State<TranslateView> {
     final width = math.max(80.0, maxWidth - horizontalPadding * 2);
     final fontSize = 14.sp;
     final textHeight = _measureTextHeight(
-      _translatedText,
+      _controller.translatedText,
       maxWidth: math.max(32.0, width - 16.w),
       fontSize: fontSize,
     );
@@ -735,7 +227,7 @@ class _TranslateViewState extends State<TranslateView> {
         ),
         child: SingleChildScrollView(
           child: Text(
-            _translatedText,
+            _controller.translatedText,
             textAlign: TextAlign.left,
             style: TextStyle(
               color: Colors.black87,
@@ -770,328 +262,152 @@ class _TranslateViewState extends State<TranslateView> {
     return painter.size.height;
   }
 
-  Widget _buildTranslationContent() {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (_translatedText.isEmpty) {
-      return Text(
-        'Bản dịch',
-        style: TextStyle(
-          color: AppColors.secondaryText,
-          fontStyle: FontStyle.italic,
-        ),
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (_pinyinText.isNotEmpty)
-          Padding(
-            padding: EdgeInsets.only(bottom: 6.h),
-            child: Text(_pinyinText, style: TextStyle(fontSize: 14.sp)),
-          ),
-        SelectableText(
-          _translatedText,
-          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
-        ),
-      ],
-    );
-  }
-
-  Future<void> _switchLanguage() async {
-    if (_isListening) {
-      await _stopListening();
-    }
-
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _isVietnameseToChinese = !_isVietnameseToChinese;
-      _translatedText = '';
-      _pinyinText = '';
-      _errorMessage = null;
-      _scannedImagePath = null;
-      _imageSize = null;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
-      body: Padding(
-        padding: EdgeInsets.all(14.w),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 45.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        return Scaffold(
+          backgroundColor: AppColors.backgroundLight,
+          body: Padding(
+            padding: EdgeInsets.all(14.w),
+            child: SingleChildScrollView(
+              child: Column(
                 children: [
-                  Text(
-                    'Dịch văn bản',
-                    style: TextStyle(
-                      color: AppColors.primaryText,
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: _showTranslationHistorySheet,
-                    child: Container(
-                      padding: EdgeInsets.all(10.w),
-                      decoration: BoxDecoration(
-                        color: AppColors.backgroundDark,
-                        borderRadius: BorderRadius.circular(50.r),
-                      ),
-                      child: Image.asset(
-                        'assets/iconic/arrow_ic.png',
-                        width: 18.w,
-                        height: 18.h,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const Divider(),
-              SizedBox(height: 20.h),
-              Text(
-                'Văn bản gốc',
-                style: TextStyle(
-                  color: AppColors.primaryText,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(height: 8.h),
-              TextField(
-                controller: _inputController,
-                maxLines: 6,
-                style: TextStyle(
-                  color: AppColors.primaryText,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-                cursorColor: AppColors.primaryText,
-                decoration: InputDecoration(
-                  hintText: 'Nhập đoạn văn bản...',
-                  hintStyle: TextStyle(
-                    color: AppColors.secondaryText,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  filled: true,
-                  fillColor: AppColors.backgroundWhite,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                    borderSide: BorderSide(
-                      color: AppColors.borderDefault,
-                      width: 1.w,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20.h),
-              Text(
-                'Bản dịch',
-                style: TextStyle(
-                  color: AppColors.primaryText,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(height: 8.h),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(14.w),
-                decoration: BoxDecoration(
-                  color: AppColors.backgroundWhite,
-                  borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: AppColors.borderEnable, width: 1.w),
-                ),
-                child: _buildTranslationContent(),
-              ),
-              if (_errorMessage != null) ...[
-                SizedBox(height: 10.h),
-                Text(
-                  _errorMessage!,
-                  style: TextStyle(
-                    color: AppColors.errorText,
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-              if (_isImageScanning)
-                Padding(
-                  padding: EdgeInsets.only(top: 20.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  SizedBox(height: 45.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                        width: 24.w,
-                        height: 24.h,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: AppColors.blueDarkText,
+                      Text(
+                        'Dịch văn bản',
+                        style: TextStyle(
+                          color: AppColors.primaryText,
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(width: 12.w),
-                      Text(
-                        'Đang nhận diện và dịch...',
-                        style: TextStyle(
-                          color: AppColors.secondaryText,
-                          fontSize: 14.sp,
+                      GestureDetector(
+                        onTap: _showTranslationHistorySheet,
+                        child: Container(
+                          padding: EdgeInsets.all(10.w),
+                          decoration: BoxDecoration(
+                            color: AppColors.backgroundDark,
+                            borderRadius: BorderRadius.circular(50.r),
+                          ),
+                          child: Image.asset(
+                            'assets/iconic/arrow_ic.png',
+                            width: 18.w,
+                            height: 18.h,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                ),
-              _buildImageOverlay(),
-              SizedBox(height: 30.h),
-              // Exchange lang & tool button
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
-                decoration: BoxDecoration(
-                  color: AppColors.lightCardBackground,
-                  borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(
-                    color: AppColors.borderDefault,
-                    width: 1.w,
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: 120.w,
-                          height: 30.h,
-                          decoration: BoxDecoration(
-                            color: AppColors.whiteCard,
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
-                          child: Center(
-                            child: Text(
-                              _isVietnameseToChinese
-                                  ? 'Việt'
-                                  : 'Trung (Giản thể)',
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: AppColors.primaryText,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: _switchLanguage,
-                          child: Image.asset(
-                            'assets/iconic/exchange_ic.png',
-                            width: 22.w,
-                            height: 22.h,
-                          ),
-                        ),
-                        Container(
-                          width: 120.w,
-                          height: 30.h,
-                          decoration: BoxDecoration(
-                            color: AppColors.whiteCard,
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
-                          child: Center(
-                            child: Text(
-                              _isVietnameseToChinese
-                                  ? 'Trung (Giản thể)'
-                                  : 'Việt',
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: AppColors.primaryText,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                  const Divider(),
+                  SizedBox(height: 20.h),
+                  Text(
+                    'Văn bản gốc',
+                    style: TextStyle(
+                      color: AppColors.primaryText,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
                     ),
-                    SizedBox(height: 20.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _toolButton(
-                          iconPath: 'assets/iconic/microphone_ic.png',
-                          onTap: _toggleListening,
-                          isActive: _isListening,
+                  ),
+                  SizedBox(height: 8.h),
+                  TextField(
+                    controller: _controller.inputController,
+                    maxLines: 6,
+                    style: TextStyle(
+                      color: AppColors.primaryText,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    cursorColor: AppColors.primaryText,
+                    decoration: InputDecoration(
+                      hintText: 'Nhập đoạn văn bản...',
+                      hintStyle: TextStyle(
+                        color: AppColors.secondaryText,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      filled: true,
+                      fillColor: AppColors.backgroundWhite,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: BorderSide(
+                          color: AppColors.borderDefault,
+                          width: 1.w,
                         ),
-                        GestureDetector(
-                          onTap: _showImageSourceDialog,
-                          child: Container(
-                            padding: EdgeInsets.all(20.w),
-                            decoration: BoxDecoration(
-                              color: AppColors.backgroundWhite,
-                              borderRadius: BorderRadius.circular(50.r),
-                            ),
-                            child: Image.asset(
-                              'assets/iconic/camera_ic.png',
-                              width: 30.w,
-                              height: 30.h,
-                            ),
-                          ),
-                        ),
-                        _toolButton(
-                          iconPath: 'assets/iconic/writing_ic.png',
-                          onTap: _openHandwritingPad,
-                        ),
-                      ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                  Text(
+                    'Bản dịch',
+                    style: TextStyle(
+                      color: AppColors.primaryText,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  TranslateResultCard(
+                    isLoading: _controller.isLoading,
+                    translatedText: _controller.translatedText,
+                    pinyinText: _controller.pinyinText,
+                  ),
+                  if (_controller.errorMessage != null) ...[
+                    SizedBox(height: 10.h),
+                    Text(
+                      _controller.errorMessage!,
+                      style: TextStyle(
+                        color: AppColors.errorText,
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _toolButton({
-    required String iconPath,
-    required VoidCallback onTap,
-    bool isActive = false,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: EdgeInsets.all(12.w),
-        decoration: BoxDecoration(
-          color: isActive ? AppColors.blueDarkText : AppColors.toolButton,
-          borderRadius: BorderRadius.circular(50.r),
-          border: Border.all(color: AppColors.backgroundWhite, width: 2.w),
-          boxShadow: isActive
-              ? [
-                  BoxShadow(
-                    color: AppColors.blueDarkText.withValues(alpha: 0.25),
-                    blurRadius: 16,
-                    offset: const Offset(0, 6),
+                  if (_controller.isImageScanning)
+                    Padding(
+                      padding: EdgeInsets.only(top: 20.h),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 24.w,
+                            height: 24.h,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.blueDarkText,
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+                          Text(
+                            'Đang nhận diện và dịch...',
+                            style: TextStyle(
+                              color: AppColors.secondaryText,
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  _buildImageOverlay(),
+                  SizedBox(height: 30.h),
+                  TranslateLanguageTools(
+                    isVietnameseToChinese: _controller.isVietnameseToChinese,
+                    isListening: _controller.isListening,
+                    onSwitchLanguage: _controller.switchLanguage,
+                    onToggleListening: _controller.toggleListening,
+                    onPickImage: _showImageSourceDialog,
+                    onOpenHandwritingPad: _openHandwritingPad,
                   ),
-                ]
-              : null,
-        ),
-        child: Image.asset(
-          iconPath,
-          width: 28.w,
-          height: 28.h,
-          color: AppColors.whiteText.withValues(alpha: 0.9),
-        ),
-      ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

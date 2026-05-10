@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/constants/community_constants.dart';
 import 'package:hanziilearnapp/app/models/community_comment_model.dart';
 import 'package:hanziilearnapp/app/models/community_post_model.dart';
 import 'package:hanziilearnapp/app/providers/post_provider.dart';
@@ -53,7 +54,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
               ),
               SizedBox(height: 8.h),
               Text(
-                'Bình luận',
+                CommunityConstants.cmtTitle,
                 style: TextStyle(
                   color: AppColors.primaryText,
                   fontSize: 18.sp,
@@ -84,7 +85,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                     if (comments.isEmpty) {
                       return Center(
                         child: Text(
-                          'Chưa có bình luận nào',
+                          CommunityConstants.noComments,
                           style: TextStyle(
                             color: AppColors.secondaryText,
                             fontSize: 14.sp,
@@ -130,7 +131,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                                   children: [
                                     CommunityAvatar(
                                       avatar: comment.userAvatar,
-                                      size: 30,
+                                      size: 30.w,
                                     ),
                                     SizedBox(width: 8.w),
                                     Expanded(
@@ -140,7 +141,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                                             : comment.userName,
                                         style: TextStyle(
                                           color: AppColors.primaryText,
-                                          fontSize: 13.sp,
+                                          fontSize: 14.sp,
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ),
@@ -149,7 +150,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                                       formatCommunityTimeAgo(comment.createdAt),
                                       style: TextStyle(
                                         color: AppColors.secondaryText,
-                                        fontSize: 11.sp,
+                                        fontSize: 10.sp,
                                       ),
                                     ),
                                   ],
@@ -160,7 +161,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                                   Padding(
                                     padding: EdgeInsets.only(bottom: 4.h),
                                     child: Text(
-                                      'Trả lời ${comment.parentUserName}:',
+                                      '${CommunityConstants.reply} ${comment.parentUserName}:',
                                       style: TextStyle(
                                         color: AppColors.blueDarkText,
                                         fontSize: 12.sp,
@@ -185,7 +186,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                                         });
                                       },
                                       child: Text(
-                                        'Trả lời',
+                                        CommunityConstants.reply,
                                         style: TextStyle(
                                           fontSize: 12.sp,
                                           color: AppColors.blueDarkText,
@@ -198,7 +199,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                                   Align(
                                     alignment: Alignment.centerRight,
                                     child: Text(
-                                      'Đã đạt giới hạn trả lời',
+                                      'Đạt giới hạn trả lời',
                                       style: TextStyle(
                                         fontSize: 10.sp,
                                         color: AppColors.secondaryText,
@@ -262,8 +263,8 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                         textAlignVertical: TextAlignVertical.center,
                         decoration: InputDecoration(
                           hintText: _replyTarget == null
-                              ? 'Nhập bình luận...'
-                              : 'Nhập trả lời...',
+                              ? CommunityConstants.cmtHint
+                              : CommunityConstants.replyHint,
                           isDense: true,
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: 12.w,

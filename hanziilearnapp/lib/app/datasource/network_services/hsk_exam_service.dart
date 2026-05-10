@@ -8,15 +8,15 @@ class HskExamService {
   final FirebaseFirestore _firestore;
   static const String _collection = 'hsk_exams';
 
-  Future<List<HskExam>> getExamsByLevel(String level) async {
-    final normalizedLevel = level.toUpperCase();
-    final snapshot = await _firestore
+  Future<List<HskExam>> getExamsByLvl(String level) async {
+    final lvl = level.toUpperCase();
+    final snap = await _firestore
         .collection(_collection)
-        .where('level', isEqualTo: normalizedLevel)
+        .where('level', isEqualTo: lvl)
         .get();
 
     final exams =
-        snapshot.docs
+        snap.docs
             .map((doc) => HskExam.fromFirestore(doc.id, doc.data()))
             .toList()
           ..sort((a, b) => a.examCode.compareTo(b.examCode));
@@ -24,7 +24,7 @@ class HskExamService {
     return exams;
   }
 
-  Future<HskExamDetail> getExamDetail(String examId) async {
+  Future<HskExamDetail> getExamDtl(String examId) async {
     final doc = await _firestore.collection(_collection).doc(examId).get();
     if (!doc.exists) {
       throw Exception('Không tìm thấy đề thi trên Firestore.');

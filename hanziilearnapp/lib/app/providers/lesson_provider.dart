@@ -222,7 +222,7 @@ class LessonProvider extends ChangeNotifier {
     try {
       final results = await Future.wait(
         levels.map((level) async {
-          final count = await _service.getWordCountByHskLevel(level);
+          final count = await _service.getWordCountByLvl(level);
           return MapEntry(level, count);
         }),
       );
@@ -246,7 +246,7 @@ class LessonProvider extends ChangeNotifier {
     try {
       final results = await Future.wait(
         levels.map((level) async {
-          final exams = await _examService.getExamsByLevel(level);
+          final exams = await _examService.getExamsByLvl(level);
           return MapEntry(level, exams.length);
         }),
       );

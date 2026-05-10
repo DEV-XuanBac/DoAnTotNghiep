@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
 import 'package:path/path.dart' as path;
@@ -26,15 +25,17 @@ class HandwritingPadSheet extends StatefulWidget {
 }
 
 class _HandwritingPadSheetState extends State<HandwritingPadSheet> {
-  final GlobalKey _boundaryKey = GlobalKey();
   final List<List<Offset>> _strokes = [];
   Size _canvasSize = const Size(900, 500);
+  Rect? _inkBounds;
 
   bool get _hasInk => _strokes.any((stroke) => stroke.isNotEmpty);
 
   void _startStroke(DragStartDetails details) {
     setState(() {
-      _strokes.add([details.localPosition]);
+      final point = details.localPosition;
+      _strokes.add([point]);
+      _expandInkBounds(point);
     });
   }
 
@@ -44,12 +45,17 @@ class _HandwritingPadSheetState extends State<HandwritingPadSheet> {
     }
 
     setState(() {
-      _strokes.last.add(details.localPosition);
+      final point = details.localPosition;
+      _strokes.last.add(point);
+      _expandInkBounds(point);
     });
   }
 
   void _clearCanvas() {
-    setState(_strokes.clear);
+    setState(() {
+      _strokes.clear();
+      _inkBounds = null;
+    });
   }
 
   Future<void> _submit() async {
@@ -58,17 +64,8 @@ class _HandwritingPadSheetState extends State<HandwritingPadSheet> {
       return;
     }
 
-    final boundary =
-        _boundaryKey.currentContext?.findRenderObject()
-            as RenderRepaintBoundary?;
-    if (boundary == null) {
-      return;
-    }
-
-    final image = await boundary.toImage(pixelRatio: 3);
-    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    final bytes = await _buildNormalizedHandwritingBytes();
     if (bytes == null) {
-      image.dispose();
       return;
     }
 
@@ -78,10 +75,9 @@ class _HandwritingPadSheetState extends State<HandwritingPadSheet> {
       'handwriting_${DateTime.now().millisecondsSinceEpoch}.png',
     );
     await File(filePath).writeAsBytes(
-      bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
+      bytes,
       flush: true,
     );
-    image.dispose();
 
     if (!mounted) {
       return;
@@ -125,7 +121,6 @@ class _HandwritingPadSheetState extends State<HandwritingPadSheet> {
                 _canvasSize = Size(constraints.maxWidth, 280.h);
 
                 return RepaintBoundary(
-                  key: _boundaryKey,
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onPanStart: _startStroke,
@@ -185,6 +180,91 @@ class _HandwritingPadSheetState extends State<HandwritingPadSheet> {
         ),
       ),
     );
+  }
+
+  void _expandInkBounds(Offset point) {
+    final dotRect = Rect.fromCircle(center: point, radius: 6);
+    _inkBounds = _inkBounds == null ? dotRect : _inkBounds!.expandToInclude(dotRect);
+  }
+
+  Future<List<int>?> _buildNormalizedHandwritingBytes() async {
+    final bounds = _inkBounds;
+    if (bounds == null) {
+      return null;
+    }
+
+    const outputSize = 1024.0;
+    const padding = 110.0;
+    const strokeWidth = 36.0;
+
+    final clippedBounds = Rect.fromLTRB(
+      bounds.left.clamp(0.0, _canvasSize.width),
+      bounds.top.clamp(0.0, _canvasSize.height),
+      bounds.right.clamp(0.0, _canvasSize.width),
+      bounds.bottom.clamp(0.0, _canvasSize.height),
+    );
+    final contentWidth = clippedBounds.width <= 0 ? 1.0 : clippedBounds.width;
+    final contentHeight = clippedBounds.height <= 0 ? 1.0 : clippedBounds.height;
+    final drawableSize = outputSize - (padding * 2);
+    final scale = (drawableSize / contentWidth < drawableSize / contentHeight)
+        ? drawableSize / contentWidth
+        : drawableSize / contentHeight;
+    final offsetX = (outputSize - (contentWidth * scale)) / 2 - (clippedBounds.left * scale);
+    final offsetY =
+        (outputSize - (contentHeight * scale)) / 2 - (clippedBounds.top * scale);
+
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
+
+    canvas.drawRect(
+      const Rect.fromLTWH(0, 0, outputSize, outputSize),
+      Paint()..color = Colors.white,
+    );
+
+    final strokePaint = Paint()
+      ..color = Colors.black
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..style = PaintingStyle.stroke;
+
+    for (final stroke in _strokes) {
+      if (stroke.isEmpty) {
+        continue;
+      }
+      if (stroke.length == 1) {
+        final point = _transformPoint(stroke.first, scale, offsetX, offsetY);
+        canvas.drawCircle(point, strokeWidth / 2, strokePaint);
+        continue;
+      }
+
+      final path = Path();
+      final first = _transformPoint(stroke.first, scale, offsetX, offsetY);
+      path.moveTo(first.dx, first.dy);
+      for (int i = 1; i < stroke.length; i++) {
+        final p = _transformPoint(stroke[i], scale, offsetX, offsetY);
+        path.lineTo(p.dx, p.dy);
+      }
+      canvas.drawPath(path, strokePaint);
+    }
+
+    final image = await recorder.endRecording().toImage(
+      outputSize.toInt(),
+      outputSize.toInt(),
+    );
+    final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    image.dispose();
+    if (byteData == null) {
+      return null;
+    }
+    return byteData.buffer.asUint8List(
+      byteData.offsetInBytes,
+      byteData.lengthInBytes,
+    );
+  }
+
+  Offset _transformPoint(Offset source, double scale, double dx, double dy) {
+    return Offset(source.dx * scale + dx, source.dy * scale + dy);
   }
 }
 

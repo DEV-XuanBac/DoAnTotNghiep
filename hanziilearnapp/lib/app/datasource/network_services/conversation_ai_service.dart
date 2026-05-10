@@ -67,20 +67,20 @@ class ConversationAiService {
     ),
   ];
 
-  Future<ConversationDialogue> generateDialogue({
+  Future<ConversationDialogue> genDlg({
     required ConversationTopic topic,
     int level = 2,
   }) async {
     final prompt = _buildPrompt(topic, level);
 
-    for (final modelName in _models) {
+    for (final model in _models) {
       try {
-        return await _tryGenerate(modelName, prompt);
+        return await _tryGenerate(model, prompt);
       } on GenerativeAIException catch (e) {
         final msg = e.message.toLowerCase();
         final isRateLimit =
             msg.contains('quota') || msg.contains('rate') || msg.contains('429');
-        if (!isRateLimit || modelName == _models.last) rethrow;
+        if (!isRateLimit || model == _models.last) rethrow;
       }
     }
 

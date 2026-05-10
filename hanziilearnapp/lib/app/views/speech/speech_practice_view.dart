@@ -67,7 +67,7 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
     }
 
     try {
-      await _pronService.startListening(
+      await _pronService.startListen(
         onPartialResult: (text) {
           if (mounted) setState(() => _partialText = text);
         },
@@ -92,7 +92,7 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
     });
 
     try {
-      final result = await _pronService.stopAndAssess(widget.word.hanzi);
+      final result = await _pronService.stopAssess(widget.word.hanzi);
       if (mounted) {
         setState(() {
           _lastResult = result;
