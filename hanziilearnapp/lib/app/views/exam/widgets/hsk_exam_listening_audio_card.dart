@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 
 class HskExamListeningAudioCard extends StatelessWidget {
   const HskExamListeningAudioCard({
@@ -33,10 +33,10 @@ class HskExamListeningAudioCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(10.w),
       decoration: BoxDecoration(
-        color: AppColors.lightCardBackground,
+        color: context.palette.lightCardBackground,
         borderRadius: BorderRadius.circular(10.r),
         border: Border.all(
-          color: AppColors.borderDefault.withValues(alpha: 0.7),
+          color: context.palette.borderDefault.withValues(alpha: 0.7),
         ),
       ),
       child: Column(
@@ -45,7 +45,7 @@ class HskExamListeningAudioCard extends StatelessWidget {
           Text(
             'Listening (câu 1-20): nghe file audio để làm bài',
             style: TextStyle(
-              color: AppColors.primaryText,
+              color: context.palette.primaryText,
               fontSize: 13.sp,
               fontWeight: FontWeight.w600,
             ),
@@ -54,7 +54,7 @@ class HskExamListeningAudioCard extends StatelessWidget {
           if (audioAssetPath == null) ...[
             Text(
               'Phần nghe này chưa được cập nhật file audio.',
-              style: TextStyle(fontSize: 12.sp, color: AppColors.secondaryText),
+              style: TextStyle(fontSize: 12.sp, color: context.palette.secondaryText),
             ),
           ] else ...[
             Row(
@@ -63,7 +63,7 @@ class HskExamListeningAudioCard extends StatelessWidget {
                   onPressed: () => onToggleAudio(audioAssetPath!),
                   icon: Icon(
                     isAudioPlaying ? Icons.pause_circle : Icons.play_circle,
-                    color: AppColors.bottomButton,
+                    color: context.palette.bottomButton,
                     size: 30.sp,
                   ),
                 ),
@@ -81,7 +81,7 @@ class HskExamListeningAudioCard extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: Text(
               '${formatDuration(audioPosition)} / ${formatDuration(audioDuration)}',
-              style: TextStyle(fontSize: 11.sp, color: AppColors.secondaryText),
+              style: TextStyle(fontSize: 11.sp, color: context.palette.secondaryText),
             ),
           ),
         ],

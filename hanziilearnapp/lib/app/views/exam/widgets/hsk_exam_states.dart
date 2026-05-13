@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 
 class HskExamLoadingState extends StatelessWidget {
   const HskExamLoadingState({super.key});
@@ -24,7 +24,7 @@ class HskExamErrorState extends StatelessWidget {
         child: Text(
           message,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 14.sp, color: AppColors.secondaryText),
+          style: TextStyle(fontSize: 14.sp, color: context.palette.secondaryText),
         ),
       ),
     );
@@ -47,7 +47,7 @@ class HskExamEmptyState extends StatelessWidget {
           style: TextStyle(
             fontSize: 15.sp,
             fontWeight: FontWeight.w500,
-            color: AppColors.secondaryText,
+            color: context.palette.secondaryText,
           ),
         ),
       ),

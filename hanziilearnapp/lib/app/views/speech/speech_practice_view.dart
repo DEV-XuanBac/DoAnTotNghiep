@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/datasource/local/local_pronunciation_service.dart';
 import 'package:hanziilearnapp/app/models/pronunciation_result.dart';
 import 'package:hanziilearnapp/app/models/word_model.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 /// Màn hình luyện nói theo AI: nghe phát âm chuẩn, thu âm, và nhận điểm đánh giá.
 class SpeechPracticeView extends StatefulWidget {
@@ -49,7 +49,7 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
     if (_isPlaying) return;
     setState(() => _isPlaying = true);
     await _tts.speak(widget.word.hanzi);
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future<void>.delayed(const Duration(milliseconds: 500));
     _tts.setCompletionHandler(() {
       if (mounted) setState(() => _isPlaying = false);
     });
@@ -118,11 +118,11 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
         title: const Text('Luyện nói'),
-        backgroundColor: AppColors.backgroundLight,
-        foregroundColor: AppColors.primaryText,
+        backgroundColor: context.palette.backgroundLight,
+        foregroundColor: context.palette.primaryText,
         elevation: 0,
       ),
       body: SafeArea(
@@ -144,7 +144,7 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
                   'AI đang đánh giá phát âm...',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: AppColors.secondaryText,
+                    color: context.palette.secondaryText,
                     fontSize: 14.sp,
                   ),
                 ),
@@ -164,9 +164,9 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: AppColors.backgroundWhite,
+        color: context.palette.backgroundWhite,
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: AppColors.borderDefault.withValues(alpha: 0.5)),
+        border: Border.all(color: context.palette.borderDefault.withValues(alpha: 0.5)),
       ),
       child: Column(
         children: [
@@ -175,7 +175,7 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
             style: TextStyle(
               fontSize: 36.sp,
               fontWeight: FontWeight.bold,
-              color: AppColors.primaryText,
+              color: context.palette.primaryText,
             ),
           ),
           SizedBox(height: 8.h),
@@ -183,7 +183,7 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
             widget.word.pinyin,
             style: TextStyle(
               fontSize: 18.sp,
-              color: AppColors.secondaryText,
+              color: context.palette.secondaryText,
             ),
           ),
           SizedBox(height: 6.h),
@@ -191,7 +191,7 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
             widget.word.meaning,
             style: TextStyle(
               fontSize: 16.sp,
-              color: AppColors.vocabDarkText,
+              color: context.palette.vocabDarkText,
             ),
           ),
         ],
@@ -203,7 +203,7 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
     return Container(
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
-        color: AppColors.lightCardBackground.withValues(alpha: 0.6),
+        color: context.palette.lightCardBackground.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
@@ -214,7 +214,7 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
             style: TextStyle(
               fontSize: 15.sp,
               fontWeight: FontWeight.w600,
-              color: AppColors.primaryText,
+              color: context.palette.primaryText,
             ),
           ),
           SizedBox(height: 8.h),
@@ -225,7 +225,7 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
             '4. AI sẽ đánh giá điểm phát âm của bạn',
             style: TextStyle(
               fontSize: 13.sp,
-              color: AppColors.secondaryText,
+              color: context.palette.secondaryText,
               height: 1.6,
             ),
           ),
@@ -235,7 +235,7 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
               width: double.infinity,
               padding: EdgeInsets.all(10.w),
               decoration: BoxDecoration(
-                color: AppColors.backgroundWhite,
+                color: context.palette.backgroundWhite,
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Column(
@@ -245,7 +245,7 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
                     'Bạn đang nói:',
                     style: TextStyle(
                       fontSize: 11.sp,
-                      color: AppColors.secondaryText,
+                      color: context.palette.secondaryText,
                     ),
                   ),
                   SizedBox(height: 4.h),
@@ -254,7 +254,7 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.blueDarkText,
+                      color: context.palette.blueDarkText,
                     ),
                   ),
                 ],
@@ -293,17 +293,17 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
       return Container(
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
-          color: AppColors.errorText.withValues(alpha: 0.1),
+          color: context.palette.errorText.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(16.r),
         ),
         child: Column(
           children: [
-            Icon(Icons.error_outline, color: AppColors.errorText, size: 40.sp),
+            Icon(Icons.error_outline, color: context.palette.errorText, size: 40.sp),
             SizedBox(height: 8.h),
             Text(
               r.errorMessage!,
               textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.errorText, fontSize: 14.sp),
+              style: TextStyle(color: context.palette.errorText, fontSize: 14.sp),
             ),
           ],
         ),
@@ -312,15 +312,15 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
 
     final overall = r.overallScore.round();
     final color = overall >= 80
-        ? AppColors.greenText
+        ? context.palette.greenText
         : overall >= 60
-            ? AppColors.blueDarkText
-            : AppColors.errorText;
+            ? context.palette.blueDarkText
+            : context.palette.errorText;
 
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: AppColors.backgroundWhite,
+        color: context.palette.backgroundWhite,
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(color: color.withValues(alpha: 0.5), width: 2),
       ),
@@ -330,7 +330,7 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
             'Điểm tổng',
             style: TextStyle(
               fontSize: 14.sp,
-              color: AppColors.secondaryText,
+              color: context.palette.secondaryText,
             ),
           ),
           SizedBox(height: 4.h),
@@ -361,7 +361,7 @@ class _SpeechPracticeViewState extends State<SpeechPracticeView> {
               'Bạn nói: ${r.displayText}',
               style: TextStyle(
                 fontSize: 13.sp,
-                color: AppColors.secondaryText,
+                color: context.palette.secondaryText,
                 fontStyle: FontStyle.italic,
               ),
               textAlign: TextAlign.center,
@@ -396,18 +396,18 @@ class _RoundButton extends StatelessWidget {
             width: 72.w,
             height: 72.w,
             decoration: BoxDecoration(
-              color: isActive ? AppColors.blueDarkText : AppColors.toolButton,
+              color: isActive ? context.palette.blueDarkText : context.palette.toolButton,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: (isActive ? AppColors.blueDarkText : Colors.grey)
+                  color: (isActive ? context.palette.blueDarkText : Colors.grey)
                       .withValues(alpha: 0.3),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
               ],
             ),
-            child: Icon(icon, color: AppColors.whiteText, size: 32.sp),
+            child: Icon(icon, color: context.palette.whiteText, size: 32.sp),
           ),
           SizedBox(height: 8.h),
           Text(
@@ -415,7 +415,7 @@ class _RoundButton extends StatelessWidget {
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w600,
-              color: AppColors.primaryText,
+              color: context.palette.primaryText,
             ),
           ),
         ],
@@ -438,7 +438,7 @@ class _ScoreChip extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: 11.sp,
-            color: AppColors.secondaryText,
+            color: context.palette.secondaryText,
           ),
         ),
         SizedBox(height: 4.h),
@@ -447,7 +447,7 @@ class _ScoreChip extends StatelessWidget {
           style: TextStyle(
             fontSize: 18.sp,
             fontWeight: FontWeight.bold,
-            color: AppColors.primaryText,
+            color: context.palette.primaryText,
           ),
         ),
       ],

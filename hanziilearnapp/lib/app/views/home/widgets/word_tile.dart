@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/models/word_model.dart';
 
 class WordTile extends StatelessWidget {
@@ -15,7 +15,7 @@ class WordTile extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(8.w),
       decoration: BoxDecoration(
-        color: AppColors.lightCardBackground.withValues(alpha: 0.5),
+        color: context.palette.lightCardBackground.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(10.r),
       ),
       child: Column(
@@ -23,23 +23,30 @@ class WordTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(
-                word.hanzi,
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primaryText,
+              Expanded(
+                child: Wrap(
+                  spacing: 12.w,
+                  runSpacing: 4.h,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Text(
+                      word.hanzi,
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                        color: context.palette.primaryText,
+                      ),
+                    ),
+                    Text(
+                      '/${word.pinyin}/',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: context.palette.secondaryText,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(width: 24.w),
-              Text(
-                "/${word.pinyin}/",
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: AppColors.secondaryText,
-                ),
-              ),
-              Spacer(),
               IconButton(
                 onPressed: onSpeak,
                 tooltip: 'Phát âm từ vựng',
@@ -47,7 +54,7 @@ class WordTile extends StatelessWidget {
                   padding: EdgeInsets.all(4.w),
                   child: Icon(
                     Icons.volume_up_rounded,
-                    color: AppColors.secondaryText,
+                    color: context.palette.secondaryText,
                     size: 22.sp,
                   ),
                 ),
@@ -60,7 +67,10 @@ class WordTile extends StatelessWidget {
           SizedBox(height: 2.h),
           Text(
             word.meaning,
-            style: TextStyle(fontSize: 14.sp, color: AppColors.primaryText),
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: context.palette.primaryText,
+            ),
           ),
         ],
       ),

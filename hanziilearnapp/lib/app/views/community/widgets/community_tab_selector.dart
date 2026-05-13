@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/views/community/community_tab_type.dart';
 
 class CommunityTabSelector extends StatelessWidget {
@@ -18,40 +18,40 @@ class CommunityTabSelector extends StatelessWidget {
     return Container(
       height: 40.h,
       decoration: BoxDecoration(
-        color: AppColors.backgroundWhite,
+        color: context.palette.backgroundWhite,
         borderRadius: BorderRadius.circular(30.r),
       ),
       child: Row(
         children: [
-          _buildTabButton(CommunityTabType.all),
+          _buildTabButton(context, CommunityTabType.all),
           SizedBox(width: 4.w),
-          _buildTabButton(CommunityTabType.interacted),
+          _buildTabButton(context, CommunityTabType.interacted),
           SizedBox(width: 4.w),
-          _buildTabButton(CommunityTabType.manage),
+          _buildTabButton(context, CommunityTabType.manage),
         ],
       ),
     );
   }
 
-  Widget _buildTabButton(CommunityTabType tab) {
+  Widget _buildTabButton(BuildContext context, CommunityTabType tab) {
     final isSelected = currentTab == tab;
     return Expanded(
       child: InkWell(
         onTap: () => onChanged(tab),
-        borderRadius: BorderRadius.circular(22.r),
+        borderRadius: BorderRadius.circular(16.r),
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 6.h),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.blueDarkText : Colors.transparent,
-            borderRadius: BorderRadius.circular(22.r),
+            color: isSelected ? context.palette.blueDarkText : Colors.transparent,
+            borderRadius: BorderRadius.circular(16.r),
           ),
           child: Text(
             tab.label,
             style: TextStyle(
-              color: isSelected ? AppColors.whiteText : AppColors.primaryText,
+              color: isSelected ? context.palette.whiteText : context.palette.primaryText,
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-              fontSize: 14.sp,
+              fontSize: 12.sp,
             ),
           ),
         ),

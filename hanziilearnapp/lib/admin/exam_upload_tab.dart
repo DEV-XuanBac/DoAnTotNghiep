@@ -1,10 +1,10 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/datasource/services/admin_exam_service.dart';
 import 'package:hanziilearnapp/app/datasource/services/hsk_exam_admin_service.dart';
 
@@ -53,7 +53,7 @@ class _ExamUploadTabState extends State<ExamUploadTab> {
                 SizedBox(height: 8.h),
                 Text(
                   'File đã chọn: $_pickedFileName',
-                  style: TextStyle(fontSize: 12.sp, color: AppColors.secondaryText),
+                  style: TextStyle(fontSize: 12.sp, color: context.palette.secondaryText),
                 ),
               ],
               SizedBox(height: 12.h),
@@ -66,7 +66,7 @@ class _ExamUploadTabState extends State<ExamUploadTab> {
                 decoration: InputDecoration(
                   hintText: 'Nội dung JSON từ file sẽ hiển thị tại đây...',
                   filled: true,
-                  fillColor: AppColors.backgroundWhite,
+                  fillColor: context.palette.backgroundWhite,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
                 ),
               ),
@@ -108,7 +108,7 @@ class _ExamUploadTabState extends State<ExamUploadTab> {
         return Row(
           children: [
             Expanded(flex: 11, child: leftPanel),
-            VerticalDivider(width: 1.w, thickness: 1.w, color: AppColors.borderDefault.withValues(alpha: 0.4)),
+            VerticalDivider(width: 1.w, thickness: 1.w, color: context.palette.borderDefault.withValues(alpha: 0.4)),
             Expanded(flex: 10, child: rightPanel),
           ],
         );
@@ -119,10 +119,11 @@ class _ExamUploadTabState extends State<ExamUploadTab> {
   Widget _buildHintCard() => Container(
     width: double.infinity,
     padding: EdgeInsets.all(12.w),
-    decoration: BoxDecoration(color: AppColors.lightCardBackground, borderRadius: BorderRadius.circular(12.r)),
+    decoration: BoxDecoration(color: context.palette.lightCardBackground, borderRadius: BorderRadius.circular(12.r)),
     child: Text(
-      'Mẫu đề thi: schema_version, exam_code, level, title, total_questions, time_limit_minutes, audio_listening, sections[].',
-      style: TextStyle(fontSize: 12.sp, color: AppColors.primaryText, fontWeight: FontWeight.w500),
+      'Mẫu đề thi: schema_version, exam_code, level, title, total_questions, time_limit_minutes, audio_listening, sections[]. '
+      'HSK1–3: chỉ true_false / single_choice. Từ HSK4 trở lên có thể thêm sort_sentences (đáp án C-A-B), sort_word, write_sentence (hai loại sau dùng options rỗng [ ]).',
+      style: TextStyle(fontSize: 12.sp, color: context.palette.primaryText, fontWeight: FontWeight.w500),
     ),
   );
 
@@ -130,18 +131,18 @@ class _ExamUploadTabState extends State<ExamUploadTab> {
     width: double.infinity,
     padding: EdgeInsets.all(12.w),
     decoration: BoxDecoration(
-      color: AppColors.backgroundWhite,
+      color: context.palette.backgroundWhite,
       borderRadius: BorderRadius.circular(12.r),
-      border: Border.all(color: AppColors.borderDefault.withValues(alpha: 0.7)),
+      border: Border.all(color: context.palette.borderDefault.withValues(alpha: 0.7)),
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Đề hợp lệ: ${exam.examCode}', style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700, color: AppColors.primaryText)),
+        Text('Đề hợp lệ: ${exam.examCode}', style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700, color: context.palette.primaryText)),
         SizedBox(height: 6.h),
-        Text('Level: ${exam.level} | Sections: ${exam.sectionCount} | Câu hỏi: ${exam.totalQuestions}', style: TextStyle(fontSize: 12.sp, color: AppColors.secondaryText)),
+        Text('Level: ${exam.level} | Sections: ${exam.sectionCount} | Câu hỏi: ${exam.totalQuestions}', style: TextStyle(fontSize: 12.sp, color: context.palette.secondaryText)),
         SizedBox(height: 4.h),
-        Text(exam.title, style: TextStyle(fontSize: 13.sp, color: AppColors.primaryText)),
+        Text(exam.title, style: TextStyle(fontSize: 13.sp, color: context.palette.primaryText)),
       ],
     ),
   );
@@ -150,14 +151,14 @@ class _ExamUploadTabState extends State<ExamUploadTab> {
     width: double.infinity,
     padding: EdgeInsets.all(12.w),
     decoration: BoxDecoration(
-      color: AppColors.backgroundWhite,
+      color: context.palette.backgroundWhite,
       borderRadius: BorderRadius.circular(12.r),
-      border: Border.all(color: AppColors.borderDefault.withValues(alpha: 0.7)),
+      border: Border.all(color: context.palette.borderDefault.withValues(alpha: 0.7)),
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Danh sách đề thi theo cấp độ', style: TextStyle(color: AppColors.primaryText, fontWeight: FontWeight.w700, fontSize: 14.sp)),
+        Text('Danh sách đề thi theo cấp độ', style: TextStyle(color: context.palette.primaryText, fontWeight: FontWeight.w700, fontSize: 14.sp)),
         SizedBox(height: 8.h),
         DropdownButtonFormField<String>(
           key: ValueKey(_examListLevel),
@@ -174,9 +175,9 @@ class _ExamUploadTabState extends State<ExamUploadTab> {
           stream: _examService.watchExamsByLvl(_examListLevel),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
-            if (snapshot.hasError) return Text('Không tải được danh sách đề thi.', style: TextStyle(color: AppColors.errorText));
+            if (snapshot.hasError) return Text('Không tải được danh sách đề thi.', style: TextStyle(color: context.palette.errorText));
             final docs = snapshot.data ?? const <Map<String, dynamic>>[];
-            if (docs.isEmpty) return Text('Chưa có đề thi cho $_examListLevel.', style: TextStyle(color: AppColors.secondaryText, fontStyle: FontStyle.italic));
+            if (docs.isEmpty) return Text('Chưa có đề thi cho $_examListLevel.', style: TextStyle(color: context.palette.secondaryText, fontStyle: FontStyle.italic));
             return ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -189,11 +190,11 @@ class _ExamUploadTabState extends State<ExamUploadTab> {
                 final totalQuestions = (data['totalQuestions'] ?? 0).toString();
                 return Container(
                   padding: EdgeInsets.all(10.w),
-                  decoration: BoxDecoration(color: AppColors.backgroundLight.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(10.r)),
+                  decoration: BoxDecoration(color: context.palette.backgroundLight.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(10.r)),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text('$examCode - $title', style: TextStyle(color: AppColors.primaryText, fontWeight: FontWeight.w700, fontSize: 13.sp)),
+                    Text('$examCode - $title', style: TextStyle(color: context.palette.primaryText, fontWeight: FontWeight.w700, fontSize: 13.sp)),
                     SizedBox(height: 4.h),
-                    Text('Số câu: $totalQuestions', style: TextStyle(color: AppColors.secondaryText, fontSize: 12.sp)),
+                    Text('Số câu: $totalQuestions', style: TextStyle(color: context.palette.secondaryText, fontSize: 12.sp)),
                   ]),
                 );
               },

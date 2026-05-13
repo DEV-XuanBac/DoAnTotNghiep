@@ -1,7 +1,7 @@
-import 'package:camera/camera.dart';
+﻿import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/views/common/widgets/camera_capture_controls.dart';
 
 class InAppCameraView extends StatefulWidget {
@@ -112,7 +112,7 @@ class _InAppCameraViewState extends State<InAppCameraView> {
                 padding: EdgeInsets.all(16.w),
                 child: Text(
                   _error!,
-                  style: TextStyle(color: AppColors.whiteText, fontSize: 14.sp),
+                  style: TextStyle(color: context.palette.whiteText, fontSize: 14.sp),
                   textAlign: TextAlign.center,
                 ),
               ),

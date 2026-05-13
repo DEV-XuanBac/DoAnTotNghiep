@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/models/word_model.dart';
 import 'package:hanziilearnapp/app/providers/lesson_provider.dart';
 import 'package:hanziilearnapp/app/views/hsk_vocab/widgets/word_card.dart';
@@ -38,7 +38,7 @@ class VocabularyTab extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.errorText,
+                      color: context.palette.errorText,
                     ),
                   ),
                   SizedBox(height: 8.h),
@@ -47,7 +47,7 @@ class VocabularyTab extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 12.sp,
-                      color: AppColors.secondaryText,
+                      color: context.palette.secondaryText,
                     ),
                   ),
                   SizedBox(height: 14.h),
@@ -69,7 +69,7 @@ class VocabularyTab extends StatelessWidget {
             child: Text(
               'Chua co du lieu cho $hskLevel',
               style: TextStyle(
-                color: AppColors.secondaryText,
+                color: context.palette.secondaryText,
                 fontWeight: FontWeight.w600,
                 fontSize: 14.sp,
               ),
@@ -77,22 +77,25 @@ class VocabularyTab extends StatelessWidget {
           );
         }
 
-        return RefreshIndicator(
-          onRefresh: () => provider.loadWordsByTopic(
-            level: hskLevel,
-            topic: provider.currentTopic,
-          ),
-          child: ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
-            itemCount: provider.words.length,
-            itemBuilder: (context, index) {
-              final word = provider.words[index];
-              return WordCard(
-                word: word,
-                onPlayAudio: onPlayAudio,
-                onSaveWord: onSaveWord,
-              );
-            },
+        return SafeArea(
+          top: false,
+          child: RefreshIndicator(
+            onRefresh: () => provider.loadWordsByTopic(
+              level: hskLevel,
+              topic: provider.currentTopic,
+            ),
+            child: ListView.builder(
+              padding: EdgeInsets.fromLTRB(14.w, 8.h, 14.w, 14.h),
+              itemCount: provider.words.length,
+              itemBuilder: (context, index) {
+                final word = provider.words[index];
+                return WordCard(
+                  word: word,
+                  onPlayAudio: onPlayAudio,
+                  onSaveWord: onSaveWord,
+                );
+              },
+            ),
           ),
         );
       },

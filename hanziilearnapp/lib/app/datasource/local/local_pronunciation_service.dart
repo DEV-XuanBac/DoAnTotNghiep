@@ -18,13 +18,15 @@ class LocalPronunciationService {
   bool get isListening => _stt.isListening;
 
   Future<bool> init() async {
-    if (_isInitialized) return true;
-    _isInitialized = await _stt.initialize();
-    return _isInitialized;
+    if (_isInitialized) {
+      return true;
+    }
+    return _isInitialized = await _stt.initialize();
   }
 
   Future<void> startListen({
     required void Function(String partialText) onPartialResult,
+    String? localeId,
   }) async {
     if (!_isInitialized) {
       final ok = await init();
@@ -42,13 +44,15 @@ class LocalPronunciationService {
         }
         onPartialResult(_recText);
       },
-      localeId: _listenLocaleId,
+      localeId: localeId ?? _listenLocaleId,
       listenOptions: SpeechListenOptions(
         listenMode: ListenMode.dictation,
-        cancelOnError: false,
-        partialResults: true,
       ),
     );
+  }
+
+  Future<void> stopListening() async {
+    await _stt.stop();
   }
 
   Future<PronunciationResult> stopAssess(String referenceText) async {
@@ -107,7 +111,7 @@ class LocalPronunciationService {
     if (ref.isEmpty) return 0;
     final recChars = rec.split('');
     final remaining = List<String>.from(recChars);
-    int matched = 0;
+    var matched = 0;
     for (final c in ref.split('')) {
       final idx = remaining.indexOf(c);
       if (idx != -1) {
@@ -130,8 +134,8 @@ class LocalPronunciationService {
     final m = a.length;
     final n = b.length;
     final dp = List.generate(m + 1, (_) => List.filled(n + 1, 0));
-    for (int i = 1; i <= m; i++) {
-      for (int j = 1; j <= n; j++) {
+    for (var i = 1; i <= m; i++) {
+      for (var j = 1; j <= n; j++) {
         if (a[i - 1] == b[j - 1]) {
           dp[i][j] = dp[i - 1][j - 1] + 1;
         } else {

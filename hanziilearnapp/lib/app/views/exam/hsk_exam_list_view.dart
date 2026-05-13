@@ -1,13 +1,14 @@
+﻿import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
-import 'package:hanziilearnapp/app/datasource/network_services/hsk_exam_service.dart';
+import 'package:hanziilearnapp/app/core/router/app_router.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
+import 'package:hanziilearnapp/app/datasource/repository/exam_attempt_repository.dart';
+import 'package:hanziilearnapp/app/datasource/repository/hsk_exam_repository.dart';
 import 'package:hanziilearnapp/app/models/hsk_exam_model.dart';
-import 'package:hanziilearnapp/app/views/exam/hsk_exam_take_view.dart';
 import 'package:hanziilearnapp/app/views/exam/widgets/hsk_exam_list_item.dart';
 import 'package:hanziilearnapp/app/views/exam/widgets/hsk_exam_states.dart';
+import 'package:provider/provider.dart';
 
 class HskExamListView extends StatefulWidget {
   const HskExamListView({super.key, required this.hskLevel});
@@ -20,22 +21,24 @@ class HskExamListView extends StatefulWidget {
 
 class _HskExamListViewState extends State<HskExamListView> {
   late Future<_ExamListPayload> _examFuture;
-  final HskExamService _examService = HskExamService();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late final IHskExamRepository _examRepo;
+  late final IExamAttemptRepository _attemptRepo;
 
   @override
   void initState() {
     super.initState();
+    _examRepo = context.read<IHskExamRepository>();
+    _attemptRepo = context.read<IExamAttemptRepository>();
     _examFuture = _loadExamsWithAttemptStatus();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
         title: Text('Danh sách đề thi ${widget.hskLevel}'),
-        backgroundColor: AppColors.backgroundLight,
+        backgroundColor: context.palette.backgroundLight,
         elevation: 0,
       ),
       body: FutureBuilder<_ExamListPayload>(
@@ -73,22 +76,17 @@ class _HskExamListViewState extends State<HskExamListView> {
                 isCompleted: attempt?.isCompleted ?? false,
                 scoreOutOf10: attempt?.scoreOutOf10,
                 attemptCount: attempt?.attemptCount ?? 0,
-                onTap: () {
-                  Navigator.push<bool>(
+                onTap: () async {
+                  final didComplete = await AppRouter.pushHskExamTake(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => HskExamTakeView(
-                        examId: exam.id,
-                        level: widget.hskLevel,
-                      ),
-                    ),
-                  ).then((didComplete) {
-                    if (didComplete == true && mounted) {
-                      setState(() {
-                        _examFuture = _loadExamsWithAttemptStatus();
-                      });
-                    }
-                  });
+                    examId: exam.id,
+                    level: widget.hskLevel,
+                  );
+                  if (didComplete == true && mounted) {
+                    setState(() {
+                      _examFuture = _loadExamsWithAttemptStatus();
+                    });
+                  }
                 },
               );
             },
@@ -99,57 +97,24 @@ class _HskExamListViewState extends State<HskExamListView> {
   }
 
   Future<_ExamListPayload> _loadExamsWithAttemptStatus() async {
-    final exams = await _examService.getExamsByLvl(widget.hskLevel);
+    final exams = await _examRepo.getExamsByLevel(widget.hskLevel);
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       return _ExamListPayload(exams: exams, attemptsByExamId: const {});
     }
 
-    final snapshot = await _firestore
-        .collection('users')
-        .doc(user.uid)
-        .collection('exam_attempts')
-        .where('level', isEqualTo: widget.hskLevel)
-        .get();
-
-    final attempts = <String, _ExamAttemptStatus>{};
-    for (final doc in snapshot.docs) {
-      final data = doc.data();
-      final examId = (data['exam_id'] ?? '').toString();
-      if (examId.isEmpty) {
-        continue;
-      }
-      final completed = (data['completed'] ?? false) == true;
-      final rawScore = data['score_10'];
-      final rawAttemptCount = data['attempt_count'];
-      final score = rawScore is num ? rawScore.toDouble() : null;
-      final attemptCount = rawAttemptCount is num ? rawAttemptCount.toInt() : 0;
-      attempts[examId] = _ExamAttemptStatus(
-        isCompleted: completed,
-        scoreOutOf10: score,
-        attemptCount: attemptCount,
-      );
-    }
+    final attempts = await _attemptRepo.listAttemptsForUserByLevel(
+      userId: user.uid,
+      level: widget.hskLevel,
+    );
 
     return _ExamListPayload(exams: exams, attemptsByExamId: attempts);
   }
-}
-
-class _ExamAttemptStatus {
-  const _ExamAttemptStatus({
-    required this.isCompleted,
-    this.scoreOutOf10,
-    this.attemptCount = 0,
-  });
-
-  final bool isCompleted;
-  final double? scoreOutOf10;
-  final int attemptCount;
 }
 
 class _ExamListPayload {
   const _ExamListPayload({required this.exams, required this.attemptsByExamId});
 
   final List<HskExam> exams;
-  final Map<String, _ExamAttemptStatus> attemptsByExamId;
+  final Map<String, ExamAttemptStatus> attemptsByExamId;
 }

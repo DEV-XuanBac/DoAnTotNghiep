@@ -1,8 +1,10 @@
+﻿import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hanziilearnapp/app/core/config/api_config.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/core/constants/conversation_constants.dart';
 import 'package:hanziilearnapp/app/datasource/local/local_pronunciation_service.dart';
 import 'package:hanziilearnapp/app/datasource/network_services/conversation_ai_service.dart';
@@ -85,7 +87,7 @@ class _ConversationPracticeViewState extends State<ConversationPracticeView> {
           _chat = out;
           _loading = false;
         });
-        _autoTts();
+        unawaited(_autoTts());
       }
     } catch (e) {
       if (mounted) {
@@ -108,8 +110,10 @@ class _ConversationPracticeViewState extends State<ConversationPracticeView> {
     if (_step >= _chat!.messages.length) return;
     final m = _chat!.messages[_step];
     if (!m.isUserTurn) {
-      await Future.delayed(_ttsDelay);
-      if (mounted) _speak(m.chinese);
+      await Future<void>.delayed(_ttsDelay);
+      if (mounted) {
+        unawaited(_speak(m.chinese));
+      }
     }
   }
 
@@ -209,18 +213,18 @@ class _ConversationPracticeViewState extends State<ConversationPracticeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
         title: Text(
           ConversationConstants.title,
           style: TextStyle(
-            color: AppColors.primaryText,
+            color: context.palette.primaryText,
             fontSize: 18.sp,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: AppColors.backgroundLight,
-        foregroundColor: AppColors.primaryText,
+        backgroundColor: context.palette.backgroundLight,
+        foregroundColor: context.palette.primaryText,
         elevation: 0,
         actions: [
           if (_chat != null)

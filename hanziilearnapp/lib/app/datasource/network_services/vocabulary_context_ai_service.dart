@@ -3,7 +3,7 @@ import 'package:hanziilearnapp/app/models/word_model.dart';
 
 /// Dùng Gemini để giải thích cách dùng từ trong ngữ cảnh cụ thể.
 class VocabularyContextAiService {
-  VocabularyContextAiService({required String apiKey}) : _apiKey = apiKey;
+  const VocabularyContextAiService({required String apiKey}) : _apiKey = apiKey;
 
   final String _apiKey;
 
@@ -44,7 +44,7 @@ class VocabularyContextAiService {
     );
 
     Object? lastError;
-    for (int attempt = 0; attempt < _maxRetries; attempt++) {
+    for (var attempt = 0; attempt < _maxRetries; attempt++) {
       try {
         final rs = await model.generateContent([Content.text(prompt)]);
         return (rs.text ?? '').trim();
@@ -60,10 +60,20 @@ class VocabularyContextAiService {
         if (!isRetryable) {
           rethrow;
         }
-        await Future.delayed(Duration(seconds: attempt + 1));
+        await Future<void>.delayed(Duration(seconds: attempt + 1));
       }
     }
-    throw lastError ?? Exception('Hệ thống đang bận. Vui lòng thử lại sau.');
+    if (lastError is Exception) {
+      throw lastError;
+    }
+    if (lastError is Error) {
+      throw lastError;
+    }
+    throw Exception(
+      lastError == null
+          ? 'Hệ thống đang bận. Vui lòng thử lại sau.'
+          : 'Hệ thống đang bận. Vui lòng thử lại sau: $lastError',
+    );
   }
 
   String _buildPrompt({required Word word, required String userQuery}) {

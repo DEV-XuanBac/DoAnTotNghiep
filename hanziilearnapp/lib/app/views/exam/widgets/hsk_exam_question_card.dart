@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/models/hsk_exam_model.dart';
 
 class HskExamQuestionCard extends StatelessWidget {
@@ -23,10 +23,10 @@ class HskExamQuestionCard extends StatelessWidget {
         width: double.infinity,
         padding: EdgeInsets.all(10.w),
         decoration: BoxDecoration(
-          color: AppColors.backgroundWhite,
+          color: context.palette.backgroundWhite,
           borderRadius: BorderRadius.circular(10.r),
           border: Border.all(
-            color: AppColors.borderDefault.withValues(alpha: 0.7),
+            color: context.palette.borderDefault.withValues(alpha: 0.7),
           ),
         ),
         child: Column(
@@ -37,7 +37,7 @@ class HskExamQuestionCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
-                color: AppColors.primaryText,
+                color: context.palette.primaryText,
               ),
             ),
             if (question.questionText.isNotEmpty) ...[
@@ -46,7 +46,7 @@ class HskExamQuestionCard extends StatelessWidget {
                 question.questionText,
                 style: TextStyle(
                   fontSize: 14.sp,
-                  color: AppColors.secondaryText,
+                  color: context.palette.secondaryText,
                 ),
               ),
             ],
@@ -65,13 +65,13 @@ class HskExamQuestionCard extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? AppColors.lightCardBackground
-                          : AppColors.backgroundWhite,
+                          ? context.palette.lightCardBackground
+                          : context.palette.backgroundWhite,
                       borderRadius: BorderRadius.circular(8.r),
                       border: Border.all(
                         color: isSelected
-                            ? AppColors.bottomButton
-                            : AppColors.borderDefault.withValues(alpha: 0.8),
+                            ? context.palette.bottomButton
+                            : context.palette.borderDefault.withValues(alpha: 0.8),
                       ),
                     ),
                     child: Row(
@@ -82,8 +82,8 @@ class HskExamQuestionCard extends StatelessWidget {
                               : Icons.radio_button_off,
                           size: 17.sp,
                           color: isSelected
-                              ? AppColors.bottomButton
-                              : AppColors.secondaryText,
+                              ? context.palette.bottomButton
+                              : context.palette.secondaryText,
                         ),
                         SizedBox(width: 8.w),
                         Expanded(
@@ -91,7 +91,7 @@ class HskExamQuestionCard extends StatelessWidget {
                             option,
                             style: TextStyle(
                               fontSize: 13.sp,
-                              color: AppColors.primaryText,
+                              color: context.palette.primaryText,
                             ),
                           ),
                         ),

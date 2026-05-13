@@ -1,9 +1,9 @@
-import 'dart:io';
+﻿import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
@@ -95,7 +95,7 @@ class _HandwritingPadSheetState extends State<HandwritingPadSheet> {
       child: Container(
         padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 20.h),
         decoration: BoxDecoration(
-          color: AppColors.backgroundLight,
+          color: context.palette.backgroundLight,
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: Column(
@@ -106,14 +106,14 @@ class _HandwritingPadSheetState extends State<HandwritingPadSheet> {
               'Viết chữ để nhận diện',
               style: TextStyle(
                 fontSize: 18.sp,
-                color: AppColors.primaryText,
+                color: context.palette.primaryText,
                 fontWeight: FontWeight.w700,
               ),
             ),
             SizedBox(height: 6.h),
             Text(
               'Viết rõ từng chữ trên khung bên dưới.',
-              style: TextStyle(fontSize: 12.sp, color: AppColors.secondaryText),
+              style: TextStyle(fontSize: 12.sp, color: context.palette.secondaryText),
             ),
             SizedBox(height: 14.h),
             LayoutBuilder(
@@ -130,13 +130,16 @@ class _HandwritingPadSheetState extends State<HandwritingPadSheet> {
                       width: constraints.maxWidth,
                       height: 260.h,
                       decoration: BoxDecoration(
-                        color: AppColors.backgroundWhite,
+                        color: context.palette.backgroundWhite,
                         borderRadius: BorderRadius.circular(16.r),
-                        border: Border.all(color: AppColors.borderEnable),
+                        border: Border.all(color: context.palette.borderEnable),
                       ),
                       child: CustomPaint(
                         size: Size.infinite,
-                        painter: _HandwritingPainter(strokes: _strokes),
+                        painter: _HandwritingPainter(
+                          strokes: _strokes,
+                          strokeColor: context.palette.primaryText,
+                        ),
                       ),
                     ),
                   ),
@@ -150,7 +153,7 @@ class _HandwritingPadSheetState extends State<HandwritingPadSheet> {
                   onPressed: _clearCanvas,
                   child: Text(
                     'Xóa',
-                    style: TextStyle(color: AppColors.errorText),
+                    style: TextStyle(color: context.palette.errorText),
                   ),
                 ),
                 const Spacer(),
@@ -158,7 +161,7 @@ class _HandwritingPadSheetState extends State<HandwritingPadSheet> {
                   onPressed: () => Navigator.pop(context),
                   child: Text(
                     'Đóng',
-                    style: TextStyle(color: AppColors.secondaryText),
+                    style: TextStyle(color: context.palette.secondaryText),
                   ),
                 ),
                 SizedBox(width: 8.w),
@@ -166,12 +169,12 @@ class _HandwritingPadSheetState extends State<HandwritingPadSheet> {
                   onPressed: _submit,
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all(
-                      AppColors.vocabularyButton,
+                      context.palette.vocabularyButton,
                     ),
                   ),
                   child: Text(
                     'Nhận diện',
-                    style: TextStyle(color: AppColors.whiteText),
+                    style: TextStyle(color: context.palette.whiteText),
                   ),
                 ),
               ],
@@ -205,7 +208,7 @@ class _HandwritingPadSheetState extends State<HandwritingPadSheet> {
     );
     final contentWidth = clippedBounds.width <= 0 ? 1.0 : clippedBounds.width;
     final contentHeight = clippedBounds.height <= 0 ? 1.0 : clippedBounds.height;
-    final drawableSize = outputSize - (padding * 2);
+    const drawableSize = outputSize - (padding * 2);
     final scale = (drawableSize / contentWidth < drawableSize / contentHeight)
         ? drawableSize / contentWidth
         : drawableSize / contentHeight;
@@ -241,7 +244,7 @@ class _HandwritingPadSheetState extends State<HandwritingPadSheet> {
       final path = Path();
       final first = _transformPoint(stroke.first, scale, offsetX, offsetY);
       path.moveTo(first.dx, first.dy);
-      for (int i = 1; i < stroke.length; i++) {
+      for (var i = 1; i < stroke.length; i++) {
         final p = _transformPoint(stroke[i], scale, offsetX, offsetY);
         path.lineTo(p.dx, p.dy);
       }
@@ -269,9 +272,13 @@ class _HandwritingPadSheetState extends State<HandwritingPadSheet> {
 }
 
 class _HandwritingPainter extends CustomPainter {
-  final List<List<Offset>> strokes;
+  const _HandwritingPainter({
+    required this.strokes,
+    required this.strokeColor,
+  });
 
-  const _HandwritingPainter({required this.strokes});
+  final List<List<Offset>> strokes;
+  final Color strokeColor;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -279,7 +286,7 @@ class _HandwritingPainter extends CustomPainter {
       ..color = Colors.black12
       ..strokeWidth = 1.5;
     final strokePaint = Paint()
-      ..color = AppColors.primaryText
+      ..color = strokeColor
       ..strokeWidth = 10
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
@@ -303,7 +310,7 @@ class _HandwritingPainter extends CustomPainter {
 
       final path = Path()..moveTo(stroke.first.dx, stroke.first.dy);
 
-      for (int i = 1; i < stroke.length; i++) {
+      for (var i = 1; i < stroke.length; i++) {
         path.lineTo(stroke[i].dx, stroke[i].dy);
       }
 

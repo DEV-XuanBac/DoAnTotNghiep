@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/core/constants/community_constants.dart';
 import 'package:hanziilearnapp/app/providers/post_provider.dart';
 import 'package:hanziilearnapp/app/views/community/widgets/community_avatar.dart';
@@ -32,7 +32,7 @@ class _CommunityCreatePostDialogState extends State<CommunityCreatePostDialog> {
       child: Container(
         padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
-          color: AppColors.backgroundWhite,
+          color: context.palette.backgroundWhite,
           borderRadius: BorderRadius.circular(16.r),
         ),
         child: Column(
@@ -56,7 +56,7 @@ class _CommunityCreatePostDialogState extends State<CommunityCreatePostDialog> {
                       child: Text(
                         displayName,
                         style: TextStyle(
-                          color: AppColors.primaryText,
+                          color: context.palette.primaryText,
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                         ),
@@ -72,11 +72,13 @@ class _CommunityCreatePostDialogState extends State<CommunityCreatePostDialog> {
               enabled: !_posting,
               maxLines: 5,
               minLines: 5,
+              style: TextStyle(color: context.palette.primaryText, fontSize: 13.sp),
               decoration: InputDecoration(
                 hintText: 'Nhập nội dung...',
                 hintStyle: TextStyle(
-                  color: AppColors.secondaryText,
+                  color: context.palette.secondaryText,
                   fontStyle: FontStyle.italic,
+                  fontSize: 12.sp,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16.r),
@@ -84,7 +86,7 @@ class _CommunityCreatePostDialogState extends State<CommunityCreatePostDialog> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16.r),
                   borderSide: BorderSide(
-                    color: AppColors.borderFocus,
+                    color: context.palette.borderFocus,
                     width: 1.w,
                   ),
                 ),
@@ -103,8 +105,8 @@ class _CommunityCreatePostDialogState extends State<CommunityCreatePostDialog> {
                   child: Text(
                     'Quay lại',
                     style: TextStyle(
-                      color: AppColors.primaryText,
-                      fontSize: 14.sp,
+                      color: context.palette.primaryText,
+                      fontSize: 10.sp,
                     ),
                   ),
                 ),
@@ -112,12 +114,12 @@ class _CommunityCreatePostDialogState extends State<CommunityCreatePostDialog> {
                 TextButton(
                   onPressed: _posting
                       ? null
-                      : () => setState(() => _composerController.clear()),
+                      : () => setState(_composerController.clear),
                   child: Text(
                     'Xóa',
                     style: TextStyle(
-                      color: AppColors.errorText,
-                      fontSize: 14.sp,
+                      color: context.palette.errorText,
+                      fontSize: 10.sp,
                     ),
                   ),
                 ),
@@ -126,8 +128,10 @@ class _CommunityCreatePostDialogState extends State<CommunityCreatePostDialog> {
                       ? null
                       : () async {
                           final content = _composerController.text.trim();
+                          final messenger = ScaffoldMessenger.of(context);
+                          final navigator = Navigator.of(context);
                           if (content.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            messenger.showSnackBar(
                               const SnackBar(
                                 content: Text('Hãy nhập nội dung bài đăng.'),
                               ),
@@ -137,11 +141,15 @@ class _CommunityCreatePostDialogState extends State<CommunityCreatePostDialog> {
                           setState(() => _posting = true);
                           try {
                             await postProvider.createPost(content);
-                            if (!mounted) return;
-                            Navigator.pop(context, true);
+                            if (!mounted) {
+                              return;
+                            }
+                            navigator.pop(true);
                           } catch (error) {
-                            if (!mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            if (!mounted) {
+                              return;
+                            }
+                            messenger.showSnackBar(
                               SnackBar(content: Text(error.toString())),
                             );
                           } finally {
@@ -151,26 +159,29 @@ class _CommunityCreatePostDialogState extends State<CommunityCreatePostDialog> {
                           }
                         },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.backgroundLight,
-                    foregroundColor: AppColors.primaryText,
+                    backgroundColor: context.palette.backgroundLight,
+                    foregroundColor: context.palette.primaryText,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.r),
                       side: BorderSide(
-                        color: AppColors.borderDefault,
+                        color: context.palette.borderDefault,
                         width: 1.w,
                       ),
                     ),
                   ),
                   child: _posting
                       ? SizedBox(
-                          width: 16.w,
-                          height: 16.w,
+                          width: 14.w,
+                          height: 14.w,
                           child: CircularProgressIndicator(
                             strokeWidth: 2.w,
-                            color: AppColors.blueDarkText,
+                            color: context.palette.blueDarkText,
                           ),
                         )
-                      : const Text(CommunityConstants.createPost),
+                      : Text(
+                          CommunityConstants.createPost,
+                          style: TextStyle(fontSize: 12.sp),
+                        ),
                 ),
               ],
             ),

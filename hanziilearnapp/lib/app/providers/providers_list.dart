@@ -1,16 +1,60 @@
+import 'package:hanziilearnapp/app/datasource/repository/dictionary_repository.dart';
+import 'package:hanziilearnapp/app/datasource/repository/exam_attempt_repository.dart';
+import 'package:hanziilearnapp/app/datasource/repository/hsk_exam_repository.dart';
+import 'package:hanziilearnapp/app/datasource/repository/notebook_repository.dart';
+import 'package:hanziilearnapp/app/datasource/repository/post_repository.dart';
+import 'package:hanziilearnapp/app/datasource/repository/review_repository.dart';
 import 'package:hanziilearnapp/app/providers/auth_provider.dart';
 import 'package:hanziilearnapp/app/providers/dictionary_provider.dart';
 import 'package:hanziilearnapp/app/providers/lesson_provider.dart';
+import 'package:hanziilearnapp/app/providers/notebook_provider.dart';
 import 'package:hanziilearnapp/app/providers/post_provider.dart';
+import 'package:hanziilearnapp/app/providers/review_provider.dart';
 import 'package:hanziilearnapp/app/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
-/// Danh sách provider đăng ký trong [MultiProvider] (pattern hit-moments).
-List<SingleChildWidget> get appProviders => [
-  ChangeNotifierProvider(create: (_) => DictionaryProvider()),
-  ChangeNotifierProvider(create: (_) => LessonProvider()),
-  ChangeNotifierProvider(create: (_) => AuthProvider()),
-  ChangeNotifierProvider(create: (_) => PostProvider()),
-  ChangeNotifierProvider(create: (_) => ThemeProvider()),
+/// Danh sách provider đăng ký trong [MultiProvider].
+///
+/// Thứ tự:
+/// 1. **Repository singletons** (Provider<IXxxRepository>) — đăng ký TRƯỚC
+///    để các ChangeNotifierProvider phía sau có thể `context.read<IXxx>()`
+///    trong `create:`. Repos là stateless wrapper quanh Firestore, mock-able
+///    qua constructor `FirebaseFirestore?`.
+/// 2. **ChangeNotifier providers** — inject repo từ context khi tạo. Tất cả
+///    đặt `lazy: true` (mặc định) trừ `ThemeProvider` để [MaterialApp] đọc
+///    `themeMode` ngay khi root build.
+List<SingleChildWidget> get appProviders => <SingleChildWidget>[
+  Provider<IDictionaryRepository>(create: (_) => DictionaryRepository()),
+  Provider<IHskExamRepository>(create: (_) => HskExamRepository()),
+  Provider<INotebookRepository>(create: (_) => NotebookRepository()),
+  Provider<IReviewRepository>(create: (_) => ReviewRepository()),
+  Provider<IPostRepository>(create: (_) => PostRepository()),
+  Provider<IExamAttemptRepository>(create: (_) => ExamAttemptRepository()),
+
+  ChangeNotifierProvider<DictionaryProvider>(
+    create: (ctx) =>
+        DictionaryProvider(repository: ctx.read<IDictionaryRepository>()),
+  ),
+  ChangeNotifierProvider<LessonProvider>(
+    create: (ctx) => LessonProvider(
+      dictionaryRepository: ctx.read<IDictionaryRepository>(),
+      examRepository: ctx.read<IHskExamRepository>(),
+    ),
+  ),
+  ChangeNotifierProvider<NotebookProvider>(
+    create: (ctx) =>
+        NotebookProvider(repository: ctx.read<INotebookRepository>()),
+  ),
+  ChangeNotifierProvider<ReviewProvider>(
+    create: (ctx) => ReviewProvider(repository: ctx.read<IReviewRepository>()),
+  ),
+  ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
+  ChangeNotifierProvider<PostProvider>(
+    create: (ctx) => PostProvider(repository: ctx.read<IPostRepository>()),
+  ),
+  ChangeNotifierProvider<ThemeProvider>(
+    create: (_) => ThemeProvider(),
+    lazy: false,
+  ),
 ];

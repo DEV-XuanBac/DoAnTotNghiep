@@ -1,8 +1,8 @@
-import 'dart:math';
+﻿import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/models/word_model.dart';
 
 class ReviewTab extends StatefulWidget {
@@ -405,7 +405,7 @@ class _ReviewTabState extends State<ReviewTab> {
               width: double.infinity,
               padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
-                color: AppColors.backgroundWhite,
+                color: context.palette.backgroundWhite,
                 borderRadius: BorderRadius.circular(16.r),
               ),
               child: Column(
@@ -416,7 +416,7 @@ class _ReviewTabState extends State<ReviewTab> {
                     style: TextStyle(
                       fontSize: 22.sp,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.greenText,
+                      color: context.palette.greenText,
                     ),
                   ),
                   SizedBox(height: 8.h),
@@ -480,7 +480,7 @@ class _ReviewTabState extends State<ReviewTab> {
                   if (wrongItems.isEmpty)
                     Text(
                       'Không có câu sai.',
-                      style: TextStyle(color: AppColors.greenText),
+                      style: TextStyle(color: context.palette.greenText),
                     ),
                   ...wrongItems.asMap().entries.map((entry) {
                     final index = entry.key;
@@ -489,7 +489,7 @@ class _ReviewTabState extends State<ReviewTab> {
                       margin: EdgeInsets.only(bottom: 8.h),
                       padding: EdgeInsets.all(10.w),
                       decoration: BoxDecoration(
-                        color: AppColors.backgroundWhite,
+                        color: context.palette.backgroundWhite,
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: Column(
@@ -499,7 +499,7 @@ class _ReviewTabState extends State<ReviewTab> {
                           Text('Bạn chọn: ${item['userAnswer']}'),
                           Text(
                             'Đáp án đúng: ${item['correctAnswer']}',
-                            style: TextStyle(color: AppColors.greenText),
+                            style: TextStyle(color: context.palette.greenText),
                           ),
                         ],
                       ),
@@ -517,7 +517,7 @@ class _ReviewTabState extends State<ReviewTab> {
       return Center(
         child: Text(
           'Cần ít nhất 2 từ để bắt đầu ôn tập.',
-          style: TextStyle(color: AppColors.secondaryText),
+          style: TextStyle(color: context.palette.secondaryText),
         ),
       );
     }
@@ -540,7 +540,7 @@ class _ReviewTabState extends State<ReviewTab> {
             Text(
               'Đúng: $_correctCount | Sai: $wrongCount',
               style: TextStyle(
-                color: AppColors.primaryText,
+                color: context.palette.primaryText,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -552,14 +552,14 @@ class _ReviewTabState extends State<ReviewTab> {
               SizedBox(height: 10.h),
               Text(
                 'Lỗi lưu kết quả: $_saveError',
-                style: TextStyle(color: AppColors.errorText),
+                style: TextStyle(color: context.palette.errorText),
               ),
             ],
             SizedBox(height: 10.h),
             if (_wrongItems.isEmpty)
               Text(
                 'Tuyệt vời! Không có câu sai.',
-                style: TextStyle(color: AppColors.greenText),
+                style: TextStyle(color: context.palette.greenText),
               )
             else
               Expanded(
@@ -571,10 +571,10 @@ class _ReviewTabState extends State<ReviewTab> {
                     return Container(
                       padding: EdgeInsets.all(12.w),
                       decoration: BoxDecoration(
-                        color: AppColors.backgroundWhite,
+                        color: context.palette.backgroundWhite,
                         borderRadius: BorderRadius.circular(12.r),
                         border: Border.all(
-                          color: AppColors.borderDefault.withValues(alpha: 0.6),
+                          color: context.palette.borderDefault.withValues(alpha: 0.6),
                         ),
                       ),
                       child: Column(
@@ -584,14 +584,14 @@ class _ReviewTabState extends State<ReviewTab> {
                             'Câu sai ${index + 1}: ${item.question}',
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
-                              color: AppColors.primaryText,
+                              color: context.palette.primaryText,
                             ),
                           ),
                           SizedBox(height: 4.h),
                           Text('Bạn chọn: ${item.userAnswer}'),
                           Text(
                             'Đáp án đúng: ${item.correctAnswer}',
-                            style: TextStyle(color: AppColors.greenText),
+                            style: TextStyle(color: context.palette.greenText),
                           ),
                         ],
                       ),
@@ -625,7 +625,7 @@ class _ReviewTabState extends State<ReviewTab> {
               width: double.infinity,
               padding: EdgeInsets.all(14.w),
               decoration: BoxDecoration(
-                color: AppColors.backgroundWhite,
+                color: context.palette.backgroundWhite,
                 borderRadius: BorderRadius.circular(18.r),
               ),
               child: Row(
@@ -667,7 +667,7 @@ class _ReviewTabState extends State<ReviewTab> {
               width: double.infinity,
               padding: EdgeInsets.all(18.w),
               decoration: BoxDecoration(
-                color: AppColors.backgroundWhite,
+                color: context.palette.backgroundWhite,
                 borderRadius: BorderRadius.circular(18.r),
               ),
               child: Column(
@@ -676,7 +676,7 @@ class _ReviewTabState extends State<ReviewTab> {
                     _gameType == _ReviewGameType.matchMeaning
                         ? 'Chọn nghĩa đúng cho từ:'
                         : 'Điền từ còn thiếu:',
-                    style: TextStyle(color: AppColors.secondaryText),
+                    style: TextStyle(color: context.palette.secondaryText),
                   ),
                   SizedBox(height: 8.h),
                   Text(
@@ -687,7 +687,7 @@ class _ReviewTabState extends State<ReviewTab> {
                     style: TextStyle(
                       fontSize: 24.sp,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.primaryText,
+                      color: context.palette.primaryText,
                     ),
                   ),
                   SizedBox(height: 6.h),
@@ -695,7 +695,7 @@ class _ReviewTabState extends State<ReviewTab> {
                     'Pinyin: ${_gameType == _ReviewGameType.fillBlank ? _questionPinyinFor(_currentWord!) : _currentWord!.pinyin}',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: AppColors.secondaryText,
+                      color: context.palette.secondaryText,
                       fontSize: 14.sp,
                     ),
                   ),
@@ -723,18 +723,24 @@ class _ReviewTabState extends State<ReviewTab> {
                 _feedback!,
                 style: TextStyle(
                   color: _feedback!.startsWith('Chính')
-                      ? AppColors.greenText
-                      : AppColors.errorText,
+                      ? context.palette.greenText
+                      : context.palette.errorText,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ),
           const Spacer(),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: _answeredCurrent ? _nextRound : null,
-              child: Text(_round >= _targetQuestions ? 'Hoàn thành' : 'Câu tiếp theo'),
+          SafeArea(
+            top: false,
+            minimum: EdgeInsets.only(bottom: 8.h),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _answeredCurrent ? _nextRound : null,
+                child: Text(
+                  _round >= _targetQuestions ? 'Hoàn thành' : 'Câu tiếp theo',
+                ),
+              ),
             ),
           ),
         ],
@@ -766,15 +772,15 @@ class _PairChoiceButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final borderColor = matched
-        ? AppColors.greenText
+        ? context.palette.greenText
         : selected
-            ? AppColors.blueDarkText
-            : AppColors.borderDefault;
+            ? context.palette.blueDarkText
+            : context.palette.borderDefault;
     final bgColor = matched
-        ? AppColors.greenText.withValues(alpha: 0.12)
+        ? context.palette.greenText.withValues(alpha: 0.12)
         : selected
-            ? AppColors.blueDarkText.withValues(alpha: 0.1)
-            : AppColors.backgroundWhite;
+            ? context.palette.blueDarkText.withValues(alpha: 0.1)
+            : context.palette.backgroundWhite;
 
     return Padding(
       padding: EdgeInsets.only(bottom: 8.h),
@@ -793,7 +799,7 @@ class _PairChoiceButton extends StatelessWidget {
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: AppColors.primaryText,
+              color: context.palette.primaryText,
               fontWeight: FontWeight.w600,
             ),
           ),

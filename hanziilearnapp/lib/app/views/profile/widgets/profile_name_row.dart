@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 
 class ProfileNameRow extends StatelessWidget {
   const ProfileNameRow({
@@ -86,7 +86,7 @@ class ProfileNameRow extends StatelessWidget {
           IconButton(
             tooltip: 'Xác nhận $label',
             onPressed: canEdit ? onSaveTap : null,
-            icon: Icon(Icons.check_circle_rounded, size: 22.sp, color: AppColors.greenText),
+            icon: Icon(Icons.check_circle_rounded, size: 22.sp, color: context.palette.greenText),
           )
         else
           SizedBox(width: 40.w),

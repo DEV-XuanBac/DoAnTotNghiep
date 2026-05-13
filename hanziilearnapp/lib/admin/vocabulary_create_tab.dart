@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/datasource/services/admin_vocabulary_service.dart';
 
 class VocabularyCreateTab extends StatefulWidget {
@@ -97,7 +97,7 @@ class _VocabularyCreateTabState extends State<VocabularyCreateTab> {
         return Row(
           children: [
             Expanded(flex: 11, child: leftPanel),
-            VerticalDivider(width: 1.w, thickness: 1.w, color: AppColors.borderDefault.withValues(alpha: 0.4)),
+            VerticalDivider(width: 1.w, thickness: 1.w, color: context.palette.borderDefault.withValues(alpha: 0.4)),
             Expanded(flex: 10, child: rightPanel),
           ],
         );
@@ -108,10 +108,10 @@ class _VocabularyCreateTabState extends State<VocabularyCreateTab> {
   Widget _buildHintCard() => Container(
     width: double.infinity,
     padding: EdgeInsets.all(12.w),
-    decoration: BoxDecoration(color: AppColors.lightCardBackground, borderRadius: BorderRadius.circular(12.r)),
+    decoration: BoxDecoration(color: context.palette.lightCardBackground, borderRadius: BorderRadius.circular(12.r)),
     child: Text(
       'Schema lưu vào collection "dictionary": stt, level, hskLevel, hanzi, pinyin, meaning, topic, ttsUrl, exampleHanzi, examplePinyin, exampleMeaning, updatedAt.',
-      style: TextStyle(fontSize: 12.sp, color: AppColors.primaryText),
+      style: TextStyle(fontSize: 12.sp, color: context.palette.primaryText),
     ),
   );
 
@@ -122,7 +122,7 @@ class _VocabularyCreateTabState extends State<VocabularyCreateTab> {
       decoration: InputDecoration(
         labelText: label,
         filled: true,
-        fillColor: AppColors.backgroundWhite,
+        fillColor: context.palette.backgroundWhite,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
       ),
       validator: required
@@ -139,7 +139,7 @@ class _VocabularyCreateTabState extends State<VocabularyCreateTab> {
       decoration: InputDecoration(
         labelText: 'Level',
         filled: true,
-        fillColor: AppColors.backgroundWhite,
+        fillColor: context.palette.backgroundWhite,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
       ),
       items: _hskLevels.map((level) => DropdownMenuItem(value: level, child: Text(level))).toList(),
@@ -161,7 +161,7 @@ class _VocabularyCreateTabState extends State<VocabularyCreateTab> {
       decoration: InputDecoration(
         labelText: 'STT (tự động)',
         filled: true,
-        fillColor: AppColors.backgroundWhite,
+        fillColor: context.palette.backgroundWhite,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
         suffixIcon: _loadingStt
             ? SizedBox(
@@ -182,25 +182,25 @@ class _VocabularyCreateTabState extends State<VocabularyCreateTab> {
     width: double.infinity,
     padding: EdgeInsets.all(12.w),
     decoration: BoxDecoration(
-      color: AppColors.backgroundWhite,
+      color: context.palette.backgroundWhite,
       borderRadius: BorderRadius.circular(12.r),
-      border: Border.all(color: AppColors.borderDefault.withValues(alpha: 0.7)),
+      border: Border.all(color: context.palette.borderDefault.withValues(alpha: 0.7)),
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Danh sách từ vựng theo cấp độ $_selectedHskLevel',
-          style: TextStyle(color: AppColors.primaryText, fontWeight: FontWeight.w700, fontSize: 14.sp),
+          style: TextStyle(color: context.palette.primaryText, fontWeight: FontWeight.w700, fontSize: 14.sp),
         ),
         SizedBox(height: 10.h),
         StreamBuilder<List<Map<String, dynamic>>>(
           stream: _vocabularyService.watchWordsByLvl(_selectedHskLevel),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
-            if (snapshot.hasError) return Text('Không tải được danh sách từ vựng.', style: TextStyle(color: AppColors.errorText));
+            if (snapshot.hasError) return Text('Không tải được danh sách từ vựng.', style: TextStyle(color: context.palette.errorText));
             final docs = snapshot.data ?? const <Map<String, dynamic>>[];
-            if (docs.isEmpty) return Text('Chưa có từ vựng cho $_selectedHskLevel.', style: TextStyle(color: AppColors.secondaryText, fontStyle: FontStyle.italic));
+            if (docs.isEmpty) return Text('Chưa có từ vựng cho $_selectedHskLevel.', style: TextStyle(color: context.palette.secondaryText, fontStyle: FontStyle.italic));
             return ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -214,10 +214,10 @@ class _VocabularyCreateTabState extends State<VocabularyCreateTab> {
                 final meaning = (data['meaning'] ?? '').toString();
                 return Container(
                   padding: EdgeInsets.all(10.w),
-                  decoration: BoxDecoration(color: AppColors.backgroundLight.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(10.r)),
+                  decoration: BoxDecoration(color: context.palette.backgroundLight.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(10.r)),
                   child: Text(
                     '$stt. $hanzi [$pinyin] - $meaning',
-                    style: TextStyle(color: AppColors.primaryText, fontSize: 13.sp, fontWeight: FontWeight.w600),
+                    style: TextStyle(color: context.palette.primaryText, fontSize: 13.sp, fontWeight: FontWeight.w600),
                   ),
                 );
               },

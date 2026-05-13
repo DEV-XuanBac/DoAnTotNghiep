@@ -1,13 +1,11 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+﻿import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
-import 'package:hanziilearnapp/app/providers/theme_provider.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/views/community/community_view.dart';
 import 'package:hanziilearnapp/app/views/home/home_view.dart';
 import 'package:hanziilearnapp/app/views/lesson/lesson_view.dart';
 import 'package:hanziilearnapp/app/views/translate/translate_view.dart';
-import 'package:provider/provider.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({super.key, this.initialIndex = 0});
@@ -38,7 +36,6 @@ class _BottomNavState extends State<BottomNav> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<ThemeProvider>().isDarkMode;
     final pages = <Widget>[
       HomeView(
         onRequestTabChange: (index) {
@@ -51,24 +48,27 @@ class _BottomNavState extends State<BottomNav> {
     ];
 
     return Scaffold(
-      bottomNavigationBar: CurvedNavigationBar(
-        key: _bottomNavKey,
-        height: 60.h,
-        backgroundColor: AppColors.backgroundLight,
-        color: AppColors.bottomNavBarBackground,
-        animationDuration: const Duration(milliseconds: 300),
-        index: _selectedIndex,
-        onTap: (index) => _goToTab(index),
-        items: _icons
-            .map(
-              (path) => Image.asset(
-                path,
-                width: 24.w,
-                height: 24.h,
-                color: AppColors.bottomButton,
-              ),
-            )
-            .toList(),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: CurvedNavigationBar(
+          key: _bottomNavKey,
+          height: 50.h,
+          backgroundColor: context.palette.backgroundLight,
+          color: context.palette.bottomNavBarBackground,
+          animationDuration: const Duration(milliseconds: 300),
+          index: _selectedIndex,
+          onTap: _goToTab,
+          items: _icons
+              .map(
+                (path) => Image.asset(
+                  path,
+                  width: 24.w,
+                  height: 24.h,
+                  color: context.palette.bottomButton,
+                ),
+              )
+              .toList(),
+        ),
       ),
       body: pages[_selectedIndex],
     );
@@ -83,5 +83,4 @@ class _BottomNavState extends State<BottomNav> {
       _bottomNavKey.currentState?.setPage(safeIndex);
     }
   }
-
 }

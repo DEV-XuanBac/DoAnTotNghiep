@@ -1,14 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hanziilearnapp/app/models/hsk_exam_model.dart';
 
-class HskExamService {
-  HskExamService({FirebaseFirestore? firestore})
+/// Đọc đề thi HSK từ Firestore (collection `hsk_exams`).
+abstract class IHskExamRepository {
+  Future<List<HskExam>> getExamsByLevel(String level);
+
+  Future<HskExamDetail> getExamDetail(String examId);
+}
+
+class HskExamRepository implements IHskExamRepository {
+  HskExamRepository({FirebaseFirestore? firestore})
     : _firestore = firestore ?? FirebaseFirestore.instance;
 
   final FirebaseFirestore _firestore;
   static const String _collection = 'hsk_exams';
 
-  Future<List<HskExam>> getExamsByLvl(String level) async {
+  @override
+  Future<List<HskExam>> getExamsByLevel(String level) async {
     final lvl = level.toUpperCase();
     final snap = await _firestore
         .collection(_collection)
@@ -24,7 +32,8 @@ class HskExamService {
     return exams;
   }
 
-  Future<HskExamDetail> getExamDtl(String examId) async {
+  @override
+  Future<HskExamDetail> getExamDetail(String examId) async {
     final doc = await _firestore.collection(_collection).doc(examId).get();
     if (!doc.exists) {
       throw Exception('Không tìm thấy đề thi trên Firestore.');

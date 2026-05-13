@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 
 class CameraCaptureControls extends StatelessWidget {
   const CameraCaptureControls({
@@ -29,7 +29,7 @@ class CameraCaptureControls extends StatelessWidget {
               icon: Icon(
                 Icons.flip_camera_ios_rounded,
                 size: 28.sp,
-                color: AppColors.whiteText,
+                color: context.palette.whiteText,
               ),
             ),
             GestureDetector(
@@ -39,7 +39,7 @@ class CameraCaptureControls extends StatelessWidget {
                 height: 68.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.whiteText, width: 3.w),
+                  border: Border.all(color: context.palette.whiteText, width: 3.w),
                 ),
                 child: Center(
                   child: Container(
@@ -47,7 +47,7 @@ class CameraCaptureControls extends StatelessWidget {
                     height: 52.w,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: isCapturing ? Colors.grey : AppColors.whiteText,
+                      color: isCapturing ? Colors.grey : context.palette.whiteText,
                     ),
                   ),
                 ),
@@ -58,7 +58,7 @@ class CameraCaptureControls extends StatelessWidget {
               icon: Icon(
                 Icons.close_rounded,
                 size: 28.sp,
-                color: AppColors.whiteText,
+                color: context.palette.whiteText,
               ),
             ),
           ],

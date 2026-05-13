@@ -6,23 +6,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:hanziilearnapp/app/datasource/local/local_pronunciation_service.dart';
 import 'package:hanziilearnapp/app/datasource/network_services/translate_service.dart';
 import 'package:lpinyin/lpinyin.dart';
-import 'package:speech_to_text/speech_to_text.dart';
 
 class TranslateController extends ChangeNotifier {
   TranslateController({
     TranslationService? translationService,
-    SpeechToText? speechToText,
+    LocalPronunciationService? speechService,
     FirebaseFirestore? firestore,
     FirebaseAuth? auth,
   }) : _translationService = translationService ?? TranslationService(),
-       _speechToText = speechToText ?? SpeechToText(),
+       _speechService = speechService ?? LocalPronunciationService(),
        _firestore = firestore ?? FirebaseFirestore.instance,
        _auth = auth ?? FirebaseAuth.instance;
 
   final TranslationService _translationService;
-  final SpeechToText _speechToText;
+  final LocalPronunciationService _speechService;
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
   final TextEditingController inputController = TextEditingController();
@@ -64,7 +64,7 @@ class TranslateController extends ChangeNotifier {
   void dispose() {
     _isDisposed = true;
     _debounceTimer?.cancel();
-    _speechToText.cancel();
+    _speechService.cancel();
     inputController.dispose();
     super.dispose();
   }
@@ -183,7 +183,7 @@ class TranslateController extends ChangeNotifier {
       errorMessage = 'Không thể xử lý ảnh.';
       _notify();
     } finally {
-      textRecognizer.close();
+      unawaited(textRecognizer.close());
     }
   }
 
@@ -193,79 +193,34 @@ class TranslateController extends ChangeNotifier {
       return;
     }
 
-    errorMessage = null;
-    _notify();
-
-    final available = await _speechToText.initialize(
-      onStatus: (status) {
-        final listening = status == 'listening';
-        if (isListening != listening) {
-          isListening = listening;
-          _notify();
-        }
-      },
-      onError: (_) {
-        isListening = false;
-        errorMessage = 'Không thể nhận diện giọng nói.';
-        _notify();
-      },
-    );
-
-    if (!available) {
-      errorMessage = 'Thiết bị không hỗ trợ nhận diện giọng nói.';
+    try {
+      isListening = true;
+      errorMessage = null;
       _notify();
-      return;
+
+      await _speechService.startListen(
+        localeId: sourceLanguage == 'vi' ? 'vi-VN' : 'zh-CN',
+        onPartialResult: (text) {
+          final recognizedWords = text.trim();
+          if (recognizedWords.isEmpty) return;
+          inputController.value = TextEditingValue(
+            text: recognizedWords,
+            selection: TextSelection.collapsed(offset: recognizedWords.length),
+          );
+        },
+      );
+    } catch (_) {
+      isListening = false;
+      errorMessage = 'Không thể nhận diện giọng nói.';
+      _notify();
     }
 
-    final localeId = await _resolveSpeechLocaleId();
-
-    await _speechToText.listen(
-      localeId: localeId,
-      listenOptions: SpeechListenOptions(partialResults: true, cancelOnError: true),
-      onResult: (result) {
-        final recognizedWords = result.recognizedWords.trim();
-        if (recognizedWords.isEmpty) return;
-
-        inputController.value = TextEditingValue(
-          text: recognizedWords,
-          selection: TextSelection.collapsed(offset: recognizedWords.length),
-        );
-
-        if (!isListening) {
-          isListening = true;
-          _notify();
-        }
-      },
-    );
-
-    isListening = true;
-    _notify();
   }
 
   Future<void> stopListening() async {
-    await _speechToText.stop();
+    await _speechService.stopListening();
     isListening = false;
     _notify();
-  }
-
-  Future<String?> _resolveSpeechLocaleId() async {
-    final locales = await _speechToText.locales();
-    final systemLocale = await _speechToText.systemLocale();
-    final preferredPrefixes = sourceLanguage == 'vi'
-        ? const ['vi', 'en']
-        : const ['zh', 'cmn', 'yue'];
-
-    for (final prefix in preferredPrefixes) {
-      for (final locale in locales) {
-        final localeId = locale.localeId.toLowerCase();
-        final name = locale.name.toLowerCase();
-        if (localeId.startsWith(prefix) || name.contains(prefix)) {
-          return locale.localeId;
-        }
-      }
-    }
-
-    return systemLocale?.localeId;
   }
 
   Future<void> switchLanguage() async {
@@ -333,7 +288,6 @@ class TranslateController extends ChangeNotifier {
 
     return PinyinHelper.getPinyin(
       value,
-      separator: ' ',
       format: PinyinFormat.WITH_TONE_MARK,
     );
   }

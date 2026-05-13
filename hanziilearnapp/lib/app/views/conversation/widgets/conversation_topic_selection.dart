@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/core/constants/conversation_constants.dart';
 import 'package:hanziilearnapp/app/datasource/network_services/conversation_ai_service.dart';
 import 'package:hanziilearnapp/app/models/conversation_model.dart';
@@ -31,13 +31,13 @@ class ConversationTopicSelection extends StatelessWidget {
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.w500,
-              color: AppColors.primaryText,
+              color: context.palette.primaryText,
             ),
           ),
           SizedBox(height: 6.h),
           Text(
             ConversationConstants.topicSubtitle,
-            style: TextStyle(fontSize: 12.sp, color: AppColors.secondaryText),
+            style: TextStyle(fontSize: 12.sp, color: context.palette.secondaryText),
           ),
           SizedBox(height: 12.h),
           _HskRow(hsk: hsk, onHsk: onHsk),
@@ -46,12 +46,12 @@ class ConversationTopicSelection extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
-                color: AppColors.errorText.withValues(alpha: 0.1),
+                color: context.palette.errorText.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Text(
                 err!,
-                style: TextStyle(color: AppColors.errorText, fontSize: 13.sp),
+                style: TextStyle(color: context.palette.errorText, fontSize: 13.sp),
               ),
             ),
             SizedBox(height: 12.h),
@@ -88,10 +88,10 @@ class _HskRow extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
       decoration: BoxDecoration(
-        color: AppColors.backgroundWhite,
+        color: context.palette.backgroundWhite,
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
-          color: AppColors.borderDefault.withValues(alpha: 0.5),
+          color: context.palette.borderDefault.withValues(alpha: 0.5),
         ),
       ),
       child: Row(
@@ -101,7 +101,7 @@ class _HskRow extends StatelessWidget {
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w600,
-              color: AppColors.primaryText,
+              color: context.palette.primaryText,
             ),
           ),
           SizedBox(width: 12.w),
@@ -123,13 +123,13 @@ class _HskRow extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: on
-                              ? AppColors.darkBlueCard
-                              : AppColors.backgroundWhite,
+                              ? context.palette.darkBlueCard
+                              : context.palette.backgroundWhite,
                           borderRadius: BorderRadius.circular(16.r),
                           border: Border.all(
                             color: on
-                                ? AppColors.darkBlueCard
-                                : AppColors.borderDefault,
+                                ? context.palette.darkBlueCard
+                                : context.palette.borderDefault,
                           ),
                         ),
                         child: Text(
@@ -138,8 +138,8 @@ class _HskRow extends StatelessWidget {
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w600,
                             color: on
-                                ? AppColors.whiteText
-                                : AppColors.primaryText,
+                                ? context.palette.whiteText
+                                : context.palette.primaryText,
                           ),
                         ),
                       ),
@@ -165,12 +165,12 @@ class _TopicTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              AppColors.darkBlueCard.withValues(alpha: 0.85),
-              AppColors.darkGreenCard.withValues(alpha: 0.65),
+              context.palette.darkBlueCard.withValues(alpha: 0.85),
+              context.palette.darkGreenCard.withValues(alpha: 0.65),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -178,7 +178,7 @@ class _TopicTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
-              color: AppColors.darkBlueCard.withValues(alpha: 0.2),
+              color: context.palette.darkBlueCard.withValues(alpha: 0.2),
               blurRadius: 8,
               offset: const Offset(0, 3),
             ),
@@ -187,22 +187,23 @@ class _TopicTile extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(t.icon, style: TextStyle(fontSize: 30.sp)),
+            Text(t.icon, style: TextStyle(fontSize: 28.sp)),
             SizedBox(height: 6.h),
             Text(
               t.nameCn,
               style: TextStyle(
-                fontSize: 16.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.bold,
-                color: AppColors.whiteText,
+                color: context.palette.whiteText,
               ),
             ),
             SizedBox(height: 2.h),
             Text(
               t.nameVi,
               style: TextStyle(
-                fontSize: 14.sp,
-                color: AppColors.whiteText.withValues(alpha: 0.85),
+                fontSize: 10.sp,
+                overflow: TextOverflow.ellipsis,
+                color: context.palette.whiteText.withValues(alpha: 0.85),
               ),
             ),
           ],

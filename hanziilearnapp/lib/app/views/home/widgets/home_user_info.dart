@@ -2,11 +2,33 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/views/authencation/login_view.dart';
-import 'package:hanziilearnapp/app/views/profile/profile_view.dart';
+import 'package:hanziilearnapp/app/core/router/app_router.dart';
+import 'package:hanziilearnapp/widgets/app_network_image.dart';
 
-class HomeUserInfo extends StatelessWidget {
+class HomeUserInfo extends StatefulWidget {
   const HomeUserInfo({super.key});
+
+  @override
+  State<HomeUserInfo> createState() => _HomeUserInfoState();
+}
+
+class _HomeUserInfoState extends State<HomeUserInfo> {
+  /// Cache Firestore profile `Future` theo `uid` để khi `authStateChanges`
+  /// emit lại (cùng user) không re-fetch.
+  Future<DocumentSnapshot<Map<String, dynamic>>>? _profileFuture;
+  String? _cachedUid;
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> _profileFor(String uid) {
+    if (_cachedUid == uid && _profileFuture != null) {
+      return _profileFuture!;
+    }
+    _cachedUid = uid;
+    _profileFuture = FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get();
+    return _profileFuture!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,38 +37,30 @@ class HomeUserInfo extends StatelessWidget {
       builder: (context, authSnapshot) {
         final currentUser = authSnapshot.data;
         if (currentUser == null) {
+          _cachedUid = null;
+          _profileFuture = null;
           return _HomeUserInfoRow(
             displayName: 'Đăng nhập',
             avatar: '',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const LoginView()),
-              );
-            },
+            onTap: () => AppRouter.pushLogin(context),
           );
         }
 
         return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-          future:
-              FirebaseFirestore.instance.collection('users').doc(currentUser.uid).get(),
+          future: _profileFor(currentUser.uid),
           builder: (context, profileSnapshot) {
             final profile = profileSnapshot.data?.data();
-            final displayName = (profile?['usename_vie'] ?? '').toString().trim();
+            final displayName = (profile?['usename_vie'] ?? '')
+                .toString()
+                .trim();
             final avatar = (profile?['avatar'] ?? '').toString().trim();
 
             return _HomeUserInfoRow(
-              displayName:
-                  displayName.isEmpty
-                      ? currentUser.email ?? 'Người dùng'
-                      : displayName,
+              displayName: displayName.isEmpty
+                  ? currentUser.email ?? 'Người dùng'
+                  : displayName,
               avatar: avatar,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ProfileDemoView()),
-                );
-              },
+              onTap: () => AppRouter.pushProfile(context),
             );
           },
         );
@@ -74,7 +88,7 @@ class _HomeUserInfoRow extends StatelessWidget {
           onTap: onTap,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(50),
-            child: _HomeAvatarImage(avatar: avatar),
+            child: AppNetworkImage(source: avatar, width: 48.w, height: 48.h),
           ),
         ),
         SizedBox(width: 10.w),
@@ -89,7 +103,7 @@ class _HomeUserInfoRow extends StatelessWidget {
             child: Text(
               displayName,
               style: TextStyle(
-                fontSize: 16.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
                 color: Colors.black87,
               ),
@@ -97,53 +111,6 @@ class _HomeUserInfoRow extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _HomeAvatarImage extends StatelessWidget {
-  const _HomeAvatarImage({required this.avatar});
-
-  final String avatar;
-
-  @override
-  Widget build(BuildContext context) {
-    const defaultAvatarPath = 'assets/logo/friend_logo.png';
-    if (avatar.isEmpty) {
-      return Image.asset(
-        defaultAvatarPath,
-        width: 48.w,
-        height: 48.h,
-        fit: BoxFit.cover,
-      );
-    }
-    if (avatar.startsWith('http://') || avatar.startsWith('https://')) {
-      return Image.network(
-        avatar,
-        width: 48.w,
-        height: 48.h,
-        fit: BoxFit.cover,
-        errorBuilder:
-            (_, __, ___) => Image.asset(
-              defaultAvatarPath,
-              width: 48.w,
-              height: 48.h,
-              fit: BoxFit.cover,
-            ),
-      );
-    }
-    return Image.asset(
-      avatar,
-      width: 48.w,
-      height: 48.h,
-      fit: BoxFit.cover,
-      errorBuilder:
-          (_, __, ___) => Image.asset(
-            defaultAvatarPath,
-            width: 48.w,
-            height: 48.h,
-            fit: BoxFit.cover,
-          ),
     );
   }
 }

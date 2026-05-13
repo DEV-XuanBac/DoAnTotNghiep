@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/models/lookup_history_item.dart';
 
 class LookupHistoryView extends StatefulWidget {
@@ -34,9 +34,9 @@ class _LookupHistoryViewState extends State<LookupHistoryView> {
     }).toList();
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundLight,
+        backgroundColor: context.palette.backgroundLight,
         elevation: 0,
         title: const Text('Lịch sử tra cứu'),
       ),
@@ -51,7 +51,7 @@ class _LookupHistoryViewState extends State<LookupHistoryView> {
                 hintText: 'Tìm theo Hán tự hoặc tiếng Việt',
                 prefixIcon: const Icon(Icons.search),
                 filled: true,
-                fillColor: AppColors.backgroundWhite,
+                fillColor: context.palette.backgroundWhite,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12.r),
                 ),
@@ -65,7 +65,7 @@ class _LookupHistoryViewState extends State<LookupHistoryView> {
                         'Chưa có lịch sử tra cứu',
                         style: TextStyle(
                           fontSize: 14.sp,
-                          color: AppColors.secondaryText,
+                          color: context.palette.secondaryText,
                         ),
                       ),
                     )
@@ -77,10 +77,10 @@ class _LookupHistoryViewState extends State<LookupHistoryView> {
                         return Container(
                           padding: EdgeInsets.all(12.w),
                           decoration: BoxDecoration(
-                            color: AppColors.backgroundWhite,
+                            color: context.palette.backgroundWhite,
                             borderRadius: BorderRadius.circular(12.r),
                             border: Border.all(
-                              color: AppColors.borderDefault.withValues(
+                              color: context.palette.borderDefault.withValues(
                                 alpha: 0.8,
                               ),
                             ),
@@ -93,7 +93,7 @@ class _LookupHistoryViewState extends State<LookupHistoryView> {
                                 style: TextStyle(
                                   fontSize: 20.sp,
                                   fontWeight: FontWeight.bold,
-                                  color: AppColors.primaryText,
+                                  color: context.palette.primaryText,
                                 ),
                               ),
                               SizedBox(height: 2.h),
@@ -101,7 +101,7 @@ class _LookupHistoryViewState extends State<LookupHistoryView> {
                                 item.word.pinyin,
                                 style: TextStyle(
                                   fontSize: 13.sp,
-                                  color: AppColors.secondaryText,
+                                  color: context.palette.secondaryText,
                                 ),
                               ),
                               SizedBox(height: 2.h),
@@ -109,7 +109,7 @@ class _LookupHistoryViewState extends State<LookupHistoryView> {
                                 item.word.meaning,
                                 style: TextStyle(
                                   fontSize: 14.sp,
-                                  color: AppColors.primaryText,
+                                  color: context.palette.primaryText,
                                 ),
                               ),
                               SizedBox(height: 8.h),
@@ -117,7 +117,7 @@ class _LookupHistoryViewState extends State<LookupHistoryView> {
                                 '${_formatDateTime(item.searchedAt)} • ${item.searchMode == 'hanzi' ? 'Tìm theo Hán tự' : 'Tìm theo tiếng Việt'}',
                                 style: TextStyle(
                                   fontSize: 11.sp,
-                                  color: AppColors.secondaryText,
+                                  color: context.palette.secondaryText,
                                 ),
                               ),
                             ],

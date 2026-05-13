@@ -4,11 +4,9 @@ class ApiConfig {
 
   static const String geminiKey = String.fromEnvironment(
     'GEMINI_API_KEY',
-    defaultValue: '',
   );
   static const String googleVisionKey = String.fromEnvironment(
     'GOOGLE_VISION_API_KEY',
-    defaultValue: '',
   );
 
   static bool get hasGemini =>

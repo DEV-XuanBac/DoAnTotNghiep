@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/models/community_post_model.dart';
 import 'package:hanziilearnapp/app/views/community/community_utils.dart';
 import 'package:hanziilearnapp/app/views/community/widgets/community_avatar.dart';
@@ -30,9 +30,9 @@ class CommunityPostCard extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 12.h),
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
       decoration: BoxDecoration(
-        color: AppColors.backgroundWhite,
+        color: context.palette.backgroundWhite,
         borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: AppColors.borderDefault, width: 1.w),
+        border: Border.all(color: context.palette.borderDefault, width: 1.w),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +50,7 @@ class CommunityPostCard extends StatelessWidget {
                           ? 'Người dùng'
                           : post.userName,
                       style: TextStyle(
-                        color: AppColors.primaryText,
+                        color: context.palette.primaryText,
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                       ),
@@ -58,7 +58,7 @@ class CommunityPostCard extends StatelessWidget {
                     Text(
                       formatCommunityTimeAgo(post.createdAt),
                       style: TextStyle(
-                        color: AppColors.secondaryText,
+                        color: context.palette.secondaryText,
                         fontSize: 10.sp,
                         fontStyle: FontStyle.italic,
                       ),
@@ -73,7 +73,7 @@ class CommunityPostCard extends StatelessWidget {
             child: Text(
               post.content,
               style: TextStyle(
-                color: AppColors.primaryText,
+                color: context.palette.primaryText,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
               ),
@@ -83,7 +83,7 @@ class CommunityPostCard extends StatelessWidget {
             padding: EdgeInsets.only(top: 8.h),
             decoration: BoxDecoration(
               border: Border(
-                top: BorderSide(color: AppColors.borderDefault, width: 1.w),
+                top: BorderSide(color: context.palette.borderDefault, width: 1.w),
               ),
             ),
             child: Row(
@@ -96,8 +96,8 @@ class CommunityPostCard extends StatelessWidget {
                         Icons.favorite,
                         size: 20.sp,
                         color: likedByMe
-                            ? AppColors.favourText
-                            : AppColors.secondaryText,
+                            ? context.palette.favourText
+                            : context.palette.secondaryText,
                       ),
                       SizedBox(width: 4.w),
                       Text(
@@ -118,7 +118,7 @@ class CommunityPostCard extends StatelessWidget {
                       Icon(
                         Icons.chat_bubble_outline_rounded,
                         size: 20.sp,
-                        color: AppColors.secondaryText,
+                        color: context.palette.secondaryText,
                       ),
                       SizedBox(width: 4.w),
                       Text(
@@ -143,7 +143,7 @@ class CommunityPostCard extends StatelessWidget {
                       child: Text(
                         'Xóa',
                         style: TextStyle(
-                          color: AppColors.errorText,
+                          color: context.palette.errorText,
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
                         ),

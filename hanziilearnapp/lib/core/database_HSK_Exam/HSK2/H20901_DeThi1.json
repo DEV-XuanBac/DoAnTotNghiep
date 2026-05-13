@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "exam_code": "H20901",
+  "level": "HSK2",
+  "title": "Đề thi 1",
+  "total_questions": 60,
+  "time_limit_minutes": 50,
+  "audio_listening": "https://res.cloudinary.com/diehvorme/video/upload/v1778516028/Listening_H20901_eym06o.mp3",
+  "sections": [
+    {
+      "part_id": "listening_part_1",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 1 (câu 1–10)",
+      "part_order": 1,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1778515939/H20901_1-10_j3cqpg.png",
+      "question_count": 10,
+      "questions": [
+        { "question_id": 1, "code": "H20901_Q01", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "false" },
+        { "question_id": 2, "code": "H20901_Q02", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "true" },
+        { "question_id": 3, "code": "H20901_Q03", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "false" },
+        { "question_id": 4, "code": "H20901_Q04", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "false" },
+        { "question_id": 5, "code": "H20901_Q05", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "true" },
+        { "question_id": 6, "code": "H20901_Q06", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "true" },
+        { "question_id": 7, "code": "H20901_Q07", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "false" },
+        { "question_id": 8, "code": "H20901_Q08", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "true" },
+        { "question_id": 9, "code": "H20901_Q09", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "false" },
+        { "question_id": 10, "code": "H20901_Q10", "question_type": "true_false", "question_text": "", "options": ["true", "false"], "correct_answer": "true" }
+      ]
+    },
+    {
+      "part_id": "listening_part_2",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 2 (câu 11–15)",
+      "part_order": 2,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1778515939/H20901_11-15_cgkzq6.png",
+      "question_count": 5,
+      "questions": [
+        { "question_id": 11, "code": "H20901_Q11", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "F" },
+        { "question_id": 12, "code": "H20901_Q12", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "A" },
+        { "question_id": 13, "code": "H20901_Q13", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "C" },
+        { "question_id": 14, "code": "H20901_Q14", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "E" },
+        { "question_id": 15, "code": "H20901_Q15", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "B" }
+      ]
+    },
+    {
+      "part_id": "listening_part_3",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 2 (tiếp) (câu 16–20)",
+      "part_order": 3,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1778515940/H20901_16-20_ffhif9.png",
+      "question_count": 5,
+      "questions": [
+        { "question_id": 16, "code": "H20901_Q16", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E"], "correct_answer": "B" },
+        { "question_id": 17, "code": "H20901_Q17", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E"], "correct_answer": "E" },
+        { "question_id": 18, "code": "H20901_Q18", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E"], "correct_answer": "C" },
+        { "question_id": 19, "code": "H20901_Q19", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E"], "correct_answer": "A" },
+        { "question_id": 20, "code": "H20901_Q20", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E"], "correct_answer": "D" }
+      ]
+    },
+    {
+      "part_id": "listening_part_4",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 3 (câu 21–30)",
+      "part_order": 4,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1778515940/H20901_21-30_sfynft.png",
+      "question_count": 10,
+      "questions": [
+        { "question_id": 21, "code": "H20901_Q21", "question_type": "single_choice", "question_text": "", "options": ["A: 牛奶 (niúnǎi)", "B: 苹果 (píngguǒ)", "C: 西瓜 (xīguā)"], "correct_answer": "C: 西瓜 (xīguā)" },
+        { "question_id": 22, "code": "H20901_Q22", "question_type": "single_choice", "question_text": "", "options": ["A: 一次 (yí cì)", "B: 两次 (liǎng cì)", "C: 九次 (jiǔ cì)"], "correct_answer": "B: 两次 (liǎng cì)" },
+        { "question_id": 23, "code": "H20901_Q23", "question_type": "single_choice", "question_text": "", "options": ["A: 学校 (xuéxiào)", "B: 公司 (gōngsī)", "C: 哥哥家 (gēge jiā)"], "correct_answer": "A:学校 (xuéxiào)" },
+        { "question_id": 24, "code": "H20901_Q24", "question_type": "single_choice", "question_text": "", "options": ["A: 想喝水 (xiǎng hē shuǐ)", "B: 生病了 (shēngbìng le)", "C: 不睡了 (bú shuì le)"], "correct_answer": "C: 不睡了 (bú shuì le)" },
+        { "question_id": 25, "code": "H20901_Q25", "question_type": "single_choice", "question_text": "", "options": ["A: 儿子 (érzi)", "B: 妈妈 (māma)", "C: 丈夫 (zhàngfu)"], "correct_answer": "A: 儿子 (érzi)" },
+        { "question_id": 26, "code": "H20901_Q26", "question_type": "single_choice", "question_text": "", "options": ["A: 太晚了 (tài wǎn le)", "B: 小张不在 (Xiǎo Zhāng bú zài)", "C: 不认识路 (bú rènshi lù)"], "correct_answer": "A: 太晚了 (tài wǎn le)" },
+        { "question_id": 27, "code": "H20901_Q27", "question_type": "single_choice", "question_text": "", "options": ["A: 两块钱 (liǎng kuài qián)", "B: 三块钱 (sān kuài qián)", "C: 四块钱 (sì kuài qián)"], "correct_answer": "B: 三块钱 (sān kuài qián)" },
+        { "question_id": 28, "code": "H20901_Q28", "question_type": "single_choice", "question_text": "", "options": ["A: 晴天 (qíngtiān)", "B: 阴天 (yīntiān)", "C: 下雨了 (xiàyǔ le)"], "correct_answer": "B: 阴天 (yīntiān)" },
+        { "question_id": 29, "code": "H20901_Q29", "question_type": "single_choice", "question_text": "", "options": ["A: 茶 (chá)", "B: 菜 (cài)", "C: 水果 (shuǐguǒ)"], "correct_answer": "C: 水果 (shuǐguǒ)" },
+        { "question_id": 30, "code": "H20901_Q30", "question_type": "single_choice", "question_text": "", "options": ["A: 唱歌 (chànggē)", "B: 跳舞 (tiàowǔ)", "C: 上课 (shàngkè)"], "correct_answer": "C: 上课 (shàngkè)" }
+      ]
+    },
+    {
+      "part_id": "listening_part_5",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 4 (câu 31–35)",
+      "part_order": 5,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1778515941/H20901_31-35_twyyty.png",
+      "question_count": 5,
+      "questions": [
+        { "question_id": 31, "code": "H20901_Q31", "question_type": "single_choice", "question_text": "", "options": ["A: 说得好 (shuō de hǎo)", "B: 写得好 (xiě de hǎo)", "C: 不会写 (bú huì xiě)"], "correct_answer": "A: 说得好 (shuō de hǎo)" },
+        { "question_id": 32, "code": "H20901_Q32", "question_type": "single_choice", "question_text": "", "options": ["A: 太高 (tài gāo)", "B: 太贵 (tài guì)", "C: 颜色不好 (yánsè bù hǎo)"], "correct_answer": "A: 太高 (tài gāo)" },
+        { "question_id": 33, "code": "H20901_Q33", "question_type": "single_choice", "question_text": "", "options": ["A: 200多 (liǎngbǎi duō)", "B: 2000多 (liǎngqiān duō)", "C: 3000多 (sānqiān duō)"], "correct_answer": "B: 2000多 (liǎngqiān duō)" },
+        { "question_id": 34, "code": "H20901_Q34", "question_type": "single_choice", "question_text": "", "options": ["A: 学校 (xuéxiào)", "B: 医院 (yīyuàn)", "C: 饭店 (fàndiàn)"], "correct_answer": "B: 医院 (yīyuàn)" },
+        { "question_id": 35, "code": "H20901_Q35", "question_type": "single_choice", "question_text": "", "options": ["A: 13号 (shísān hào)", "B: 14号 (shísì hào)", "C: 15号 (shíwǔ hào)"], "correct_answer": "C: 15号 (shíwǔ hào)" }
+      ]
+    },
+    {
+      "part_id": "reading_part_1",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 1 (câu 36–40)",
+      "part_order": 6,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1778515942/H20901_36-40_o4lrdx.png",
+      "question_count": 5,
+      "questions": [
+        { "question_id": 36, "code": "H20901_Q36", "question_type": "single_choice", "question_text": "给您介绍一下，这是我们公司的李先生。/Gěi nín jièshào yíxià, zhè shì wǒmen gōngsī de Lǐ xiānsheng./", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "F" },
+        { "question_id": 37, "code": "H20901_Q37", "question_type": "single_choice", "question_text": "看书时间长了，眼睛得休息休息。/Kàn shū shíjiān cháng le, yǎnjing děi xiūxi xiūxi./", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "E" },
+        { "question_id": 38, "code": "H20901_Q38", "question_type": "single_choice", "question_text": "那是我孩子，她爱跳舞。/Nà shì wǒ háizi, tā ài tiàowǔ./", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "C" },
+        { "question_id": 39, "code": "H20901_Q39", "question_type": "single_choice", "question_text": "今天下雪了，天气很冷。/Jīntiān xià xuě le, tiānqì hěn lěng./", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "B" },
+        { "question_id": 40, "code": "H20901_Q40", "question_type": "single_choice", "question_text": "因为我不会游泳，所以，小鱼，你好！/Yīnwèi wǒ bú huì yóuyǒng, suǒyǐ, xiǎoyú, nǐ hǎo!/", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "A" }
+      ]
+    },
+    {
+      "part_id": "reading_part_2",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 2 (câu 41–45)",
+      "part_order": 7,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1778515943/H20901_41-45_y5kfva.png",
+      "question_count": 5,
+      "questions": [
+        { "question_id": 41, "code": "H20901_Q41", "question_type": "single_choice", "question_text": "这个船非常大，可以坐几（      ）人。/Zhège chuán fēicháng dà, kěyǐ zuò jǐ (     ) rén./", "options": ["A: 完 (wán)", "B: 进 (jìn)", "C: 过 (guo)", "D: 千 (qiān)", "E: 贵 (guì)", "F: 自行车 (zìxíngchē)"], "correct_answer": "D: 千 (qiān)" },
+        { "question_id": 42, "code": "H20901_Q42", "question_type": "single_choice", "question_text": "请（     ），这就是我的房间。/Qǐng (     ), zhè jiù shì wǒ de fángjiān./", "options": ["A: 完 (wán)", "B: 进 (jìn)", "C: 过 (guo)", "D: 千 (qiān)", "E: 贵 (guì)", "F: 自行车 (zìxíngchē)"], "correct_answer": "B: 进 (jìn)" },
+        { "question_id": 43, "code": "H20901_Q43", "question_type": "single_choice", "question_text": "昨天的考试题太多，我没有做（     ）。/Zuótiān de kǎoshì tí tài duō, wǒ méiyǒu zuò (     )./", "options": ["A: 完 (wán)", "B: 进 (jìn)", "C: 过 (guo)", "D: 千 (qiān)", "E: 贵 (guì)", "F: 自行车 (zìxíngchē)"], "correct_answer": "A: 完 (wán)" },
+        { "question_id": 44, "code": "H20901_Q44", "question_type": "single_choice", "question_text": "我没去（     ）中国，我希望今年能去中国旅游。/Wǒ méi qù (     ) Zhōngguó, wǒ xīwàng jīnnián néng qù Zhōngguó lǚyóu./", "options": ["A: 完 (wán)", "B: 进 (jìn)", "C: 过 (guo)", "D: 千 (qiān)", "E: 贵 (guì)", "F: 自行车 (zìxíngchē)"], "correct_answer": "C: 过 (guo)" },
+        { "question_id": 45, "code": "H20901_Q45", "question_type": "single_choice", "question_text": "女：对不起，我不能和你一起去买（     ）了。/Duìbùqǐ, wǒ bùnéng hé nǐ yīqǐ qù mǎi (      ) le. \n男：没关系，我知道你很忙。/Méi guānxi, wǒ zhīdào nǐ hěn máng./", "options": ["A: 完 (wán)", "B: 进 (jìn)", "C: 过 (guo)", "D: 千 (qiān)", "E: 贵 (guì)", "F: 自行车 (zìxíngchē)"], "correct_answer": "F: 自行车 (zìxíngchē)" }
+      ]
+    },
+    {
+      "part_id": "reading_part_3",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 3 (câu 46–50)",
+      "part_order": 8,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1778515939/H20901_46-50_ng3szs.png",
+      "question_count": 5,
+      "questions": [
+        { "question_id": 46, "code": "H20901_Q46", "question_type": "true_false", "question_text": "我上午去外面买了个新手机，九百多块钱，很便宜。/Wǒ shàngwǔ qù wàimiàn mǎi le ge xīn shǒujī, jiǔbǎi duō kuài qián, hěn piányi./ \n★ 那个手机不到一千元。/Nàge shǒujī bú dào yìqiān yuán./", "options": ["true", "false"], "correct_answer": "true" },
+        { "question_id": 47, "code": "H20901_Q47", "question_type": "true_false", "question_text": "时间过得真快，我来北京10年了。我女儿已经5岁多了，都开始学习写汉字了。/Shíjiān guò dé zhēn kuài, wǒ lái Běijīng 10 nián le. Wǒ nǚ'ér yǐjīng wǔ suì duō le, dōu kāishǐ xuéxí xiě Hànzì le./ \n★ 我有两个孩子。/Wǒ yǒu liǎng ge háizi./", "options": ["true", "false"], "correct_answer": "false" },
+        { "question_id": 48, "code": "H20901_Q48", "question_type": "true_false", "question_text": "今天是7月12日，再有三天就是我爸爸的生日了。我想送他一个电脑。/Jīntiān shì qī yuè shí'èr rì, zài yǒu sān tiān jiù shì wǒ bàba de shēngrì le. Wǒ xiǎng sòng tā yí ge diànnǎo./ \n★ 7月15日是我的生日。/Qī yuè shíwǔ rì shì wǒ de shēngrì./", "options": ["true", "false"], "correct_answer": "false" },
+        { "question_id": 49, "code": "H20901_Q49", "question_type": "true_false", "question_text": "喂，姐，我的飞机是十点零七的，再有20分钟我就到机场了。我们下午见。/Wéi, jiě, wǒ de fēijī shì shí diǎn líng qī de, zài yǒu èrshí fēnzhōng wǒ jiù dào jīchǎng le./ \n★ 我在去机场的路上。/Wǒ zài qù jīchǎng de lù shang./", "options": ["true", "false"], "correct_answer": "true" },
+        { "question_id": 50, "code": "H20901_Q50", "question_type": "true_false", "question_text": "昨天和朋友们在外面玩儿了一个晚上，很累，但是很高兴。/Zuótiān hé péngyoumen zài wàimiàn wán er le yí ge wǎnshang, hěn lèi, dànshì hěn gāoxìng./ \n★ 昨天玩儿得不高兴。/Zuótiān wánr de bù gāoxìng./", "options": ["true", "false"], "correct_answer": "false" }
+      ]
+    },
+    {
+      "part_id": "reading_part_4",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 4 (câu 51–55)",
+      "part_order": 9,
+      "question_image": "",
+      "question_count": 5,
+      "questions": [
+        { "question_id": 51, "code": "H20901_Q51", "question_type": "single_choice", "question_text": "我们要向您学习！/Wǒmen yào xiàng nín xuéxí!/", "options": ["A: 它不认识你。/Tā bú rènshi nǐ./", "B: 很近，从这儿坐出租车，六七分钟就到了。/Hěn jìn, cóng zhèr zuò chūzūchē, liù-qī fēnzhōng jiù dào le./", "C: 她三年的时间里，写了4本书。/Tā sān nián de shíjiān lǐ, xiě le sì běn shū./", "D: 你比他大一岁。/Nǐ bǐ tā dà yí suì./", "E: 他在哪儿呢？你看见他了吗？/Tā zài nǎr ne? Nǐ kànjiàn tā le ma?/", "F: 小刘叫我一起去跑步。/Xiǎo Liú jiào wǒ yìqǐ qù pǎobù./"], "correct_answer": "C: 她三年的时间里，写了4本书。/Tā sān nián de shíjiān lǐ, xiě le sì běn shū./" },
+        { "question_id": 52, "code": "H20901_Q52", "question_type": "single_choice", "question_text": "火车站离这儿远吗？/Huǒchēzhàn lí zhèr yuǎn ma?/", "options": ["A: 它不认识你。/Tā bú rènshi nǐ./", "B: 很近，从这儿坐出租车，六七分钟就到了。/Hěn jìn, cóng zhèr zuò chūzūchē, liù-qī fēnzhōng jiù dào le./", "C: 她三年的时间里，写了4本书。/Tā sān nián de shíjiān lǐ, xiě le sì běn shū./", "D: 你比他大一岁。/Nǐ bǐ tā dà yí suì./", "E: 他在哪儿呢？你看见他了吗？/Tā zài nǎr ne? Nǐ kànjiàn tā le ma?/", "F: 小刘叫我一起去跑步。/Xiǎo Liú jiào wǒ yìqǐ qù pǎobù./"], "correct_answer": "B: 很近，从这儿坐出租车，六七分钟就到了。/Hěn jìn, cóng zhèr zuò chūzūchē, liù-qī fēnzhōng jiù dào le./" },
+        { "question_id": 53, "code": "H20901_Q53", "question_type": "single_choice", "question_text": "已经快8点了，你还出去做什么？/Yǐjīng kuài bā diǎn le, nǐ hái chūqù zuò shénme?/", "options": ["A: 它不认识你。/Tā bú rènshi nǐ./", "B: 很近，从这儿坐出租车，六七分钟就到了。/Hěn jìn, cóng zhèr zuò chūzūchē, liù-qī fēnzhōng jiù dào le./", "C: 她三年的时间里，写了4本书。/Tā sān nián de shíjiān lǐ, xiě le sì běn shū./", "D: 你比他大一岁。/Nǐ bǐ tā dà yí suì./", "E: 他在哪儿呢？你看见他了吗？/Tā zài nǎr ne? Nǐ kànjiàn tā le ma?/", "F: 小刘叫我一起去跑步。/Xiǎo Liú jiào wǒ yìqǐ qù pǎobù./"], "correct_answer": "F: 小刘叫我一起去跑步。/Xiǎo Liú jiào wǒ yìqǐ qù pǎobù./" },
+        { "question_id": 54, "code": "H20901_Q54", "question_type": "single_choice", "question_text": "小狗怎么了？为什么不吃东西？/Xiǎogǒu zěnme le? Wèishénme bù chī dōngxi?/", "options": ["A: 它不认识你。/Tā bú rènshi nǐ./", "B: 很近，从这儿坐出租车，六七分钟就到了。/Hěn jìn, cóng zhèr zuò chūzūchē, liù-qī fēnzhōng jiù dào le./", "C: 她三年的时间里，写了4本书。/Tā sān nián de shíjiān lǐ, xiě le sì běn shū./", "D: 你比他大一岁。/Nǐ bǐ tā dà yí suì./", "E: 他在哪儿呢？你看见他了吗？/Tā zài nǎr ne? Nǐ kànjiàn tā le ma?/", "F: 小刘叫我一起去跑步。/Xiǎo Liú jiào wǒ yìqǐ qù pǎobù./"], "correct_answer": "A: 它不认识你。/Tā bú rènshi nǐ./" },
+        { "question_id": 55, "code": "H20901_Q55", "question_type": "single_choice", "question_text": "但是，你知道，你没有他高。/Dànshì, nǐ zhīdào, nǐ méiyǒu tā gāo./", "options": ["A: 它不认识你。/Tā bú rènshi nǐ./", "B: 很近，从这儿坐出租车，六七分钟就到了。/Hěn jìn, cóng zhèr zuò chūzūchē, liù-qī fēnzhōng jiù dào le./", "C: 她三年的时间里，写了4本书。/Tā sān nián de shíjiān lǐ, xiě le sì běn shū./", "D: 你比他大一岁。/Nǐ bǐ tā dà yí suì./", "E: 他在哪儿呢？你看见他了吗？/Tā zài nǎr ne? Nǐ kànjiàn tā le ma?/", "F: 小刘叫我一起去跑步。/Xiǎo Liú jiào wǒ yìqǐ qù pǎobù./"], "correct_answer": "D: 你比他大一岁。/Nǐ bǐ tā dà yí suì./" }
+      ]
+    },
+    {
+      "part_id": "reading_part_5",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 4 (câu 56–60)",
+      "part_order": 10,
+      "question_image": "",
+      "question_count": 5,
+      "questions": [
+        { "question_id": 56, "code": "H20901_Q56", "question_type": "single_choice", "question_text": "大家好！我姓王，是新来的汉语老师。/Dàjiā hǎo! Wǒ xìng Wáng, shì xīn lái de Hànyǔ lǎoshī./", "options": ["A: 他是我弟弟的中学同学。/Tā shì wǒ dìdi de zhōngxué tóngxué./", "B: 谢谢您给我们的帮助！/Xièxiè nín gěi wǒmen de bāngzhù!/", "C: 他现在每天工作10个小时，星期六也不休息。/Tā xiànzài měitiān gōngzuò shí ge xiǎoshí, xīngqīliù yě bù xiūxi./", "D: 你们听懂我说的话了吗？/Nǐmen tīng dǒng wǒ shuō de huà le ma?/", "E: 等一下。你怎么回来这么晚？/Děng yíxià. Nǐ zěnme huílai zhème wǎn?/"], "correct_answer": "D: 你们听懂我说的话了吗？/Nǐmen tīng dǒng wǒ shuō de huà le ma?/" },
+        { "question_id": 57, "code": "H20901_Q57", "question_type": "single_choice", "question_text": "这个月真的非常忙。/Zhège yuè zhēn de fēicháng máng./", "options": ["A: 他是我弟弟的中学同学。/Tā shì wǒ dìdi de zhōngxué tóngxué./", "B: 谢谢您给我们的帮助！/Xièxiè nín gěi wǒmen de bāngzhù!/", "C: 他现在每天工作10个小时，星期六也不休息。/Tā xiànzài měitiān gōngzuò shí ge xiǎoshí, xīngqīliù yě bù xiūxi./", "D: 你们听懂我说的话了吗？/Nǐmen tīng dǒng wǒ shuō de huà le ma?/", "E: 等一下。你怎么回来这么晚？/Děng yíxià. Nǐ zěnme huílai zhème wǎn?/"], "correct_answer": "C: 他现在每天工作10个小时，星期六也不休息。/Tā xiànzài měitiān gōngzuò shí ge xiǎoshí, xīngqīliù yě bù xiūxi./" },
+        { "question_id": 58, "code": "H20901_Q58", "question_type": "single_choice", "question_text": "开门，快开门。/Kāi mén, kuài kāi mén./", "options": ["A: 他是我弟弟的中学同学。/Tā shì wǒ dìdi de zhōngxué tóngxué./", "B: 谢谢您给我们的帮助！/Xièxiè nín gěi wǒmen de bāngzhù!/", "C: 他现在每天工作10个小时，星期六也不休息。/Tā xiànzài měitiān gōngzuò shí ge xiǎoshí, xīngqīliù y也 bù xiūxi./", "D: 你们听懂我说的话了吗？/Nǐmen tīng dǒng wǒ shuō de huà le ma?/", "E: 等一下。你怎么回来这么晚？/Děng yíxià. Nǐ zěnme huílai zhème wǎn?/"], "correct_answer": "E: 等一下。你怎么回来这么晚？/Děng yíxià. Nǐ zěnme huílai zhème wǎn?/" },
+        { "question_id": 59, "code": "H20901_Q59", "question_type": "single_choice", "question_text": "她笑着对我说：“不客气。” /Tā xiàozhe duì wǒ shuō: “Bú kèqi.”/", "options": ["A: 他是我弟弟的中学同学。/Tā shì wǒ dìdi de zhōngxué tóngxué./", "B: 谢谢您给我们的帮助！/Xièxiè nín gěi wǒmen de bāngzhù!/", "C: 他现在每天工作10个小时，星期六也不休息。/Tā xiànzài měitiān gōngzuò shí ge xiǎoshí, xīngqīliù y也 bù xiūxi./", "D: 你们听懂我说的话了吗？/Nǐmen tīng dǒng wǒ shuō de huà le ma?/", "E: 等一下。你怎么回来这么晚？/Děng yíxià. Nǐ zěnme huílai zhème wǎn?/"], "correct_answer": "B: 谢谢您给我们的帮助！/Xièxiè nín gěi wǒmen de bāngzhù!/" },
+        { "question_id": 60, "code": "H20901_Q60", "question_type": "single_choice", "question_text": "我的天！你们认识？这怎么可能？/Wǒ de tiān! Nǐmen rènshi? Zhè zěnme kěnéng?/", "options": ["A: 他是我弟弟的中学同学。/Tā shì wǒ dìdi de zhōngxué tóngxué./", "B: 谢谢您给我们的帮助！/Xièxiè nín gěi wǒmen de bāngzhù!/", "C: 他现在每天工作10个小时，星期六也不休息。/Tā xiànzài měitiān gōngzuò shí ge xiǎoshí, xīngqīliù y也 bù xiūxi./", "D: 你们听懂我说的话了吗？/Nǐmen tīng dǒng wǒ shuō de huà le ma?/", "E: 等一下。你怎么回来这么晚？/Děng yíxià. Nǐ zěnme huílai zhème wǎn?/"], "correct_answer": "A: 他是我弟弟的中学同学。/Tā shì wǒ dìdi de zhōngxué tóngxué./" }
+      ]
+    }
+  ]
+}

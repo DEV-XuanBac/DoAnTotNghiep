@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/models/hsk_exam_model.dart';
 
 class HskExamListItem extends StatelessWidget {
@@ -27,10 +27,10 @@ class HskExamListItem extends StatelessWidget {
       child: Ink(
         padding: EdgeInsets.all(14.w),
         decoration: BoxDecoration(
-          color: AppColors.backgroundWhite,
+          color: context.palette.backgroundWhite,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color: AppColors.borderDefault.withValues(alpha: 0.7),
+            color: context.palette.borderDefault.withValues(alpha: 0.7),
           ),
         ),
         child: Column(
@@ -44,7 +44,7 @@ class HskExamListItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.primaryText,
+                      color: context.palette.primaryText,
                     ),
                   ),
                 ),
@@ -52,10 +52,10 @@ class HskExamListItem extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                     decoration: BoxDecoration(
-                      color: AppColors.greenCard.withValues(alpha: 0.12),
+                      color: context.palette.greenCard.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(999.r),
                       border: Border.all(
-                        color: AppColors.greenCard.withValues(alpha: 0.55),
+                        color: context.palette.greenCard.withValues(alpha: 0.55),
                       ),
                     ),
                     child: Text(
@@ -65,7 +65,7 @@ class HskExamListItem extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.greenText,
+                        color: context.palette.greenText,
                       ),
                     ),
                   ),
@@ -74,7 +74,7 @@ class HskExamListItem extends StatelessWidget {
             SizedBox(height: 6.h),
             Text(
               '${exam.examCode} - ${exam.totalQuestions} câu hỏi',
-              style: TextStyle(fontSize: 14.sp, color: AppColors.secondaryText),
+              style: TextStyle(fontSize: 14.sp, color: context.palette.secondaryText),
             ),
             if (isCompleted && scoreOutOf10 != null) ...[
               SizedBox(height: 4.h),
@@ -83,7 +83,7 @@ class HskExamListItem extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.greenText,
+                  color: context.palette.greenText,
                 ),
               ),
             ],

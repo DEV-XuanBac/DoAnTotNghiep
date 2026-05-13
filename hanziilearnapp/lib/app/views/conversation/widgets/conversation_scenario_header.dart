@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/models/conversation_model.dart';
 
 class ConversationScenarioHeader extends StatelessWidget {
@@ -15,7 +15,7 @@ class ConversationScenarioHeader extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 16.w),
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        color: AppColors.lightCardBackground.withValues(alpha: 0.5),
+        color: context.palette.lightCardBackground.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
@@ -26,13 +26,13 @@ class ConversationScenarioHeader extends StatelessWidget {
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.bold,
-              color: AppColors.primaryText,
+              color: context.palette.primaryText,
             ),
           ),
           SizedBox(height: 4.h),
           Text(
             chat.scenario,
-            style: TextStyle(fontSize: 13.sp, color: AppColors.secondaryText),
+            style: TextStyle(fontSize: 13.sp, color: context.palette.secondaryText),
           ),
         ],
       ),

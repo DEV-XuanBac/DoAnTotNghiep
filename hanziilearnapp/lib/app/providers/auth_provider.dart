@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
+// Số ngày tối đa cho chuỗi đăng nhập liên tục, dùng cho việc log diagnostic.
+const String _kAuthLogTag = '[AuthProvider]';
+
 class AuthProvider extends ChangeNotifier {
   AuthProvider({FirebaseAuth? auth, FirebaseFirestore? firestore})
     : _auth = auth ?? FirebaseAuth.instance,
@@ -86,12 +89,20 @@ class AuthProvider extends ChangeNotifier {
     }
     final userId = user.uid;
 
-    await _firestore
-        .collection('users')
-        .doc(userId)
-        .delete()
-        .catchError((_) {});
-    await user.delete().catchError((_) {});
+    try {
+      await _firestore.collection('users').doc(userId).delete();
+    } catch (error, stack) {
+      debugPrint('$_kAuthLogTag rollback firestore user $userId failed: $error');
+      debugPrintStack(stackTrace: stack, label: _kAuthLogTag);
+    }
+
+    try {
+      await user.delete();
+    } catch (error, stack) {
+      debugPrint('$_kAuthLogTag rollback auth user $userId failed: $error');
+      debugPrintStack(stackTrace: stack, label: _kAuthLogTag);
+    }
+
     await _auth.signOut();
   }
 

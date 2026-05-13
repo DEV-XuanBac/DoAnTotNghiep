@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 
 class TranslateResultCard extends StatelessWidget {
   const TranslateResultCard({
@@ -20,15 +20,15 @@ class TranslateResultCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
-        color: AppColors.backgroundWhite,
+        color: context.palette.backgroundWhite,
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: AppColors.borderEnable, width: 1.w),
+        border: Border.all(color: context.palette.borderEnable, width: 1.w),
       ),
-      child: _buildContent(),
+      child: _buildContent(context),
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(BuildContext context) {
     if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -37,7 +37,7 @@ class TranslateResultCard extends StatelessWidget {
       return Text(
         'Bản dịch',
         style: TextStyle(
-          color: AppColors.secondaryText,
+          color: context.palette.secondaryText,
           fontStyle: FontStyle.italic,
         ),
       );

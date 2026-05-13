@@ -5,10 +5,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hanziilearnapp/app/datasource/local/cn_vi_dictionary_db_service.dart';
+import 'package:hanziilearnapp/app/datasource/local/local_pronunciation_service.dart';
 import 'package:hanziilearnapp/app/models/lookup_history_item.dart';
 import 'package:hanziilearnapp/app/models/word_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:speech_to_text/speech_to_text.dart';
 
 class HomeController extends ChangeNotifier {
   static const streakKey = 'home.login.streak';
@@ -16,17 +16,17 @@ class HomeController extends ChangeNotifier {
   static const historyKey = 'home.lookup.history';
 
   final CnViDictionaryDbService _dictionaryDbService;
-  final SpeechToText _speechToText;
+  final LocalPronunciationService _speechService;
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
 
   HomeController({
     CnViDictionaryDbService? dictionaryDbService,
-    SpeechToText? speechToText,
+    LocalPronunciationService? speechService,
     FirebaseFirestore? firestore,
     FirebaseAuth? auth,
   }) : _dictionaryDbService = dictionaryDbService ?? CnViDictionaryDbService(),
-       _speechToText = speechToText ?? SpeechToText(),
+       _speechService = speechService ?? LocalPronunciationService(),
        _firestore = firestore ?? FirebaseFirestore.instance,
        _auth = auth ?? FirebaseAuth.instance;
 
@@ -66,7 +66,7 @@ class HomeController extends ChangeNotifier {
   Future<void> disposeCtrl() async {
     await syncOnlineIfNeeded(force: true);
     _onlineTimer?.cancel();
-    await _speechToText.cancel();
+    await _speechService.cancel();
   }
 
   @override
@@ -188,52 +188,30 @@ class HomeController extends ChangeNotifier {
     required void Function(String text) onRecognizedText,
   }) async {
     if (listening) {
-      await _speechToText.stop();
+      await _speechService.stopListening();
       listening = false;
       notifyListeners();
       return;
     }
 
-    final available = await _speechToText.initialize(
-      onStatus: (status) {
-        listening = status == 'listening';
-        notifyListeners();
-      },
-      onError: (_) {
-        listening = false;
-        errMsg = 'Không nhận diện được mặt chữ';
-        notifyListeners();
-      },
-    );
+    try {
+      listening = true;
+      errMsg = null;
+      notifyListeners();
 
-    if (!available) {
+      await _speechService.startListen(
+        localeId: isViMode ? 'vi-VN' : 'zh-CN',
+        onPartialResult: (text) {
+          final value = text.trim();
+          if (value.isEmpty) return;
+          onRecognizedText(value);
+        },
+      );
+    } catch (_) {
+      listening = false;
       errMsg = 'Không nhận diện được mặt chữ';
       notifyListeners();
-      return;
     }
-
-    final locales = await _speechToText.locales();
-    final locale =
-        isViMode
-            ? _firstWhereOrNull(
-              locales,
-              (item) => item.localeId.startsWith('vi'),
-            )
-            : _firstWhereOrNull(
-              locales,
-              (item) => item.localeId.startsWith('zh'),
-            );
-
-    await _speechToText.listen(
-      localeId: locale?.localeId,
-      onResult: (result) {
-        final text = result.recognizedWords.trim();
-        if (text.isEmpty) {
-          return;
-        }
-        onRecognizedText(text);
-      },
-    );
   }
 
   Future<void> setHandwritingBusy(bool value) async {
@@ -288,17 +266,15 @@ class HomeController extends ChangeNotifier {
       parsedDates.add(today);
     }
 
-    final latestDates =
-        parsedDates.length > 60
-            ? parsedDates.sublist(parsedDates.length - 60)
-            : parsedDates;
+    final latestDates = parsedDates.length > 60
+        ? parsedDates.sublist(parsedDates.length - 60)
+        : parsedDates;
 
     final thisWeekMonday = today.subtract(Duration(days: today.weekday - 1));
-    final checkedIndexes =
-        latestDates
-            .where((date) => !date.isBefore(thisWeekMonday) && !date.isAfter(today))
-            .map((date) => date.weekday - 1)
-            .toSet();
+    final checkedIndexes = latestDates
+        .where((date) => !date.isBefore(thisWeekMonday) && !date.isAfter(today))
+        .map((date) => date.weekday - 1)
+        .toSet();
 
     await prefs.setInt(streakKey, streak);
     await prefs.setStringList(
@@ -339,7 +315,7 @@ class HomeController extends ChangeNotifier {
       }
       final items =
           decoded
-              .whereType<Map>()
+              .whereType<Map<dynamic, dynamic>>()
               .map(
                 (item) =>
                     LookupHistoryItem.fromJson(item.cast<String, dynamic>()),
@@ -356,14 +332,5 @@ class HomeController extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final payload = history.map((item) => item.toJson()).toList();
     await prefs.setString(historyKey, jsonEncode(payload));
-  }
-
-  T? _firstWhereOrNull<T>(Iterable<T> items, bool Function(T) predicate) {
-    for (final item in items) {
-      if (predicate(item)) {
-        return item;
-      }
-    }
-    return null;
   }
 }

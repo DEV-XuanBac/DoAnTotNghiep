@@ -1,10 +1,10 @@
-import 'dart:io';
+﻿import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
-import 'package:hanziilearnapp/app/views/common/in_app_camera_view.dart';
+import 'package:hanziilearnapp/app/core/router/app_router.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/views/translate/controllers/translate_controller.dart';
 import 'package:hanziilearnapp/app/views/translate/widgets/translate_language_tools.dart';
 import 'package:hanziilearnapp/app/views/translate/widgets/translate_result_card.dart';
@@ -36,10 +36,7 @@ class _TranslateViewState extends State<TranslateView> {
 
   Future<void> _scanText(ImageSource source) async {
     if (source == ImageSource.camera) {
-      final capturedPath = await Navigator.push<String>(
-        context,
-        MaterialPageRoute(builder: (_) => const InAppCameraView()),
-      );
+      final capturedPath = await AppRouter.pushCamera(context);
       if (capturedPath == null || capturedPath.trim().isEmpty) {
         return;
       }
@@ -95,7 +92,7 @@ class _TranslateViewState extends State<TranslateView> {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.backgroundWhite,
+      backgroundColor: context.palette.backgroundWhite,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
       ),
@@ -107,7 +104,7 @@ class _TranslateViewState extends State<TranslateView> {
   }
 
   void _showImageSourceDialog() {
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       builder: (_) {
         return SafeArea(
@@ -256,7 +253,6 @@ class _TranslateViewState extends State<TranslateView> {
         ),
       ),
       textDirection: TextDirection.ltr,
-      maxLines: null,
     )..layout(maxWidth: maxWidth);
 
     return painter.size.height;
@@ -268,10 +264,12 @@ class _TranslateViewState extends State<TranslateView> {
       animation: _controller,
       builder: (context, _) {
         return Scaffold(
-          backgroundColor: AppColors.backgroundLight,
+          backgroundColor: context.palette.backgroundLight,
           body: Padding(
             padding: EdgeInsets.all(14.w),
             child: SingleChildScrollView(
+              keyboardDismissBehavior:
+                  ScrollViewKeyboardDismissBehavior.onDrag,
               child: Column(
                 children: [
                   SizedBox(height: 45.h),
@@ -281,7 +279,7 @@ class _TranslateViewState extends State<TranslateView> {
                       Text(
                         'Dịch văn bản',
                         style: TextStyle(
-                          color: AppColors.primaryText,
+                          color: context.palette.primaryText,
                           fontSize: 20.sp,
                           fontWeight: FontWeight.bold,
                         ),
@@ -291,7 +289,7 @@ class _TranslateViewState extends State<TranslateView> {
                         child: Container(
                           padding: EdgeInsets.all(10.w),
                           decoration: BoxDecoration(
-                            color: AppColors.backgroundDark,
+                            color: context.palette.backgroundDark,
                             borderRadius: BorderRadius.circular(50.r),
                           ),
                           child: Image.asset(
@@ -308,7 +306,7 @@ class _TranslateViewState extends State<TranslateView> {
                   Text(
                     'Văn bản gốc',
                     style: TextStyle(
-                      color: AppColors.primaryText,
+                      color: context.palette.primaryText,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w500,
                     ),
@@ -318,24 +316,24 @@ class _TranslateViewState extends State<TranslateView> {
                     controller: _controller.inputController,
                     maxLines: 6,
                     style: TextStyle(
-                      color: AppColors.primaryText,
-                      fontSize: 16.sp,
+                      color: context.palette.primaryText,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                     ),
-                    cursorColor: AppColors.primaryText,
+                    cursorColor: context.palette.primaryText,
                     decoration: InputDecoration(
                       hintText: 'Nhập đoạn văn bản...',
                       hintStyle: TextStyle(
-                        color: AppColors.secondaryText,
+                        color: context.palette.secondaryText,
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
                       ),
                       filled: true,
-                      fillColor: AppColors.backgroundWhite,
+                      fillColor: context.palette.backgroundWhite,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                         borderSide: BorderSide(
-                          color: AppColors.borderDefault,
+                          color: context.palette.borderDefault,
                           width: 1.w,
                         ),
                       ),
@@ -345,7 +343,7 @@ class _TranslateViewState extends State<TranslateView> {
                   Text(
                     'Bản dịch',
                     style: TextStyle(
-                      color: AppColors.primaryText,
+                      color: context.palette.primaryText,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w500,
                     ),
@@ -361,7 +359,7 @@ class _TranslateViewState extends State<TranslateView> {
                     Text(
                       _controller.errorMessage!,
                       style: TextStyle(
-                        color: AppColors.errorText,
+                        color: context.palette.errorText,
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w600,
                       ),
@@ -378,14 +376,14 @@ class _TranslateViewState extends State<TranslateView> {
                             height: 24.h,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color: AppColors.blueDarkText,
+                              color: context.palette.blueDarkText,
                             ),
                           ),
                           SizedBox(width: 12.w),
                           Text(
                             'Đang nhận diện và dịch...',
                             style: TextStyle(
-                              color: AppColors.secondaryText,
+                              color: context.palette.secondaryText,
                               fontSize: 14.sp,
                             ),
                           ),

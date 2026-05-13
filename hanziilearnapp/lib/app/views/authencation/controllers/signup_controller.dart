@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuthException;
+import 'package:flutter/widgets.dart';
 import 'package:hanziilearnapp/app/providers/auth_provider.dart';
 import 'package:hanziilearnapp/app/views/authencation/signup/signup_validation.dart';
 

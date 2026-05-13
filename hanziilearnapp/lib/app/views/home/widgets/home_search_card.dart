@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 
 class HomeSearchCard extends StatelessWidget {
   const HomeSearchCard({
@@ -30,11 +30,10 @@ class HomeSearchCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
       decoration: BoxDecoration(
-        color: AppColors.lightCardBackground,
+        color: context.palette.lightCardBackground,
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: AppColors.borderDefault.withValues(alpha: 0.35),
-          width: 1,
+          color: context.palette.borderDefault.withValues(alpha: 0.35),
         ),
       ),
       child: Column(
@@ -45,7 +44,7 @@ class HomeSearchCard extends StatelessWidget {
                 onPressed: onSearch,
                 icon: Icon(
                   Icons.search,
-                  color: AppColors.secondaryText,
+                  color: context.palette.secondaryText,
                   size: 30.w,
                 ),
               ),
@@ -54,25 +53,29 @@ class HomeSearchCard extends StatelessWidget {
                   controller: textCtrl,
                   onSubmitted: (_) => onSearch(),
                   decoration: InputDecoration(
-                    hintText: isViMode ? 'Nhập tiếng Việt' : 'Nhập tiếng Hán',
+                    hintText: isViMode
+                        ? 'Nhập tiếng Việt'
+                        : 'Nhập tiếng Hán',
                     hintStyle: TextStyle(
-                      color: AppColors.secondaryText.withValues(alpha: 0.8),
-                      fontSize: 16.sp,
+                      color: context.palette.secondaryText.withValues(
+                        alpha: 0.8,
+                      ),
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                     ),
                     border: InputBorder.none,
                   ),
                   style: TextStyle(
-                    color: AppColors.primaryText,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
+                    color: context.palette.primaryText,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
               Container(
                 margin: EdgeInsets.only(right: 8.w),
                 decoration: BoxDecoration(
-                  color: AppColors.toggleBg,
+                  color: context.palette.toggleBg,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Row(
@@ -132,7 +135,9 @@ class _ToggleChip extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.toggleSelected : AppColors.toggleBg,
+          color: isSelected
+              ? context.palette.toggleSelected
+              : context.palette.toggleBg,
           borderRadius: BorderRadius.circular(14.w),
         ),
         child: Text(
@@ -166,20 +171,18 @@ class _ActionButton extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color:
-              isActive
-                  ? AppColors.blueDarkText.withValues(alpha: 0.85)
-                  : AppColors.cardItem.withValues(alpha: 0.8),
+          color: isActive
+              ? context.palette.blueDarkText.withValues(alpha: 0.85)
+              : context.palette.cardItem.withValues(alpha: 0.8),
           borderRadius: BorderRadius.circular(14.w),
         ),
         child: Image.asset(
           img,
           width: 20.w,
           height: 20.h,
-          color:
-              isActive
-                  ? AppColors.whiteText
-                  : AppColors.lightBlackText.withValues(alpha: 0.8),
+          color: isActive
+              ? context.palette.whiteText
+              : context.palette.lightBlackText.withValues(alpha: 0.8),
         ),
       ),
     );

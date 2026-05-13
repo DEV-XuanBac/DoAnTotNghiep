@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
+﻿import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/router/app_router.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/providers/lesson_provider.dart';
-import 'package:hanziilearnapp/app/views/exam/hsk_exam_list_view.dart';
-import 'package:hanziilearnapp/app/views/hsk_vocab/hsk_vocab_view.dart';
-import 'package:hanziilearnapp/app/views/lesson/notebook_view.dart';
+import 'package:hanziilearnapp/app/providers/notebook_provider.dart';
 import 'package:provider/provider.dart';
 
 class LessonView extends StatefulWidget {
@@ -35,11 +35,15 @@ class _LessonViewState extends State<LessonView> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
-        final provider = context.read<LessonProvider>();
-        await Future.wait([
-          provider.loadHskLevelCounts(_hskLevels),
-          provider.loadHskExamCounts(_hskLevels),
-          provider.loadNotebookStats(),
+        if (!mounted) {
+          return;
+        }
+        final lesson = context.read<LessonProvider>();
+        final notebook = context.read<NotebookProvider>();
+        await Future.wait<void>([
+          lesson.loadHskLevelCounts(_hskLevels),
+          lesson.loadHskExamCounts(_hskLevels),
+          notebook.loadNotebookStats(),
         ]);
       } finally {
         if (!completer.isCompleted) {
@@ -53,7 +57,7 @@ class _LessonViewState extends State<LessonView> {
   Widget build(BuildContext context) {
     if (FirebaseAuth.instance.currentUser == null) {
       return Scaffold(
-        backgroundColor: AppColors.backgroundLight,
+        backgroundColor: context.palette.backgroundLight,
         body: Center(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -61,7 +65,7 @@ class _LessonViewState extends State<LessonView> {
               'Cần đăng nhập để truy cập trang này.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: AppColors.primaryText,
+                color: context.palette.primaryText,
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
               ),
@@ -76,13 +80,13 @@ class _LessonViewState extends State<LessonView> {
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return Scaffold(
-            backgroundColor: AppColors.backgroundLight,
+            backgroundColor: context.palette.backgroundLight,
             body: const Center(child: CircularProgressIndicator()),
           );
         }
 
         return Scaffold(
-          backgroundColor: AppColors.backgroundLight,
+          backgroundColor: context.palette.backgroundLight,
           body: SafeArea(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(14.w),
@@ -93,7 +97,7 @@ class _LessonViewState extends State<LessonView> {
                   Text(
                     'Góc luyện tập',
                     style: TextStyle(
-                      color: AppColors.primaryText,
+                      color: context.palette.primaryText,
                       fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
                     ),
@@ -105,7 +109,7 @@ class _LessonViewState extends State<LessonView> {
                   Text(
                     'Học từ vựng',
                     style: TextStyle(
-                      color: AppColors.primaryText,
+                      color: context.palette.primaryText,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
                     ),
@@ -117,7 +121,7 @@ class _LessonViewState extends State<LessonView> {
                   Text(
                     'Luyện thi HSK',
                     style: TextStyle(
-                      color: AppColors.primaryText,
+                      color: context.palette.primaryText,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
                     ),
@@ -195,12 +199,7 @@ class _LessonViewState extends State<LessonView> {
       level: level,
       countLabel: countLabel,
       height: itemHeight,
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => HskVocabView(hskLevel: level)),
-        );
-      },
+      onTap: () => AppRouter.pushHskVocab(context, hskLevel: level),
     );
   }
 
@@ -212,12 +211,7 @@ class _LessonViewState extends State<LessonView> {
       level: level,
       countLabel: countLabel,
       width: width,
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => HskExamListView(hskLevel: level)),
-        );
-      },
+      onTap: () => AppRouter.pushHskExamList(context, hskLevel: level),
     );
   }
 
@@ -233,108 +227,105 @@ class _LessonViewState extends State<LessonView> {
   }
 
   Widget _buildNotebookCard() {
-    return Consumer<LessonProvider>(
+    return Consumer<NotebookProvider>(
       builder: (context, provider, _) => Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        color: AppColors.lightCardBackground,
-        borderRadius: BorderRadius.circular(14.r),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () async {
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const NotebookView()),
-                  );
-                  if (!context.mounted) return;
-                  await context.read<LessonProvider>().loadNotebookStats();
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.talkButton,
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(
-                      color: AppColors.borderFocus.withValues(alpha: 0.4),
+        width: double.infinity,
+        padding: EdgeInsets.all(12.w),
+        decoration: BoxDecoration(
+          color: context.palette.lightCardBackground,
+          borderRadius: BorderRadius.circular(14.r),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    await AppRouter.pushNotebook(context);
+                    if (!context.mounted) {
+                      return;
+                    }
+                    await context.read<NotebookProvider>().loadNotebookStats();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: context.palette.talkButton,
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: context.palette.borderFocus.withValues(alpha: 0.4),
+                      ),
                     ),
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16.w,
-                    vertical: 10.h,
-                  ),
-                  child: Center(
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          'assets/logo/take_note_ic.png',
-                          width: 56.w,
-                          height: 56.w,
-                        ),
-                        SizedBox(width: 8.w),
-                        Text(
-                          'Sổ tay học tập',
-                          style: TextStyle(
-                            color: AppColors.whiteText,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 10.h,
+                    ),
+                    child: Center(
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            'assets/logo/take_note_ic.png',
+                            width: 51.w,
+                            height: 51.h,
                           ),
-                        ),
-                      ],
+                          SizedBox(width: 8.w),
+                          Text(
+                            'Sổ tay học tập',
+                            style: TextStyle(
+                              color: context.palette.whiteText,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(width: 16.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _CounterTag(
-                    color: AppColors.greenCard,
-                    text: '${provider.notebookSavedCount}',
-                    label: 'đã học',
-                  ),
-                  SizedBox(height: 12.h),
-                  _CounterTag(
-                    color: AppColors.darkBlueCard,
-                    text: '${provider.notebookFavoriteCount}',
-                    label: 'yêu thích',
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 10.h),
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  AppColors.bottomButton,
-                  AppColors.bottomButton.withValues(alpha: 0.2),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(12.r),
+                SizedBox(width: 10.w),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _CounterTag(
+                      color: context.palette.greenCard,
+                      text: '${provider.notebookSavedCount}',
+                      label: 'đã học',
+                    ),
+                    SizedBox(height: 8.h),
+                    _CounterTag(
+                      color: context.palette.darkBlueCard,
+                      text: '${provider.notebookFavoriteCount}',
+                      label: 'yêu thích',
+                    ),
+                  ],
+                ),
+              ],
             ),
-            child: Text(
-              '+${provider.notebookSavedCount} từ đã lưu',
-              style: TextStyle(
-                color: AppColors.whiteText,
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w600,
+            SizedBox(height: 10.h),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    context.palette.bottomButton,
+                    context.palette.bottomButton.withValues(alpha: 0.2),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Text(
+                '+${provider.notebookSavedCount} từ đã lưu',
+                style: TextStyle(
+                  color: context.palette.whiteText,
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
     );
   }
 }
@@ -355,7 +346,7 @@ class _CounterTag extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: AppColors.backgroundWhite,
+        color: context.palette.backgroundWhite,
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Row(
@@ -368,8 +359,8 @@ class _CounterTag extends StatelessWidget {
               child: Text(
                 text,
                 style: TextStyle(
-                  color: AppColors.whiteText,
-                  fontSize: 11.sp,
+                  color: context.palette.whiteText,
+                  fontSize: 10.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -379,8 +370,8 @@ class _CounterTag extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              color: AppColors.primaryText,
-              fontSize: 12.sp,
+              color: context.palette.primaryText,
+              fontSize: 10.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -413,10 +404,10 @@ class _HskLevelCard extends StatelessWidget {
         height: height,
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 12.h),
         decoration: BoxDecoration(
-          color: AppColors.backgroundWhite,
+          color: context.palette.backgroundWhite,
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
-            color: AppColors.borderDefault.withValues(alpha: 0.6),
+            color: context.palette.borderDefault.withValues(alpha: 0.6),
           ),
         ),
         child: Column(
@@ -426,7 +417,7 @@ class _HskLevelCard extends StatelessWidget {
             Text(
               level,
               style: TextStyle(
-                color: AppColors.vocabDarkText,
+                color: context.palette.vocabDarkText,
                 fontWeight: FontWeight.bold,
                 fontSize: 17.sp,
               ),
@@ -435,7 +426,7 @@ class _HskLevelCard extends StatelessWidget {
             Text(
               countLabel,
               style: TextStyle(
-                color: AppColors.secondaryText,
+                color: context.palette.secondaryText,
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w500,
               ),
@@ -467,13 +458,13 @@ class _ExamLevelCard extends StatelessWidget {
       onTap: onTap,
       child: Ink(
         width: width,
-        height: 60.h,
+        height: 70.h,
         padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
         decoration: BoxDecoration(
-          color: AppColors.backgroundWhite,
+          color: context.palette.backgroundWhite,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color: AppColors.borderDefault.withValues(alpha: 0.8),
+            color: context.palette.borderDefault.withValues(alpha: 0.8),
           ),
         ),
         child: Column(
@@ -482,7 +473,7 @@ class _ExamLevelCard extends StatelessWidget {
             Text(
               'Đề thi $level',
               style: TextStyle(
-                color: AppColors.vocabDarkText,
+                color: context.palette.vocabDarkText,
                 fontWeight: FontWeight.bold,
                 fontSize: 17.sp,
               ),
@@ -491,7 +482,7 @@ class _ExamLevelCard extends StatelessWidget {
             Text(
               countLabel,
               style: TextStyle(
-                color: AppColors.primaryText,
+                color: context.palette.primaryText,
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w500,
               ),

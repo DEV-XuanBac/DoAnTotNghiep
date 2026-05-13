@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/core/constants/conversation_constants.dart';
 
 class ConversationBottomBar extends StatelessWidget {
@@ -40,7 +40,7 @@ class ConversationBottomBar extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: AppColors.backgroundWhite,
+        color: context.palette.backgroundWhite,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -58,7 +58,7 @@ class ConversationBottomBar extends StatelessWidget {
                 '${ConversationConstants.stepPrefix} ${step + 1}/$stepMax',
                 style: TextStyle(
                   fontSize: 12.sp,
-                  color: AppColors.secondaryText,
+                  color: context.palette.secondaryText,
                 ),
               ),
               SizedBox(width: 8.w),
@@ -67,10 +67,10 @@ class ConversationBottomBar extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4.r),
                   child: LinearProgressIndicator(
                     value: (step + 1) / stepMax,
-                    backgroundColor: AppColors.borderDefault.withValues(
+                    backgroundColor: context.palette.borderDefault.withValues(
                       alpha: 0.45,
                     ),
-                    valueColor: AlwaysStoppedAnimation(AppColors.darkBlueCard),
+                    valueColor: AlwaysStoppedAnimation(context.palette.darkBlueCard),
                     minHeight: 6.h,
                   ),
                 ),
@@ -92,7 +92,7 @@ class ConversationBottomBar extends StatelessWidget {
                   ConversationConstants.assessing,
                   style: TextStyle(
                     fontSize: 13.sp,
-                    color: AppColors.secondaryText,
+                    color: context.palette.secondaryText,
                   ),
                 ),
               ],
@@ -109,8 +109,8 @@ class ConversationBottomBar extends StatelessWidget {
                 icon: const Icon(Icons.arrow_forward_rounded),
                 label: const Text(ConversationConstants.next),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.darkBlueCard,
-                  foregroundColor: AppColors.whiteText,
+                  backgroundColor: context.palette.darkBlueCard,
+                  foregroundColor: context.palette.whiteText,
                   padding: EdgeInsets.symmetric(vertical: 14.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14.r),
@@ -150,8 +150,8 @@ class _MicBar extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14.sp,
                   color: micOn
-                      ? AppColors.errorText
-                      : AppColors.primaryText,
+                      ? context.palette.errorText
+                      : context.palette.primaryText,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -162,7 +162,7 @@ class _MicBar extends StatelessWidget {
                     live,
                     style: TextStyle(
                       fontSize: 16.sp,
-                      color: AppColors.blueDarkText,
+                      color: context.palette.blueDarkText,
                       fontWeight: FontWeight.bold,
                     ),
                     maxLines: 2,
@@ -178,11 +178,11 @@ class _MicBar extends StatelessWidget {
             width: 56.w,
             height: 56.w,
             decoration: BoxDecoration(
-              color: micOn ? AppColors.errorText : AppColors.darkBlueCard,
+              color: micOn ? context.palette.errorText : context.palette.darkBlueCard,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: (micOn ? AppColors.errorText : AppColors.darkBlueCard)
+                  color: (micOn ? context.palette.errorText : context.palette.darkBlueCard)
                       .withValues(alpha: 0.3),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
@@ -191,7 +191,7 @@ class _MicBar extends StatelessWidget {
             ),
             child: Icon(
               micOn ? Icons.stop_rounded : Icons.mic_rounded,
-              color: AppColors.whiteText,
+              color: context.palette.whiteText,
               size: 28.sp,
             ),
           ),
@@ -219,14 +219,14 @@ class _DoneBar extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(14.w),
           decoration: BoxDecoration(
-            color: AppColors.greenCard.withValues(alpha: 0.1),
+            color: context.palette.greenCard.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12.r),
           ),
           child: Row(
             children: [
               Icon(
                 Icons.check_circle_rounded,
-                color: AppColors.greenCard,
+                color: context.palette.greenCard,
                 size: 28.sp,
               ),
               SizedBox(width: 10.w),
@@ -239,7 +239,7 @@ class _DoneBar extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 15.sp,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.primaryText,
+                        color: context.palette.primaryText,
                       ),
                     ),
                     if (avg10 != null)
@@ -248,7 +248,7 @@ class _DoneBar extends StatelessWidget {
                         '${avg10!.toStringAsFixed(1)}/10',
                         style: TextStyle(
                           fontSize: 13.sp,
-                          color: AppColors.secondaryText,
+                          color: context.palette.secondaryText,
                         ),
                       ),
                   ],
@@ -266,8 +266,8 @@ class _DoneBar extends StatelessWidget {
                 icon: const Icon(Icons.topic_rounded),
                 label: const Text(ConversationConstants.topicOther),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.darkBlueCard,
-                  side: BorderSide(color: AppColors.darkBlueCard),
+                  foregroundColor: context.palette.darkBlueCard,
+                  side: BorderSide(color: context.palette.darkBlueCard),
                   padding: EdgeInsets.symmetric(vertical: 12.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14.r),
@@ -282,8 +282,8 @@ class _DoneBar extends StatelessWidget {
                 icon: const Icon(Icons.replay_rounded),
                 label: const Text(ConversationConstants.retry),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.darkBlueCard,
-                  foregroundColor: AppColors.whiteText,
+                  backgroundColor: context.palette.darkBlueCard,
+                  foregroundColor: context.palette.whiteText,
                   padding: EdgeInsets.symmetric(vertical: 12.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14.r),

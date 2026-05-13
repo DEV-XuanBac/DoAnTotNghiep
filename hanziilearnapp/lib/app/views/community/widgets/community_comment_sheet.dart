@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/core/constants/community_constants.dart';
 import 'package:hanziilearnapp/app/models/community_comment_model.dart';
 import 'package:hanziilearnapp/app/models/community_post_model.dart';
@@ -48,7 +48,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                 width: 50.w,
                 height: 4.h,
                 decoration: BoxDecoration(
-                  color: AppColors.borderDefault,
+                  color: context.palette.borderDefault,
                   borderRadius: BorderRadius.circular(6.r),
                 ),
               ),
@@ -56,7 +56,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
               Text(
                 CommunityConstants.cmtTitle,
                 style: TextStyle(
-                  color: AppColors.primaryText,
+                  color: context.palette.primaryText,
                   fontSize: 18.sp,
                   fontWeight: FontWeight.w700,
                 ),
@@ -74,7 +74,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                         child: Text(
                           'Không tải được bình luận',
                           style: TextStyle(
-                            color: AppColors.errorText,
+                            color: context.palette.errorText,
                             fontSize: 14.sp,
                           ),
                         ),
@@ -87,7 +87,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                         child: Text(
                           CommunityConstants.noComments,
                           style: TextStyle(
-                            color: AppColors.secondaryText,
+                            color: context.palette.secondaryText,
                             fontSize: 14.sp,
                             fontStyle: FontStyle.italic,
                           ),
@@ -111,14 +111,14 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                           child: Container(
                             padding: EdgeInsets.all(10.w),
                             decoration: BoxDecoration(
-                              color: AppColors.backgroundLight.withValues(
+                              color: context.palette.backgroundLight.withValues(
                                 alpha: depth == 0 ? 0.45 : 0.32,
                               ),
                               borderRadius: BorderRadius.circular(10.r),
                               border: depth > 0
                                   ? Border(
                                       left: BorderSide(
-                                        color: AppColors.borderDefault,
+                                        color: context.palette.borderDefault,
                                         width: 2.w,
                                       ),
                                     )
@@ -140,7 +140,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                                             ? 'Người dùng'
                                             : comment.userName,
                                         style: TextStyle(
-                                          color: AppColors.primaryText,
+                                          color: context.palette.primaryText,
                                           fontSize: 14.sp,
                                           fontWeight: FontWeight.w700,
                                         ),
@@ -149,7 +149,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                                     Text(
                                       formatCommunityTimeAgo(comment.createdAt),
                                       style: TextStyle(
-                                        color: AppColors.secondaryText,
+                                        color: context.palette.secondaryText,
                                         fontSize: 10.sp,
                                       ),
                                     ),
@@ -163,7 +163,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                                     child: Text(
                                       '${CommunityConstants.reply} ${comment.parentUserName}:',
                                       style: TextStyle(
-                                        color: AppColors.blueDarkText,
+                                        color: context.palette.blueDarkText,
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -172,7 +172,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                                 Text(
                                   comment.content,
                                   style: TextStyle(
-                                    color: AppColors.primaryText,
+                                    color: context.palette.primaryText,
                                     fontSize: 14.sp,
                                   ),
                                 ),
@@ -189,7 +189,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                                         CommunityConstants.reply,
                                         style: TextStyle(
                                           fontSize: 12.sp,
-                                          color: AppColors.blueDarkText,
+                                          color: context.palette.blueDarkText,
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ),
@@ -202,7 +202,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                                       'Đạt giới hạn trả lời',
                                       style: TextStyle(
                                         fontSize: 10.sp,
-                                        color: AppColors.secondaryText,
+                                        color: context.palette.secondaryText,
                                         fontStyle: FontStyle.italic,
                                       ),
                                     ),
@@ -225,9 +225,9 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                     vertical: 6.h,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.backgroundLight,
+                    color: context.palette.backgroundLight,
                     borderRadius: BorderRadius.circular(8.r),
-                    border: Border.all(color: AppColors.borderDefault),
+                    border: Border.all(color: context.palette.borderDefault),
                   ),
                   child: Row(
                     children: [
@@ -235,7 +235,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                         child: Text(
                           'Đang trả lời ${_replyTarget!.userName}',
                           style: TextStyle(
-                            color: AppColors.primaryText,
+                            color: context.palette.primaryText,
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
                             fontStyle: FontStyle.italic,
@@ -247,7 +247,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                         child: Icon(
                           Icons.close,
                           size: 16.sp,
-                          color: AppColors.secondaryText,
+                          color: context.palette.secondaryText,
                         ),
                       ),
                     ],
@@ -271,17 +271,17 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                             vertical: 10.h,
                           ),
                           filled: true,
-                          fillColor: AppColors.backgroundLight,
+                          fillColor: context.palette.backgroundLight,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12.r),
                             borderSide: BorderSide(
-                              color: AppColors.borderDefault,
+                              color: context.palette.borderDefault,
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12.r),
                             borderSide: BorderSide(
-                              color: AppColors.borderDefault,
+                              color: context.palette.borderDefault,
                             ),
                           ),
                         ),
@@ -293,6 +293,7 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                     height: 40.h,
                     child: ElevatedButton(
                       onPressed: () async {
+                        final messenger = ScaffoldMessenger.of(context);
                         try {
                           await postProvider.addComment(
                             widget.post.postId,
@@ -301,11 +302,16 @@ class _CommunityCommentSheetState extends State<CommunityCommentSheet> {
                             parentUserId: _replyTarget?.userId ?? '',
                             parentUserName: _replyTarget?.userName ?? '',
                           );
+                          if (!mounted) {
+                            return;
+                          }
                           _commentController.clear();
                           setState(() => _replyTarget = null);
                         } catch (error) {
-                          if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          if (!mounted) {
+                            return;
+                          }
+                          messenger.showSnackBar(
                             SnackBar(content: Text(error.toString())),
                           );
                         }

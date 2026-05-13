@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 
 class SignupFormSection extends StatelessWidget {
   const SignupFormSection({
@@ -49,36 +49,39 @@ class SignupFormSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildLabel('Email:'),
+            _buildLabel(context, 'Email:'),
             SizedBox(height: 5.h),
             TextFormField(
               controller: emailCtrl,
               keyboardType: TextInputType.emailAddress,
               validator: validateMail,
               decoration: _inputDecoration(
+                context,
                 hint: 'Nhập email của bạn',
                 icon: Icons.email_outlined,
               ),
             ),
             SizedBox(height: 12.h),
-            _buildLabel('Tên người dùng:'),
+            _buildLabel(context, 'Tên người dùng:'),
             SizedBox(height: 5.h),
             TextFormField(
               controller: nameCtrl,
               validator: validateName,
               decoration: _inputDecoration(
+                context,
                 hint: 'Nhập tên người dùng tiếng Việt',
                 icon: Icons.person_outline,
               ),
             ),
             SizedBox(height: 12.h),
-            _buildLabel('Mật khẩu:'),
+            _buildLabel(context, 'Mật khẩu:'),
             SizedBox(height: 5.h),
             TextFormField(
               controller: passCtrl,
               obscureText: hidePw,
               validator: validatePass,
               decoration: _inputDecoration(
+                context,
                 hint: 'Mật khẩu tối thiểu 8 ký tự',
                 icon: Icons.lock_outline,
                 suffix: IconButton(
@@ -86,20 +89,21 @@ class SignupFormSection extends StatelessWidget {
                     hidePw
                         ? Icons.visibility_off_outlined
                         : Icons.visibility_outlined,
-                    color: AppColors.secondaryText,
+                    color: context.palette.secondaryText,
                   ),
                   onPressed: onTogglePw,
                 ),
               ),
             ),
             SizedBox(height: 12.h),
-            _buildLabel('Nhập lại mật khẩu:'),
+            _buildLabel(context, 'Nhập lại mật khẩu:'),
             SizedBox(height: 5.h),
             TextFormField(
               controller: confirmPassCtrl,
               obscureText: hideConfirmPw,
               validator: validateConfirmPass,
               decoration: _inputDecoration(
+                context,
                 hint: 'Nhập lại mật khẩu',
                 icon: Icons.lock_outline,
                 suffix: IconButton(
@@ -107,7 +111,7 @@ class SignupFormSection extends StatelessWidget {
                     hideConfirmPw
                         ? Icons.visibility_off_outlined
                         : Icons.visibility_outlined,
-                    color: AppColors.secondaryText,
+                    color: context.palette.secondaryText,
                   ),
                   onPressed: onToggleConfirmPw,
                 ),
@@ -120,7 +124,7 @@ class SignupFormSection extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: loading ? null : onRegister,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.blueDarkText.withValues(alpha: 0.8),
+                  backgroundColor: context.palette.blueDarkText.withValues(alpha: 0.8),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.r),
                   ),
@@ -135,7 +139,7 @@ class SignupFormSection extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.whiteText,
+                          color: context.palette.whiteText,
                         ),
                       ),
               ),
@@ -145,19 +149,19 @@ class SignupFormSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  "Bạn đã có tài khoản? ",
+                  'Bạn đã có tài khoản? ',
                   style: TextStyle(
                     fontSize: 12.sp,
-                    color: AppColors.secondaryText,
+                    color: context.palette.secondaryText,
                   ),
                 ),
                 GestureDetector(
                   onTap: onGoLogin,
                   child: Text(
-                    "Đăng nhập",
+                    'Đăng nhập',
                     style: TextStyle(
                       fontSize: 12.sp,
-                      color: AppColors.blueDarkText,
+                      color: context.palette.blueDarkText,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -171,14 +175,15 @@ class SignupFormSection extends StatelessWidget {
     );
   }
 
-  Widget _buildLabel(String text) {
+  Widget _buildLabel(BuildContext context, String text) {
     return Text(
       text,
-      style: TextStyle(fontSize: 14.sp, color: AppColors.primaryText),
+      style: TextStyle(fontSize: 14.sp, color: context.palette.primaryText),
     );
   }
 
-  InputDecoration _inputDecoration({
+  InputDecoration _inputDecoration(
+    BuildContext context, {
     required String hint,
     required IconData icon,
     Widget? suffix,
@@ -188,12 +193,12 @@ class SignupFormSection extends StatelessWidget {
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
       prefixIcon: Icon(
         icon,
-        color: AppColors.secondaryText.withValues(alpha: 0.8),
+        color: context.palette.secondaryText.withValues(alpha: 0.8),
       ),
       suffixIcon: suffix,
       hintStyle: TextStyle(
         fontSize: 14.sp,
-        color: AppColors.secondaryText.withValues(alpha: 0.8),
+        color: context.palette.secondaryText.withValues(alpha: 0.8),
       ),
     );
   }

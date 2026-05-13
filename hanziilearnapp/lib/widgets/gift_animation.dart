@@ -43,14 +43,14 @@ class _GiftAnimationState extends State<GiftAnimation>
         ),
       ),
       builder: (context, child) {
-        double rotate = sin(_controller.value * pi * 4) * 0.1;
-        double jump = sin(_controller.value * pi * 2) * -0.4;
-        double glow = (sin(_controller.value * pi * 2) + 1) * 5; // Shake effect
+        final rotate = sin(_controller.value * pi * 4) * 0.1;
+        final jump = sin(_controller.value * pi * 2) * -0.4;
+        final glow = (sin(_controller.value * pi * 2) + 1) * 5; // Shake effect
         return Transform.translate(
           offset: Offset(0, jump),
           child: Transform.rotate(
             angle: rotate,
-            child: Container(
+            child: DecoratedBox(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 boxShadow: [

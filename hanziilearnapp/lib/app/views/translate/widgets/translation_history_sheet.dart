@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+﻿import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 
 class TranslationHistorySheet extends StatelessWidget {
   const TranslationHistorySheet({
@@ -26,7 +26,7 @@ class TranslationHistorySheet extends StatelessWidget {
                 width: 52.w,
                 height: 4.h,
                 decoration: BoxDecoration(
-                  color: AppColors.borderDefault,
+                  color: context.palette.borderDefault,
                   borderRadius: BorderRadius.circular(8.r),
                 ),
               ),
@@ -34,7 +34,7 @@ class TranslationHistorySheet extends StatelessWidget {
               Text(
                 'Lịch sử dịch',
                 style: TextStyle(
-                  color: AppColors.primaryText,
+                  color: context.palette.primaryText,
                   fontWeight: FontWeight.w700,
                   fontSize: 18.sp,
                 ),
@@ -58,7 +58,7 @@ class TranslationHistorySheet extends StatelessWidget {
                               ? 'Thiếu Firestore index cho lịch sử dịch.'
                               : 'Không tải được lịch sử dịch.',
                           style: TextStyle(
-                            color: AppColors.errorText,
+                            color: context.palette.errorText,
                             fontWeight: FontWeight.w600,
                           ),
                           textAlign: TextAlign.center,
@@ -84,7 +84,7 @@ class TranslationHistorySheet extends StatelessWidget {
                         child: Text(
                           'Chưa có bản dịch nào',
                           style: TextStyle(
-                            color: AppColors.secondaryText,
+                            color: context.palette.secondaryText,
                             fontStyle: FontStyle.italic,
                           ),
                         ),
@@ -107,10 +107,10 @@ class TranslationHistorySheet extends StatelessWidget {
                         return Container(
                           padding: EdgeInsets.all(10.w),
                           decoration: BoxDecoration(
-                            color: AppColors.backgroundLight.withValues(alpha: 0.45),
+                            color: context.palette.backgroundLight.withValues(alpha: 0.45),
                             borderRadius: BorderRadius.circular(10.r),
                             border: Border.all(
-                              color: AppColors.borderDefault.withValues(alpha: 0.5),
+                              color: context.palette.borderDefault.withValues(alpha: 0.5),
                             ),
                           ),
                           child: Column(
@@ -119,7 +119,7 @@ class TranslationHistorySheet extends StatelessWidget {
                               Text(
                                 'Kiểu dịch: $translationType',
                                 style: TextStyle(
-                                  color: AppColors.blueDarkText,
+                                  color: context.palette.blueDarkText,
                                   fontWeight: FontWeight.w700,
                                   fontSize: 12.sp,
                                 ),
@@ -128,7 +128,7 @@ class TranslationHistorySheet extends StatelessWidget {
                               Text(
                                 'Văn bản gốc:',
                                 style: TextStyle(
-                                  color: AppColors.secondaryText,
+                                  color: context.palette.secondaryText,
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -136,7 +136,7 @@ class TranslationHistorySheet extends StatelessWidget {
                               Text(
                                 sourceText.isEmpty ? '-' : sourceText,
                                 style: TextStyle(
-                                  color: AppColors.primaryText,
+                                  color: context.palette.primaryText,
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -145,7 +145,7 @@ class TranslationHistorySheet extends StatelessWidget {
                               Text(
                                 'Bản dịch:',
                                 style: TextStyle(
-                                  color: AppColors.secondaryText,
+                                  color: context.palette.secondaryText,
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -153,7 +153,7 @@ class TranslationHistorySheet extends StatelessWidget {
                               Text(
                                 translatedText.isEmpty ? '-' : translatedText,
                                 style: TextStyle(
-                                  color: AppColors.primaryText,
+                                  color: context.palette.primaryText,
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
                                 ),

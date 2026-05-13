@@ -2,10 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hanziilearnapp/app/models/parsed_hsk_exam_model.dart';
 
 abstract class IHskExamAdminRepository {
-  Future<void> upload({
-    required ParsedHskExam parsed,
-    String? sourceFileName,
-  });
+  Future<void> upload({required ParsedHskExam parsed, String? sourceFileName});
 }
 
 class HskExamAdminRepository implements IHskExamAdminRepository {

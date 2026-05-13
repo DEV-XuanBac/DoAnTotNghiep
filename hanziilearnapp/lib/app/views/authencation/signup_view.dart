@@ -1,12 +1,11 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/router/app_router.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/providers/auth_provider.dart';
-import 'package:hanziilearnapp/app/routes/app_routes.dart';
 import 'package:hanziilearnapp/app/views/authencation/controllers/signup_controller.dart';
-import 'package:hanziilearnapp/app/views/authencation/login_view.dart';
 import 'package:hanziilearnapp/app/views/authencation/signup/signup_form_section.dart';
 import 'package:hanziilearnapp/app/views/authencation/signup/signup_validation.dart';
 import 'package:hanziilearnapp/app/views/authencation/widgets/auth_header.dart';
@@ -54,12 +53,7 @@ class _SigninViewState extends State<SigninView> {
                     onTogglePw: _ctl.togglePw,
                     onToggleConfirmPw: _ctl.toggleConfirmPw,
                     onRegister: _onRegisterPressed,
-                    onGoLogin: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const LoginView()),
-                      );
-                    },
+                    onGoLogin: () => AppRouter.pushLogin(context),
                     validateMail: validateSignupEmail,
                     validateName: validateSignupUsername,
                     validatePass: validateSignupPassword,
@@ -85,12 +79,12 @@ class _SigninViewState extends State<SigninView> {
           content: Text(
             'Đã gửi email xác thực. Bạn có 2 phút để xác thực email.',
             style: TextStyle(
-              color: AppColors.secondaryText,
+              color: context.palette.secondaryText,
               fontWeight: FontWeight.w600,
               fontSize: 14.sp,
             ),
           ),
-          backgroundColor: AppColors.cardItem,
+          backgroundColor: context.palette.cardItem,
         ),
       );
       await _waitForEmailVerificationOrTimeout();
@@ -100,9 +94,9 @@ class _SigninViewState extends State<SigninView> {
       SnackBar(
         content: Text(
           errMsg,
-          style: TextStyle(color: AppColors.errorText),
+          style: TextStyle(color: context.palette.errorText),
         ),
-        backgroundColor: AppColors.backgroundLight,
+        backgroundColor: context.palette.backgroundLight,
       ),
     );
   }
@@ -142,7 +136,7 @@ class _SigninViewState extends State<SigninView> {
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.blueDarkText,
+                      color: context.palette.blueDarkText,
                     ),
                   ),
                 ],
@@ -176,21 +170,21 @@ class _SigninViewState extends State<SigninView> {
           SnackBar(
             content: Text(
               'Đăng ký thành công!',
-              style: TextStyle(color: AppColors.greenText),
+              style: TextStyle(color: context.palette.greenText),
             ),
-            backgroundColor: AppColors.backgroundLight,
+            backgroundColor: context.palette.backgroundLight,
           ),
         );
-        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (route) => false);
+        unawaited(AppRouter.goToMainTab(context));
         break;
       case SignupVerificationOutcome.timeout:
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               'Quá 2 phút chưa xác thực. Đăng ký đã bị hủy, vui lòng đăng ký lại.',
-              style: TextStyle(color: AppColors.errorText),
+              style: TextStyle(color: context.palette.errorText),
             ),
-            backgroundColor: AppColors.backgroundLight,
+            backgroundColor: context.palette.backgroundLight,
           ),
         );
         break;

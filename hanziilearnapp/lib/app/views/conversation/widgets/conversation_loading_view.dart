@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/core/constants/conversation_constants.dart';
 
 class ConversationLoadingView extends StatelessWidget {
@@ -16,7 +16,7 @@ class ConversationLoadingView extends StatelessWidget {
           SizedBox(height: 16.h),
           Text(
             ConversationConstants.loadingDlg,
-            style: TextStyle(fontSize: 16.sp, color: AppColors.secondaryText),
+            style: TextStyle(fontSize: 16.sp, color: context.palette.secondaryText),
           ),
         ],
       ),

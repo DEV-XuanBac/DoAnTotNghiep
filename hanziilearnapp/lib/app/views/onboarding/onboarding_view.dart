@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/routes/app_routes.dart';
 
 class OnboardingView extends StatefulWidget {
@@ -37,16 +37,16 @@ class _OnboardingViewState extends State<OnboardingView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Spacer(flex: 1),
+                const Spacer(),
                 Text(
                   '汉字',
                   style: TextStyle(
                     fontSize: 72.sp,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.label,
+                    color: context.palette.label,
                     shadows: [
                       Shadow(
-                        color: AppColors.label.withValues(alpha: 0.3),
+                        color: context.palette.label.withValues(alpha: 0.3),
                         offset: const Offset(2, 4),
                         blurRadius: 8,
                       ),
@@ -59,7 +59,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                   style: TextStyle(
                     fontSize: 28.sp,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.labelOnboarding,
+                    color: context.palette.labelOnboarding,
                     letterSpacing: 2,
                   ),
                 ),
@@ -80,7 +80,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                     child: CircularProgressIndicator(
                       strokeWidth: 3,
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColors.labelOnboarding.withValues(alpha: 0.8),
+                        context.palette.labelOnboarding.withValues(alpha: 0.8),
                       ),
                     ),
                   ),

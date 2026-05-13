@@ -1,8 +1,10 @@
+﻿import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
-import 'package:hanziilearnapp/app/providers/lesson_provider.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
+import 'package:hanziilearnapp/app/providers/notebook_provider.dart';
 import 'package:provider/provider.dart';
 
 class NotebookView extends StatefulWidget {
@@ -12,22 +14,40 @@ class NotebookView extends StatefulWidget {
   State<NotebookView> createState() => _NotebookViewState();
 }
 
-class _NotebookViewState extends State<NotebookView> {
+class _NotebookViewState extends State<NotebookView>
+    with SingleTickerProviderStateMixin {
   final FlutterTts _tts = FlutterTts();
+  late final TabController _tabController;
+  int _lastTabIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _tts.setLanguage('zh-CN');
-    _tts.setSpeechRate(0.45);
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_onTabChanged);
+    unawaited(_tts.setLanguage('zh-CN'));
+    unawaited(_tts.setSpeechRate(0.45));
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<LessonProvider>().loadNotebookWords();
+      if (!mounted) {
+        return;
+      }
+      unawaited(context.read<NotebookProvider>().loadNotebookWords());
     });
+  }
+
+  void _onTabChanged() {
+    if (_tabController.indexIsChanging) return;
+    if (_tabController.index != _lastTabIndex) {
+      _lastTabIndex = _tabController.index;
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
   }
 
   @override
   void dispose() {
-    _tts.stop();
+    _tabController.removeListener(_onTabChanged);
+    _tabController.dispose();
+    unawaited(_tts.stop());
     super.dispose();
   }
 
@@ -38,68 +58,61 @@ class _NotebookViewState extends State<NotebookView> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        backgroundColor: AppColors.backgroundLight,
-        appBar: AppBar(
-          backgroundColor: AppColors.backgroundLight,
-          elevation: 0,
-          title: const Text('Sổ tay học tập'),
-          centerTitle: true,
-        ),
-        body: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 14.w),
-              child: Container(
-                height: 50.h,
-                decoration: BoxDecoration(
-                  color: AppColors.backgroundWhite,
-                  borderRadius: BorderRadius.circular(30.r),
-                ),
-                child: TabBar(
-                  padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
-                  indicator: BoxDecoration(
-                    color: AppColors.blueDarkText,
-                    borderRadius: BorderRadius.circular(22.r),
-                  ),
-                  labelColor: AppColors.whiteText,
-                  unselectedLabelColor: AppColors.primaryText,
-                  labelStyle: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  unselectedLabelStyle: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  dividerColor: Colors.transparent,
-                  tabs: const [
-                    Tab(text: 'Đã lưu'),
-                    Tab(text: 'Yêu thích'),
-                  ],
-                ),
+    return Scaffold(
+      backgroundColor: context.palette.backgroundLight,
+      appBar: AppBar(
+        backgroundColor: context.palette.backgroundLight,
+        elevation: 0,
+        title: const Text('Sổ tay học tập'),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 14.w),
+            child: Container(
+              height: 50.h,
+              decoration: BoxDecoration(
+                color: context.palette.backgroundWhite,
+                borderRadius: BorderRadius.circular(30.r),
               ),
-            ),
-            SizedBox(height: 10.h),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  _NotebookList(
-                    onlyFavorite: false,
-                    onSpeak: _speak,
-                  ),
-                  _NotebookList(
-                    onlyFavorite: true,
-                    onSpeak: _speak,
-                  ),
+              child: TabBar(
+                controller: _tabController,
+                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
+                indicator: BoxDecoration(
+                  color: context.palette.blueDarkText,
+                  borderRadius: BorderRadius.circular(22.r),
+                ),
+                labelColor: context.palette.whiteText,
+                unselectedLabelColor: context.palette.primaryText,
+                labelStyle: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+                unselectedLabelStyle: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+                indicatorSize: TabBarIndicatorSize.tab,
+                dividerColor: Colors.transparent,
+                tabs: const [
+                  Tab(text: 'Đã lưu'),
+                  Tab(text: 'Yêu thích'),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: 10.h),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _NotebookList(onlyFavorite: false, onSpeak: _speak),
+                _NotebookList(onlyFavorite: true, onSpeak: _speak),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -113,7 +126,7 @@ class _NotebookList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LessonProvider>(
+    return Consumer<NotebookProvider>(
       builder: (context, provider, _) {
         final items = onlyFavorite
             ? provider.notebookItems.where((item) => item.isFavorite).toList()
@@ -123,12 +136,13 @@ class _NotebookList extends StatelessWidget {
           return Center(
             child: Text(
               onlyFavorite ? 'Chưa có từ yêu thích.' : 'Chưa có từ đã lưu.',
-              style: TextStyle(color: AppColors.secondaryText),
+              style: TextStyle(color: context.palette.secondaryText),
             ),
           );
         }
 
         return ListView.builder(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
           itemCount: items.length,
           itemBuilder: (_, index) {
@@ -137,9 +151,9 @@ class _NotebookList extends StatelessWidget {
               margin: EdgeInsets.only(bottom: 10.h),
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
-                color: AppColors.backgroundWhite,
+                color: context.palette.backgroundWhite,
                 borderRadius: BorderRadius.circular(14.r),
-                border: Border.all(color: AppColors.borderDefault),
+                border: Border.all(color: context.palette.borderDefault),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,13 +169,14 @@ class _NotebookList extends StatelessWidget {
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 18.sp,
-                                  color: AppColors.primaryText,
+                                  color: context.palette.primaryText,
                                 ),
                               ),
                               TextSpan(
-                                text: ' [${item.word.pinyin}]  ${item.word.meaning}',
+                                text:
+                                    ' [${item.word.pinyin}]  ${item.word.meaning}',
                                 style: TextStyle(
-                                  color: AppColors.secondaryText,
+                                  color: context.palette.secondaryText,
                                   fontSize: 14.sp,
                                 ),
                               ),
@@ -175,13 +190,13 @@ class _NotebookList extends StatelessWidget {
                           width: 32.w,
                           height: 32.w,
                           decoration: BoxDecoration(
-                            border: Border.all(color: AppColors.borderDefault),
+                            border: Border.all(color: context.palette.borderDefault),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
                             Icons.volume_up_rounded,
                             size: 18.sp,
-                            color: AppColors.blueDarkText,
+                            color: context.palette.blueDarkText,
                           ),
                         ),
                       ),
@@ -191,31 +206,72 @@ class _NotebookList extends StatelessWidget {
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () => context
-                            .read<LessonProvider>()
-                            .toggleFavoriteInNotebook(item.word.id),
+                        onPressed: () => unawaited(
+                          context
+                              .read<NotebookProvider>()
+                              .toggleFavoriteInNotebook(item.word.id),
+                        ),
                         icon: Icon(
                           Icons.favorite,
                           color: item.isFavorite
                               ? Colors.red
-                              : AppColors.secondaryText.withValues(alpha: 0.7),
+                              : context.palette.secondaryText.withValues(alpha: 0.7),
                         ),
                       ),
                       Expanded(
                         child: TextFormField(
                           initialValue: item.note,
+                          cursorColor: context.palette.blueDarkText,
+                          cursorHeight: 18.h,
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            height: 1.45,
+                            letterSpacing: 0.15,
+                            color: context.palette.primaryText,
+                          ),
                           decoration: InputDecoration(
                             hintText: 'Thêm chú thích',
                             isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                              vertical: 10.h,
+                            ),
                             filled: true,
-                            fillColor: AppColors.backgroundLight,
+                            fillColor: context.palette.toolButton.withValues(
+                              alpha: 0.12,
+                            ),
+                            hintStyle: TextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.italic,
+                              height: 1.45,
+                              color: context.palette.secondaryText.withValues(
+                                alpha: 0.85,
+                              ),
+                            ),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
+                              borderRadius: BorderRadius.circular(12.r),
+                              borderSide: BorderSide(
+                                color: context.palette.toolButton.withValues(
+                                  alpha: 0.45,
+                                ),
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                              borderSide: BorderSide(
+                                color: context.palette.toolButton.withValues(
+                                  alpha: 0.45,
+                                ),
+                              ),
                             ),
                           ),
-                          onFieldSubmitted: (value) => context
-                              .read<LessonProvider>()
-                              .updateNotebookNote(item.word.id, value),
+                          onFieldSubmitted: (value) => unawaited(
+                            context
+                                .read<NotebookProvider>()
+                                .updateNotebookNote(item.word.id, value),
+                          ),
                         ),
                       ),
                     ],

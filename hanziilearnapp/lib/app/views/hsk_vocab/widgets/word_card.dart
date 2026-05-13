@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/models/word_model.dart';
-import 'package:hanziilearnapp/app/providers/lesson_provider.dart';
+import 'package:hanziilearnapp/app/providers/notebook_provider.dart';
 import 'package:provider/provider.dart';
 
 class WordCard extends StatelessWidget {
@@ -19,7 +19,7 @@ class WordCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bookmarked = context.select<LessonProvider, bool>(
+    final bookmarked = context.select<NotebookProvider, bool>(
       (value) => value.isBookmarked(word.id),
     );
 
@@ -27,7 +27,7 @@ class WordCard extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 12.h),
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: AppColors.backgroundWhite,
+        color: context.palette.backgroundWhite,
         borderRadius: BorderRadius.circular(26.r),
       ),
       child: Column(
@@ -43,7 +43,7 @@ class WordCard extends StatelessWidget {
                       TextSpan(
                         text: word.hanzi,
                         style: TextStyle(
-                          color: AppColors.primaryText,
+                          color: context.palette.primaryText,
                           fontWeight: FontWeight.w700,
                           fontSize: 22.sp,
                         ),
@@ -51,7 +51,7 @@ class WordCard extends StatelessWidget {
                       TextSpan(
                         text: ' [${word.pinyin}]',
                         style: TextStyle(
-                          color: AppColors.secondaryText,
+                          color: context.palette.secondaryText,
                           fontWeight: FontWeight.w500,
                           fontSize: 17.sp,
                         ),
@@ -74,7 +74,7 @@ class WordCard extends StatelessWidget {
           Text(
             word.meaning,
             style: TextStyle(
-              color: AppColors.primaryText,
+              color: context.palette.primaryText,
               fontSize: 18.sp,
               fontWeight: FontWeight.w500,
             ),

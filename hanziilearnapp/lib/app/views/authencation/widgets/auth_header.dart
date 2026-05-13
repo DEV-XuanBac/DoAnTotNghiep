@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 
 class AuthHeader extends StatelessWidget {
   const AuthHeader({super.key, required this.title, this.topSpacing = 20});
@@ -23,7 +23,7 @@ class AuthHeader extends StatelessWidget {
           style: TextStyle(
             fontSize: 24.sp,
             fontWeight: FontWeight.bold,
-            color: AppColors.blueDarkText,
+            color: context.palette.blueDarkText,
           ),
         ),
         SizedBox(height: 10.h),

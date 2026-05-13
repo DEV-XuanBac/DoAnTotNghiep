@@ -1,19 +1,24 @@
-import 'dart:convert';
-import 'dart:async';
+﻿import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/services.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
-import 'package:hanziilearnapp/app/datasource/network_services/hsk_exam_service.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
+import 'package:hanziilearnapp/app/datasource/repository/exam_attempt_repository.dart';
+import 'package:hanziilearnapp/app/datasource/repository/hsk_exam_repository.dart';
 import 'package:hanziilearnapp/app/models/hsk_exam_model.dart';
-import 'package:hanziilearnapp/app/views/exam/widgets/hsk_exam_listening_audio_card.dart';
+import 'package:hanziilearnapp/app/utils/hsk_exam_answer_utils.dart';
+import 'package:hanziilearnapp/app/views/exam/hsk_exam_audio_bytes.dart';
 import 'package:hanziilearnapp/app/views/exam/widgets/hsk_exam_navigation_actions.dart';
 import 'package:hanziilearnapp/app/views/exam/widgets/hsk_exam_question_card.dart';
+import 'package:hanziilearnapp/app/views/exam/widgets/hsk_exam_question_image.dart';
+import 'package:hanziilearnapp/app/views/exam/widgets/hsk_exam_section_content.dart';
+import 'package:hanziilearnapp/app/views/exam/widgets/hsk_exam_sort_sentences_card.dart';
+import 'package:hanziilearnapp/app/views/exam/widgets/hsk_exam_sort_word_card.dart';
 import 'package:hanziilearnapp/app/views/exam/widgets/hsk_exam_states.dart';
+import 'package:hanziilearnapp/app/views/exam/widgets/hsk_exam_write_sentence_card.dart';
+import 'package:provider/provider.dart';
 
 class HskExamTakeView extends StatefulWidget {
   const HskExamTakeView({super.key, required this.examId, required this.level});
@@ -28,8 +33,8 @@ class HskExamTakeView extends StatefulWidget {
 class _HskExamTakeViewState extends State<HskExamTakeView> {
   static const double _fixedImageHeight = 160;
 
-  final HskExamService _examService = HskExamService();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late final IHskExamRepository _examRepo;
+  late final IExamAttemptRepository _attemptRepo;
   late final Future<HskExamDetail> _examFuture;
   late final AudioPlayer _audioPlayer;
   final ScrollController _questionScrollController = ScrollController();
@@ -45,11 +50,14 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
   bool _isSubmitting = false;
   bool _didAutoSubmit = false;
   String? _timerExamKey;
+  int? _examTimeLimitMinutes;
 
   @override
   void initState() {
     super.initState();
-    _examFuture = _examService.getExamDtl(widget.examId);
+    _examRepo = context.read<IHskExamRepository>();
+    _attemptRepo = context.read<IExamAttemptRepository>();
+    _examFuture = _examRepo.getExamDetail(widget.examId);
     _audioPlayer = AudioPlayer();
     _audioPlayer.onDurationChanged.listen((duration) {
       if (mounted) {
@@ -87,10 +95,25 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
-        title: Text('Làm đề ${widget.level}'),
-        backgroundColor: AppColors.backgroundLight,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Làm đề ${widget.level}'),
+            if (_examTimeLimitMinutes != null && _examTimeLimitMinutes! > 0)
+              Text(
+                'Giới hạn: $_examTimeLimitMinutes phút (theo đề)',
+                style: TextStyle(
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w500,
+                  color: context.palette.secondaryText,
+                ),
+              ),
+          ],
+        ),
+        backgroundColor: context.palette.backgroundLight,
         elevation: 0,
         actions: [
           if (_remainingTime != null)
@@ -104,13 +127,15 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
                   ),
                   decoration: BoxDecoration(
                     color: _isTimerWarning
-                        ? AppColors.errorText.withValues(alpha: 0.08)
-                        : AppColors.backgroundWhite,
+                        ? context.palette.errorText.withValues(alpha: 0.08)
+                        : context.palette.backgroundWhite,
                     borderRadius: BorderRadius.circular(20.r),
                     border: Border.all(
                       color: _isTimerWarning
-                          ? AppColors.errorText.withValues(alpha: 0.8)
-                          : AppColors.borderDefault.withValues(alpha: 0.8),
+                          ? context.palette.errorText.withValues(alpha: 0.8)
+                          : context.palette.borderDefault.withValues(
+                              alpha: 0.8,
+                            ),
                     ),
                   ),
                   child: Text(
@@ -119,8 +144,8 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w700,
                       color: _isTimerWarning
-                          ? AppColors.errorText
-                          : AppColors.primaryText,
+                          ? context.palette.errorText
+                          : context.palette.primaryText,
                     ),
                   ),
                 ),
@@ -146,7 +171,9 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
           final sections = exam.sections;
           final questions = exam.allQuestions;
           if (questions.isEmpty || sections.isEmpty) {
-            return const HskExamEmptyState(message: 'Đề thi chưa có câu hỏi.');
+            return const HskExamEmptyState(
+              message: 'Đề thi chưa có câu hỏi.',
+            );
           }
 
           return Padding(
@@ -170,7 +197,7 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
 
           final sections = exam.sections;
           return Container(
-            color: AppColors.backgroundLight,
+            color: context.palette.backgroundLight,
             padding: EdgeInsets.fromLTRB(14.w, 8.h, 14.w, 8.h),
             child: SafeArea(
               child: HskExamNavigationActions(
@@ -194,224 +221,89 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
     final isListeningSection = _isListeningSection(currentSection);
     final sectionAudioPath = _resolveSectionAudioPath(exam, currentSection);
     final currentQuestionImage = currentSection.questionImage?.trim();
+    final answeredCount = exam.allQuestions
+        .where(
+          (q) =>
+              HskExamAnswerUtils.hasAnswer(q, _selectedAnswers[q.questionId]),
+        )
+        .length;
     final progressText =
-        'Phần ${_currentSectionIndex + 1}/${sections.length} - Đã làm ${_selectedAnswers.length}/${exam.allQuestions.length} câu';
+        'Phần ${_currentSectionIndex + 1}/${sections.length} - Đã làm $answeredCount/${exam.allQuestions.length} câu';
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.all(8.w),
-          color: AppColors.backgroundWhite,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                exam.title,
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primaryText,
-                ),
-              ),
-              SizedBox(height: 6.h),
-              Text(
-                progressText,
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  color: AppColors.secondaryText,
-                ),
-              ),
-              SizedBox(height: 12.h),
-              Text(
-                currentSection.sectionTitle,
-                style: TextStyle(
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.primaryText,
-                ),
-              ),
-              SizedBox(height: 10.h),
-              if (currentQuestionImage != null &&
-                  currentQuestionImage.isNotEmpty) ...[
-                _buildQuestionImage(
-                  currentQuestionImage,
-                  imageHeight: _fixedImageHeight,
-                  onTap: () => _showQuestionImageViewer(currentQuestionImage),
-                ),
-                SizedBox(height: 10.h),
-              ],
-            ],
-          ),
-        ),
-        Expanded(
-          child: Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(14.w),
-            decoration: BoxDecoration(
-              color: AppColors.backgroundWhite,
-              borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(
-                color: AppColors.borderDefault.withValues(alpha: 0.7),
-              ),
-            ),
-            child: NotificationListener<OverscrollIndicatorNotification>(
-              onNotification: (notification) {
-                notification.disallowIndicator();
-                return true;
-              },
-              child: ListView(
-                controller: _questionScrollController,
-                physics: const ClampingScrollPhysics(),
-                padding: EdgeInsets.only(bottom: 20.h),
-                children: [
-                  if (isListeningSection) ...[
-                    HskExamListeningAudioCard(
-                      audioAssetPath: sectionAudioPath,
-                      isAudioPlaying: _isAudioPlaying,
-                      audioDuration: _audioDuration,
-                      audioPosition: _audioPosition,
-                      onToggleAudio: _toggleAudio,
-                      formatDuration: _formatDuration,
-                    ),
-                    SizedBox(height: 12.h),
-                  ],
-                  ...currentSection.questions.map((question) {
-                    return HskExamQuestionCard(
-                      question: question,
-                      selectedAnswer: _selectedAnswers[question.questionId],
-                      onOptionSelected: (option) {
-                        setState(() {
-                          _selectedAnswers[question.questionId] = option;
-                        });
-                      },
-                    );
-                  }),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
+    return HskExamSectionContent(
+      exam: exam,
+      currentSectionIndex: _currentSectionIndex,
+      progressText: progressText,
+      questionImagePath: currentQuestionImage,
+      imageHeight: _fixedImageHeight,
+      onTapQuestionImage: () {
+        final p = currentSection.questionImage?.trim();
+        if (p != null && p.isNotEmpty) {
+          unawaited(showHskExamQuestionImageViewer(context, imagePath: p));
+        }
+      },
+      questionScrollController: _questionScrollController,
+      showListeningCard: isListeningSection,
+      listeningAudioPath: sectionAudioPath,
+      isAudioPlaying: _isAudioPlaying,
+      audioDuration: _audioDuration,
+      audioPosition: _audioPosition,
+      onToggleAudio: _toggleAudio,
+      formatDuration: _formatDuration,
+      questionWidgets: currentSection.questions
+          .map(_buildQuestionWidget)
+          .toList(),
     );
+  }
+
+  Widget _buildQuestionWidget(HskExamQuestion question) {
+    switch (question.questionType) {
+      case 'sort_sentences':
+        return HskExamSortSentencesCard(
+          question: question,
+          selectedOrderKey: _selectedAnswers[question.questionId],
+          onOrderChanged: (key) {
+            setState(() {
+              _selectedAnswers[question.questionId] = key;
+            });
+          },
+        );
+      case 'sort_word':
+        return HskExamSortWordCard(
+          question: question,
+          selectedSentence: _selectedAnswers[question.questionId],
+          onSentenceChanged: (sentence) {
+            setState(() {
+              _selectedAnswers[question.questionId] = sentence;
+            });
+          },
+        );
+      case 'write_sentence':
+        return HskExamWriteSentenceCard(
+          question: question,
+          answerText: _selectedAnswers[question.questionId],
+          onAnswerChanged: (text) {
+            setState(() {
+              _selectedAnswers[question.questionId] = text;
+            });
+          },
+        );
+      default:
+        return HskExamQuestionCard(
+          question: question,
+          selectedAnswer: _selectedAnswers[question.questionId],
+          onOptionSelected: (option) {
+            setState(() {
+              _selectedAnswers[question.questionId] = option;
+            });
+          },
+        );
+    }
   }
 
   bool _isListeningSection(HskExamSection section) {
     final skill = section.skill.toLowerCase();
     return skill.contains('listen');
-  }
-
-  ImageProvider _buildImageProvider(String imagePath) {
-    if (imagePath.startsWith('http')) {
-      return NetworkImage(imagePath);
-    }
-    return AssetImage(imagePath);
-  }
-
-  Widget _buildQuestionImage(
-    String imagePath, {
-    required double imageHeight,
-    required VoidCallback onTap,
-  }) {
-    final imageProvider = _buildImageProvider(imagePath);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10.r),
-      child: GestureDetector(
-        onTap: onTap,
-        child: SizedBox(
-          width: double.infinity,
-          height: imageHeight,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image(
-                image: imageProvider,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) {
-                  return Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(12.w),
-                    color: AppColors.backgroundWhite,
-                    child: Text(
-                      'Không tải được ảnh minh họa: $imagePath',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        color: AppColors.secondaryText,
-                      ),
-                    ),
-                  );
-                },
-              ),
-              Positioned(
-                top: 8.h,
-                right: 8.w,
-                child: Container(
-                  padding: EdgeInsets.all(6.w),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(999.r),
-                  ),
-                  child: Icon(
-                    Icons.zoom_out_map_rounded,
-                    size: 16.sp,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _showQuestionImageViewer(String imagePath) async {
-    final imageProvider = _buildImageProvider(imagePath);
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) {
-        return Dialog(
-          insetPadding: EdgeInsets.all(12.w),
-          backgroundColor: Colors.black,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: InteractiveViewer(
-                  minScale: 0.8,
-                  maxScale: 4,
-                  child: Center(
-                    child: Image(
-                      image: imageProvider,
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) {
-                        return Padding(
-                          padding: EdgeInsets.all(14.w),
-                          child: Text(
-                            'Không tải được ảnh minh họa.',
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 14.sp,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                right: 8.w,
-                top: 8.h,
-                child: IconButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  icon: const Icon(Icons.close_rounded, color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
   }
 
   String? _resolveSectionAudioPath(HskExamDetail exam, HskExamSection section) {
@@ -466,7 +358,7 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
       return;
     }
 
-    final data = await _loadAudioBytes(audioAssetPath);
+    final data = await loadHskExamAudioBytes(audioAssetPath);
     await _audioPlayer.play(BytesSource(data.buffer.asUint8List()));
   }
 
@@ -502,31 +394,20 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
     });
   }
 
-  Future<ByteData> _loadAudioBytes(String audioAssetPath) async {
-    try {
-      return await rootBundle.load(audioAssetPath);
-    } catch (_) {
-      final manifestRaw = await rootBundle.loadString('AssetManifest.json');
-      final manifestMap = jsonDecode(manifestRaw) as Map<String, dynamic>;
-      final fileName = audioAssetPath.split('/').last;
-
-      final matchedKey = manifestMap.keys.cast<String?>().firstWhere(
-        (key) => key != null && key.endsWith('/$fileName'),
-        orElse: () => null,
-      );
-
-      if (matchedKey == null) {
-        rethrow;
-      }
-
-      return rootBundle.load(matchedKey);
-    }
-  }
-
   String _formatDuration(Duration duration) {
-    final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
-    return '$minutes:$seconds';
+    if (duration.inSeconds <= 0) {
+      return '00:00';
+    }
+    final totalSeconds = duration.inSeconds;
+    final hours = totalSeconds ~/ 3600;
+    final minutes = (totalSeconds % 3600) ~/ 60;
+    final seconds = totalSeconds % 60;
+    if (hours > 0) {
+      return '${hours.toString().padLeft(2, '0')}:'
+          '${minutes.toString().padLeft(2, '0')}:'
+          '${seconds.toString().padLeft(2, '0')}';
+    }
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
   String get _timerLabel =>
@@ -547,6 +428,7 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
 
     _examTimer?.cancel();
     _timerExamKey = examKey;
+    _examTimeLimitMinutes = exam.timeLimitMinutes;
     _remainingTime = Duration(minutes: exam.timeLimitMinutes);
 
     _examTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -569,6 +451,12 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
       }
 
       setState(() => _remainingTime = current - const Duration(seconds: 1));
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
@@ -632,20 +520,24 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
     final wrongLines = <String>[];
     for (final question in questions) {
       final selected = _selectedAnswers[question.questionId];
-      if (selected != null &&
-          selected.toLowerCase() == question.correctAnswer.toLowerCase()) {
+      if (HskExamAnswerUtils.isAnswerCorrect(question, selected)) {
         correctCount++;
       } else {
-        final selectedLabel = (selected == null || selected.trim().isEmpty)
+        final selectedLabel = !HskExamAnswerUtils.hasAnswer(question, selected)
             ? 'Chưa làm'
-            : selected;
+            : selected!;
         wrongLines.add(
           'Câu ${question.questionId}: Bạn chọn $selectedLabel - Đúng: ${question.correctAnswer}',
         );
       }
     }
 
-    final unanswered = questions.length - _selectedAnswers.length;
+    final unanswered = questions
+        .where(
+          (q) =>
+              !HskExamAnswerUtils.hasAnswer(q, _selectedAnswers[q.questionId]),
+        )
+        .length;
     final scoreOn10 = questions.isEmpty
         ? 0.0
         : ((correctCount / questions.length) * 10).clamp(0, 10).toDouble();
@@ -655,72 +547,76 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
       return;
     }
 
-    showDialog<void>(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('Kết quả bài thi'),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Lần làm thứ $attemptNumber\n'
-                  'Điểm: ${scoreOn10.toStringAsFixed(1)}/10\n'
-                  'Đúng: $correctCount/${questions.length}\n'
-                  'Sai: ${questions.length - correctCount} câu\n'
-                  'Chưa làm: $unanswered câu',
-                ),
-                if (forcedByTimer) ...[
-                  const SizedBox(height: 10),
-                  const Text('Đã hết thời gian, hệ thống tự động nộp bài.'),
-                ],
-                if (wrongLines.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Các câu sai và đáp án đúng:',
-                    style: TextStyle(fontWeight: FontWeight.w700),
+    unawaited(
+      showDialog<void>(
+        context: context,
+        builder: (dialogContext) {
+          return AlertDialog(
+            title: const Text('Kết quả bài thi'),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Lần làm thứ $attemptNumber\n'
+                    'Điểm: ${scoreOn10.toStringAsFixed(1)}/10\n'
+                    'Đúng: $correctCount/${questions.length}\n'
+                    'Sai: ${questions.length - correctCount} câu\n'
+                    'Chưa làm: $unanswered câu',
                   ),
-                  const SizedBox(height: 6),
-                  ...wrongLines.map(
-                    (line) => Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: Text(line),
+                  if (forcedByTimer) ...[
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Đã hết thời gian, hệ thống tự động nộp bài.',
                     ),
-                  ),
+                  ],
+                  if (wrongLines.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Các câu sai và đáp án đúng:',
+                      style: TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(height: 6),
+                    ...wrongLines.map(
+                      (line) => Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Text(line),
+                      ),
+                    ),
+                  ],
                 ],
-              ],
-            ),
-          ),
-          actions: [
-            if (!forcedByTimer)
-              TextButton(
-                onPressed: () {
-                  _isSubmitting = false;
-                  Navigator.pop(dialogContext);
-                },
-                child: const Text('Xem lại bài'),
               ),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.pop(dialogContext);
-                await _recordExamCompletion(
-                  exam: exam,
-                  correctCount: correctCount,
-                  totalQuestions: questions.length,
-                );
-                _isSubmitting = false;
-                if (!mounted) {
-                  return;
-                }
-                Navigator.pop(context, true);
-              },
-              child: const Text('Hoàn thành'),
             ),
-          ],
-        );
-      },
+            actions: [
+              if (!forcedByTimer)
+                TextButton(
+                  onPressed: () {
+                    _isSubmitting = false;
+                    Navigator.pop(dialogContext);
+                  },
+                  child: const Text('Xem lại bài'),
+                ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.pop(dialogContext);
+                  await _recordExamCompletion(
+                    exam: exam,
+                    correctCount: correctCount,
+                    totalQuestions: questions.length,
+                  );
+                  _isSubmitting = false;
+                  if (!mounted) {
+                    return;
+                  }
+                  Navigator.pop(context, true);
+                },
+                child: const Text('Hoàn thành'),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -737,41 +633,15 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
         ? 0.0
         : ((correctCount / totalQuestions) * 10).clamp(0, 10).toDouble();
 
-    final attemptRef = _firestore
-        .collection('users')
-        .doc(user.uid)
-        .collection('exam_attempts')
-        .doc(widget.examId);
-    final userRef = _firestore.collection('users').doc(user.uid);
-
-    await _firestore.runTransaction((transaction) async {
-      final attemptSnapshot = await transaction.get(attemptRef);
-      final alreadyCompleted =
-          (attemptSnapshot.data()?['completed'] ?? false) == true;
-      final currentAttemptCount =
-          (attemptSnapshot.data()?['attempt_count'] as num?)?.toInt() ?? 0;
-      final nextAttemptCount = currentAttemptCount + 1;
-
-      transaction.set(attemptRef, {
-        'exam_id': widget.examId,
-        'exam_code': exam.examCode,
-        'level': exam.level,
-        'completed': true,
-        'attempt_count': nextAttemptCount,
-        'last_attempt_number': nextAttemptCount,
-        'correct_count': correctCount,
-        'total_questions': totalQuestions,
-        'score_10': scoreOn10,
-        'completed_at': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
-
-      if (!alreadyCompleted) {
-        transaction.set(userRef, {
-          'hsk_exam_completed_count': FieldValue.increment(1),
-          'updated_at': FieldValue.serverTimestamp(),
-        }, SetOptions(merge: true));
-      }
-    });
+    await _attemptRepo.saveExamCompletion(
+      userId: user.uid,
+      examId: widget.examId,
+      examCode: exam.examCode,
+      level: exam.level,
+      correctCount: correctCount,
+      totalQuestions: totalQuestions,
+      scoreOn10: scoreOn10,
+    );
   }
 
   Future<int> _peekNextAttemptNumber() async {
@@ -779,13 +649,9 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
     if (user == null) {
       return 1;
     }
-    final snap = await _firestore
-        .collection('users')
-        .doc(user.uid)
-        .collection('exam_attempts')
-        .doc(widget.examId)
-        .get();
-    final current = (snap.data()?['attempt_count'] as num?)?.toInt() ?? 0;
-    return current + 1;
+    return _attemptRepo.peekNextAttemptNumber(
+      userId: user.uid,
+      examId: widget.examId,
+    );
   }
 }

@@ -1,8 +1,8 @@
+﻿import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/core/constants/community_constants.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
 import 'package:hanziilearnapp/app/models/community_post_model.dart';
 import 'package:hanziilearnapp/app/providers/post_provider.dart';
 import 'package:hanziilearnapp/app/views/community/community_tab_type.dart';
@@ -43,7 +43,7 @@ class _CommunityViewState extends State<CommunityView> {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.backgroundWhite,
+      backgroundColor: context.palette.backgroundWhite,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
       ),
@@ -124,17 +124,17 @@ class _CommunityViewState extends State<CommunityView> {
                     vertical: 11.h,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.backgroundLight,
+                    color: context.palette.backgroundLight,
                     borderRadius: BorderRadius.circular(8.r),
                     border: Border.all(
-                      color: AppColors.borderDefault,
+                      color: context.palette.borderDefault,
                       width: 1.w,
                     ),
                   ),
                   child: Text(
                     CommunityConstants.askHint,
                     style: TextStyle(
-                      color: AppColors.secondaryText,
+                      color: context.palette.secondaryText,
                       fontSize: 12.sp,
                       fontStyle: FontStyle.italic,
                     ),
@@ -157,7 +157,7 @@ class _CommunityViewState extends State<CommunityView> {
             child: Text(
               'Không tải được bài viết. Vui lòng thử lại.',
               style: TextStyle(
-                color: AppColors.errorText,
+                color: context.palette.errorText,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
               ),
@@ -174,7 +174,7 @@ class _CommunityViewState extends State<CommunityView> {
             child: Text(
               CommunityConstants.noPosts,
               style: TextStyle(
-                color: AppColors.secondaryText,
+                color: context.palette.secondaryText,
                 fontSize: 14.sp,
                 fontStyle: FontStyle.italic,
               ),
@@ -203,7 +203,7 @@ class _CommunityViewState extends State<CommunityView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundWhite,
+      backgroundColor: context.palette.backgroundWhite,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.fromLTRB(14.w, 8.h, 14.w, 0),
@@ -215,7 +215,7 @@ class _CommunityViewState extends State<CommunityView> {
                 style: TextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.primaryText,
+                  color: context.palette.primaryText,
                 ),
               ),
               SizedBox(height: 14.h),

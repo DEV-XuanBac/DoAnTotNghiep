@@ -1,7 +1,7 @@
-import 'package:carousel_slider/carousel_slider.dart';
+﻿import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 
 class BannerSlider extends StatefulWidget {
   const BannerSlider({super.key});
@@ -30,7 +30,6 @@ class _BannerSliderState extends State<BannerSlider> {
           options: CarouselOptions(
             height: 150.h,
             autoPlay: true,
-            autoPlayInterval: const Duration(seconds: 4),
             enlargeCenterPage: true,
             viewportFraction: 0.9,
             onPageChanged: (index, reason) {
@@ -55,7 +54,7 @@ class _BannerSliderState extends State<BannerSlider> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: bannerImages.asMap().entries.map((entry) {
-            bool isActive = currentIndex == entry.key;
+            final isActive = currentIndex == entry.key;
             return Container(
               width: isActive ? 8.w : 6.w,
               height: isActive ? 8.w : 6.w,
@@ -63,8 +62,8 @@ class _BannerSliderState extends State<BannerSlider> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isActive
-                    ? AppColors.label
-                    : AppColors.secondaryText.withValues(alpha: 0.6),
+                    ? context.palette.label
+                    : context.palette.secondaryText.withValues(alpha: 0.6),
               ),
             );
           }).toList(),

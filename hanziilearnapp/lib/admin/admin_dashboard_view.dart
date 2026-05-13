@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hanziilearnapp/admin/exam_upload_tab.dart';
 import 'package:hanziilearnapp/admin/vocabulary_create_tab.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 
 class AdminDashboardView extends StatefulWidget {
   const AdminDashboardView({super.key});
@@ -30,9 +30,9 @@ class _AdminDashboardViewState extends State<AdminDashboardView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundLight,
+        backgroundColor: context.palette.backgroundLight,
         elevation: 0,
         title: const Text('Quản trị nội dung HSK'),
       ),
@@ -44,18 +44,18 @@ class _AdminDashboardViewState extends State<AdminDashboardView>
               child: Container(
                 height: 50.h,
                 decoration: BoxDecoration(
-                  color: AppColors.backgroundWhite,
+                  color: context.palette.backgroundWhite,
                   borderRadius: BorderRadius.circular(30.r),
                 ),
                 child: TabBar(
                   controller: _tabController,
                   padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
                   indicator: BoxDecoration(
-                    color: AppColors.blueDarkText,
+                    color: context.palette.blueDarkText,
                     borderRadius: BorderRadius.circular(22.r),
                   ),
-                  labelColor: AppColors.whiteText,
-                  unselectedLabelColor: AppColors.primaryText,
+                  labelColor: context.palette.whiteText,
+                  unselectedLabelColor: context.palette.primaryText,
                   labelStyle: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,

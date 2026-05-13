@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 
 class TranslateLanguageTools extends StatelessWidget {
   const TranslateLanguageTools({
@@ -26,28 +26,37 @@ class TranslateLanguageTools extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
       decoration: BoxDecoration(
-        color: AppColors.lightCardBackground,
+        color: context.palette.lightCardBackground,
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: AppColors.borderDefault, width: 1.w),
+        border: Border.all(color: context.palette.borderDefault, width: 1.w),
       ),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildLangChip(
-                isVietnameseToChinese ? 'Việt' : 'Trung (Giản thể)',
-              ),
-              GestureDetector(
-                onTap: onSwitchLanguage,
-                child: Image.asset(
-                  'assets/iconic/exchange_ic.png',
-                  width: 22.w,
-                  height: 22.h,
+              Flexible(
+                child: _buildLangChip(
+                  context,
+                  isVietnameseToChinese ? 'Việt' : 'Trung (Giản thể)',
                 ),
               ),
-              _buildLangChip(
-                isVietnameseToChinese ? 'Trung (Giản thể)' : 'Việt',
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                child: GestureDetector(
+                  onTap: onSwitchLanguage,
+                  child: Image.asset(
+                    'assets/iconic/exchange_ic.png',
+                    width: 22.w,
+                    height: 22.h,
+                  ),
+                ),
+              ),
+              Flexible(
+                child: _buildLangChip(
+                  context,
+                  isVietnameseToChinese ? 'Trung (Giản thể)' : 'Việt',
+                ),
               ),
             ],
           ),
@@ -56,6 +65,7 @@ class TranslateLanguageTools extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _toolButton(
+                context,
                 iconPath: 'assets/iconic/microphone_ic.png',
                 onTap: onToggleListening,
                 isActive: isListening,
@@ -65,7 +75,7 @@ class TranslateLanguageTools extends StatelessWidget {
                 child: Container(
                   padding: EdgeInsets.all(20.w),
                   decoration: BoxDecoration(
-                    color: AppColors.backgroundWhite,
+                    color: context.palette.backgroundWhite,
                     borderRadius: BorderRadius.circular(50.r),
                   ),
                   child: Image.asset(
@@ -76,6 +86,7 @@ class TranslateLanguageTools extends StatelessWidget {
                 ),
               ),
               _toolButton(
+                context,
                 iconPath: 'assets/iconic/writing_ic.png',
                 onTap: onOpenHandwritingPad,
               ),
@@ -86,28 +97,39 @@ class TranslateLanguageTools extends StatelessWidget {
     );
   }
 
-  Widget _buildLangChip(String label) {
-    return Container(
-      width: 120.w,
-      height: 30.h,
-      decoration: BoxDecoration(
-        color: AppColors.whiteCard,
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-      child: Center(
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 14.sp,
-            color: AppColors.primaryText,
-            fontWeight: FontWeight.w600,
+  Widget _buildLangChip(BuildContext context, String label) {
+    return Align(
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeInOut,
+        child: Container(
+          height: 34.h,
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          decoration: BoxDecoration(
+            color: context.palette.whiteCard,
+            borderRadius: BorderRadius.circular(10.r),
+            border: Border.all(color: context.palette.borderEnable, width: 0.8.w),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              maxLines: 1,
+              softWrap: false,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: context.palette.primaryText,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _toolButton({
+  Widget _toolButton(
+    BuildContext context, {
     required String iconPath,
     required VoidCallback onTap,
     bool isActive = false,
@@ -118,13 +140,13 @@ class TranslateLanguageTools extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.blueDarkText : AppColors.toolButton,
+          color: isActive ? context.palette.blueDarkText : context.palette.toolButton,
           borderRadius: BorderRadius.circular(50.r),
-          border: Border.all(color: AppColors.backgroundWhite, width: 2.w),
+          border: Border.all(color: context.palette.backgroundWhite, width: 2.w),
           boxShadow: isActive
               ? [
                   BoxShadow(
-                    color: AppColors.blueDarkText.withValues(alpha: 0.25),
+                    color: context.palette.blueDarkText.withValues(alpha: 0.25),
                     blurRadius: 16,
                     offset: const Offset(0, 6),
                   ),
@@ -135,7 +157,7 @@ class TranslateLanguageTools extends StatelessWidget {
           iconPath,
           width: 28.w,
           height: 28.h,
-          color: AppColors.whiteText.withValues(alpha: 0.9),
+          color: context.palette.whiteText.withValues(alpha: 0.9),
         ),
       ),
     );

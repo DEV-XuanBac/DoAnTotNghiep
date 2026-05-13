@@ -263,10 +263,12 @@ class TextTranslationService {
         n.endsWith(' là')) {
       return true;
     }
-    if (_possessiveArtifact.hasMatch(n) || _laOfArtifact.hasMatch(n))
+    if (_possessiveArtifact.hasMatch(n) || _laOfArtifact.hasMatch(n)) {
       return true;
-    if (n.contains(' vợ và con cái') || n.contains(';') || n.contains('/'))
+    }
+    if (n.contains(' vợ và con cái') || n.contains(';') || n.contains('/')) {
       return true;
+    }
     return false;
   }
 }

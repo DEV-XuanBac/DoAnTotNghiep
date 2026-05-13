@@ -103,7 +103,7 @@ class ConversationAiService {
 
     Object? lastError;
 
-    for (int attempt = 0; attempt < _maxRetries; attempt++) {
+    for (var attempt = 0; attempt < _maxRetries; attempt++) {
       try {
         final response =
             await model.generateContent([Content.text(prompt)]);
@@ -126,11 +126,21 @@ class ConversationAiService {
         if (!isRetryable) rethrow;
 
         final delay = Duration(seconds: 3 * (attempt + 1));
-        await Future.delayed(delay);
+        await Future<void>.delayed(delay);
       }
     }
 
-    throw lastError ?? Exception('Không thể tạo hội thoại');
+    if (lastError is Exception) {
+      throw lastError;
+    }
+    if (lastError is Error) {
+      throw lastError;
+    }
+    throw Exception(
+      lastError == null
+          ? 'Không thể tạo hội thoại'
+          : 'Không thể tạo hội thoại: $lastError',
+    );
   }
 
   String _buildPrompt(ConversationTopic topic, int level) {

@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "exam_code": "H31004",
+  "level": "HSK3",
+  "title": "Đề thi 4",
+  "total_questions": 80,
+  "time_limit_minutes": 85,
+  "audio_listening": "https://res.cloudinary.com/diehvorme/video/upload/v1778597846/Listening_H31004_ye3y6e.mp3",
+  "sections": [
+    {
+      "part_id": "listening_part_1",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 1 (câu 1–10)",
+      "part_order": 1,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1778597832/H31004_1-10_pv86mi.png",
+      "question_count": 10,
+      "questions": [
+        {"question_id": 1, "code": "H31004_Q01", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "C"},
+        {"question_id": 2, "code": "H31004_Q02", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "E"},
+        {"question_id": 3, "code": "H31004_Q03", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "F"},
+        {"question_id": 4, "code": "H31004_Q04", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "A"},
+        {"question_id": 5, "code": "H31004_Q05", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "B"},
+        {"question_id": 6, "code": "H31004_Q06", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "A"},
+        {"question_id": 7, "code": "H31004_Q07", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "E"},
+        {"question_id": 8, "code": "H31004_Q08", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "B"},
+        {"question_id": 9, "code": "H31004_Q09", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "D"},
+        {"question_id": 10, "code": "H31004_Q10", "question_type": "single_choice", "question_text": "", "options": ["A", "B", "C", "D", "E", "F"], "correct_answer": "C"}
+      ]
+    },
+    {
+      "part_id": "listening_part_2",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 2 (câu 11–20)",
+      "part_order": 2,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1778597833/H31004_11-20_idkslx.png",
+      "question_count": 10,
+      "questions": [
+        {"question_id": 11, "code": "H31004_Q11", "question_type": "true_false", "question_text": "★ 他没带照相机。", "options": ["true", "false"], "correct_answer": "true"},
+        {"question_id": 12, "code": "H31004_Q12", "question_type": "true_false", "question_text": "★ 外面下雪了。", "options": ["true", "false"], "correct_answer": "false"},
+        {"question_id": 13, "code": "H31004_Q13", "question_type": "true_false", "question_text": "★ 邻居是位老人。", "options": ["true", "false"], "correct_answer": "false"},
+        {"question_id": 14, "code": "H31004_Q14", "question_type": "true_false", "question_text": "★ 他喜欢喝牛奶。", "options": ["true", "false"], "correct_answer": "false"},
+        {"question_id": 15, "code": "H31004_Q15", "question_type": "true_false", "question_text": "★ 路是人走出来的。", "options": ["true", "false"], "correct_answer": "true"},
+        {"question_id": 16, "code": "H31004_Q16", "question_type": "true_false", "question_text": "★ 医生认为爸爸的耳朵没问题。", "options": ["true", "false"], "correct_answer": "true"},
+        {"question_id": 17, "code": "H31004_Q17", "question_type": "true_false", "question_text": "★ 我和李先生是同学。", "options": ["true", "false"], "correct_answer": "false"},
+        {"question_id": 18, "code": "H31004_Q18", "question_type": "true_false", "question_text": "★ 朋友生病了。", "options": ["true", "false"], "correct_answer": "false"},
+        {"question_id": 19, "code": "H31004_Q19", "question_type": "true_false", "question_text": "★ 他正在打电话。", "options": ["true", "false"], "correct_answer": "true"},
+        {"question_id": 20, "code": "H31004_Q20", "question_type": "true_false", "question_text": "★ 那儿的人习惯说左右。", "options": ["true", "false"], "correct_answer": "true"}
+      ]
+    },
+    {
+      "part_id": "listening_part_3",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 3 (câu 21–30)",
+      "part_order": 3,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1778597833/H31004_21-30_k80da8.png",
+      "question_count": 10,
+      "questions": [
+        {"question_id": 21, "code": "H31004_Q21", "question_type": "single_choice", "question_text": "", "options": ["A: 最近很忙", "B: 打算买车", "C: 参加了工作"], "correct_answer": "C: 参加了工作"},
+        {"question_id": 22, "code": "H31004_Q22", "question_type": "single_choice", "question_text": "", "options": ["A: 去年夏天", "B: 去年冬天", "C: 上个周末"], "correct_answer": "A: 去年夏天"},
+        {"question_id": 23, "code": "H31004_Q23", "question_type": "single_choice", "question_text": "", "options": ["A: 找手机", "B: 他要结婚了", "C: 他要去银行"], "correct_answer": "A: 找手机"},
+        {"question_id": 24, "code": "H31004_Q24", "question_type": "single_choice", "question_text": "", "options": ["A: 街上", "B: 图书馆", "C: 饭馆儿"], "correct_answer": "C: 饭馆儿"},
+        {"question_id": 25, "code": "H31004_Q25", "question_type": "single_choice", "question_text": "", "options": ["A: 不新鲜", "B: 有点儿贵", "C: 比超市便宜"], "correct_answer": "A: 不新鲜"},
+        {"question_id": 26, "code": "H31004_Q26", "question_type": "single_choice", "question_text": "", "options": ["A: 船长", "B: 老师", "C: 服务员"], "correct_answer": "B: 老师"},
+        {"question_id": 27, "code": "H31004_Q27", "question_type": "single_choice", "question_text": "", "options": ["A: 发烧了", "B: 迟到了", "C: 忘带机票了"], "correct_answer": "B: 迟到了"},
+        {"question_id": 28, "code": "H31004_Q28", "question_type": "single_choice", "question_text": "", "options": ["A: 医院", "B: 公司", "C: 学校"], "correct_answer": "C: 学校"},
+        {"question_id": 29, "code": "H31004_Q29", "question_type": "single_choice", "question_text": "", "options": ["A: 吃饱了", "B: 想吃羊肉", "C: 不爱吃鱼"], "correct_answer": "A: 吃饱了"},
+        {"question_id": 30, "code": "H31004_Q30", "question_type": "single_choice", "question_text": "", "options": ["A: 裙子", "B: 历史书", "C: 汉语字典"], "correct_answer": "C: 汉语字典"}
+      ]
+    },
+    {
+      "part_id": "listening_part_4",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 4 (câu 31–40)",
+      "part_order": 4,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1778597834/H31004_31-40_oqgd9z.png",
+      "question_count": 10,
+      "questions": [
+        {"question_id": 31, "code": "H31004_Q31", "question_type": "single_choice", "question_text": "", "options": ["A: 弟弟", "B: 爷爷", "C: 叔叔和阿姨"], "correct_answer": "C: 叔叔和阿姨"},
+        {"question_id": 32, "code": "H31004_Q32", "question_type": "single_choice", "question_text": "", "options": ["A: 教室", "B: 商店", "C: 飞机上"], "correct_answer": "B: 商店"},
+        {"question_id": 33, "code": "H31004_Q33", "question_type": "single_choice", "question_text": "", "options": ["A: 爬山", "B: 骑马", "C: 买帽子"], "correct_answer": "A: 爬山"},
+        {"question_id": 34, "code": "H31004_Q34", "question_type": "single_choice", "question_text": "", "options": ["A: 黄色", "B: 蓝色", "C: 黑色"], "correct_answer": "A: 黄色"},
+        {"question_id": 35, "code": "H31004_Q35", "question_type": "single_choice", "question_text": "", "options": ["A: 3角5分", "B: 3元5角", "C: 5元"], "correct_answer": "B: 3元5角"},
+        {"question_id": 36, "code": "H31004_Q36", "question_type": "single_choice", "question_text": "", "options": ["A: 照顾小狗", "B: 再买一只狗", "C: 经常打扫房间"], "correct_answer": "A: 照顾小狗"},
+        {"question_id": 37, "code": "H31004_Q37", "question_type": "single_choice", "question_text": "", "options": ["A: 西瓜吃完了", "B: 没有鸡蛋了", "C: 女的过生日"], "correct_answer": "C: 女的过生日"},
+        {"question_id": 38, "code": "H31004_Q38", "question_type": "single_choice", "question_text": "", "options": ["A: 写了很多信", "B: 最近没工作", "C: 开了个文化公司"], "correct_answer": "B: 最近没工作"},
+        {"question_id": 39, "code": "H31004_Q39", "question_type": "single_choice", "question_text": "", "options": ["A: 正在复习", "B: 明天没课", "C: 打算明天还书"], "correct_answer": "C: 打算明天还书"},
+        {"question_id": 40, "code": "H31004_Q40", "question_type": "single_choice", "question_text": "", "options": ["A: 解", "B: 谢", "C: 被"], "correct_answer": "A: 解"}
+      ]
+    },
+    {
+      "part_id": "reading_part_1",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 1 (câu 41–45)",
+      "part_order": 5,
+      "question_image": "",
+      "question_count": 5,
+      "questions": [
+        {"question_id": 41, "code": "H31004_Q41", "question_type": "single_choice", "question_text": "方便给我们介绍一下吗？他是谁啊？", "options": ["A: 七个小矮人的故事，你听说过吗？", "B: 这双运动鞋是新买的？多少钱买的？", "C: 这位就是我的新男朋友。", "D: 一般吧，我们上个月才认识，只是普通朋友。", "E: 当然。我们先坐公共汽车，然后换地铁。", "F: 去洗洗手，准备碗筷，吃饭了，你妈妈呢？"], "correct_answer": "C: 这位就是我的新男朋友。"},
+        {"question_id": 42, "code": "H31004_Q42", "question_type": "single_choice", "question_text": "你和王小姐的关系怎么样？", "options": ["A: 七个小矮人的故事，你听说过吗？", "B: 这双运动鞋是新买的？多少钱买的？", "C: 这位就是我的新男朋友。", "D: 一般吧，我们上个月才认识，只是普通朋友。", "E: 当然。我们先坐公共汽车，然后换地铁。", "F: 去洗洗手，准备碗筷，吃饭了，你妈妈呢？"], "correct_answer": "D: 一般吧，我们上个月才认识，只是普通朋友。"},
+        {"question_id": 43, "code": "H31004_Q43", "question_type": "single_choice", "question_text": "800多块，虽然比较贵，但穿着很舒服。", "options": ["A: 七个小矮人的故事，你听说过吗？", "B: 这双运动鞋是新买的？多少钱买的？", "C: 这位就是我的新男朋友。", "D: 一般吧，我们上个月才认识，只是普通朋友。", "E: 当然。我们先坐公共汽车，然后换地铁。", "F: 去洗洗手，准备碗筷，吃饭了，你妈妈呢？"], "correct_answer": "B: 这双运动鞋是新买的？多少钱买的？"},
+        {"question_id": 44, "code": "H31004_Q44", "question_type": "single_choice", "question_text": "她在看电视，我去叫她。", "options": ["A: 七个小矮人的故事，你听说过吗？", "B: 这双运动鞋是新买的？多少钱买的？", "C: 这位就是我的新男朋友。", "D: 一般吧，我们上个月才认识，只是普通朋友。", "E: 当然。我们先坐公共汽车，然后换地铁。", "F: 去洗洗手，准备碗筷，吃饭了，你妈妈呢？"], "correct_answer": "F: 去洗洗手，准备碗筷，吃饭了，你妈妈呢？"},
+        {"question_id": 45, "code": "H31004_Q45", "question_type": "single_choice", "question_text": "小时候奶奶给我讲过，很有名。", "options": ["A: 七个小矮人的故事，你听说过吗？", "B: 这双运动鞋是新买的？多少钱买的？", "C: 这位就是我的新男朋友。", "D: 一般吧，我们上个月才认识，只是普通朋友。", "E: 当然。我们先坐公共汽车，然后换地铁。", "F: 去洗洗手，准备碗筷，吃饭了，你妈妈呢？"], "correct_answer": "A: 七个小矮人的故事，你听说过吗？"}
+      ]
+    },
+    {
+      "part_id": "reading_part_2",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 2 (câu 46–50)",
+      "part_order": 6,
+      "question_image": "",
+      "question_count": 5,
+      "questions": [
+        {"question_id": 46, "code": "H31004_Q46", "question_type": "single_choice", "question_text": "", "options": ["A: 30", "B: 阿姨，这个蛋糕多少钱？", "C: 这个城市空气越来越差了。", "D: 我以后也想当个记者。", "E: 没关系，我可以等。"], "correct_answer": "C: 这个城市空气越来越差了。"},
+        {"question_id": 47, "code": "H31004_Q47", "question_type": "single_choice", "question_text": "", "options": ["A: 30", "B: 阿姨，这个蛋糕多少钱？", "C: 这个城市空气越来越差了。", "D: 我以后也想当个记者。", "E: 没关系，我可以等。"], "correct_answer": "A: 30"},
+        {"question_id": 48, "code": "H31004_Q48", "question_type": "single_choice", "question_text": "", "options": ["A: 30", "B: 阿姨，这个蛋糕多少钱？", "C: 这个城市空气越来越差了。", "D: 我以后也想当个记者。", "E: 没关系，我可以等。"], "correct_answer": "D: 我以后也想当个记者。"},
+        {"question_id": 49, "code": "H31004_Q49", "question_type": "single_choice", "question_text": "", "options": ["A: 30", "B: 阿姨，这个蛋糕多少钱？", "C: 这个城市空气越来越差了。", "D: 我以后也想当个记者。", "E: 没关系，我可以等。"], "correct_answer": "E: 没关系，我可以等。"},
+        {"question_id": 50, "code": "H31004_Q50", "question_type": "single_choice", "question_text": "", "options": ["A: 30", "B: 阿姨，这个蛋糕多少钱？", "C: 这个城市空气越来越差了。", "D: 我以后也想当个记者。", "E: 没关系，我可以等。"], "correct_answer": "B: 阿姨，这个蛋糕多少钱？"}
+      ]
+    },
+    {
+      "part_id": "reading_part_3",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 3 (câu 51–55)",
+      "part_order": 7,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1778597835/H31004_51-55_qswcai.png",
+      "question_count": 5,
+      "questions": [
+        {"question_id": 51, "code": "H31004_Q51", "question_type": "single_choice", "question_text": "会议9点半能（       ）吗？外面有人找王经理。", "options": ["A: 为了", "B: 结束", "C: 兴趣", "D: 年轻", "E: 声音", "F: 检查"], "correct_answer": "B: 结束"},
+        {"question_id": 52, "code": "H31004_Q52", "question_type": "single_choice", "question_text": "作业写完了要好好（       ）一下，注意别写错字。", "options": ["A: 为了", "B: 结束", "C: 兴趣", "D: 年轻", "E: 声音", "F: 检查"], "correct_answer": "F: 检查"},
+        {"question_id": 53, "code": "H31004_Q53", "question_type": "single_choice", "question_text": "他从小就对电子游戏有（       ），长大后他选择了和游戏有关的工作。", "options": ["A: 为了", "B: 结束", "C: 兴趣", "D: 年轻", "E: 声音", "F: 检查"], "correct_answer": "C: 兴趣"},
+        {"question_id": 54, "code": "H31004_Q54", "question_type": "single_choice", "question_text": "现在的（       ）人结婚越来越晚了。", "options": ["A: 为了", "B: 结束", "C: 兴趣", "D: 年轻", "E: 声音", "F: 检查"], "correct_answer": "D: 年轻"},
+        {"question_id": 55, "code": "H31004_Q55", "question_type": "single_choice", "question_text": "（       ）更好地解决问题，必须提高自己的水平。", "options": ["A: 为了", "B: 结束", "C: 兴趣", "D: 年轻", "E: 声音", "F: 检查"], "correct_answer": "A: 为了"}
+      ]
+    },
+    {
+      "part_id": "reading_part_4",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 4 (câu 56–60)",
+      "part_order": 8,
+      "question_image": "",
+      "question_count": 5,
+      "questions": [
+        {"question_id": 56, "code": "H31004_Q56", "question_type": "single_choice", "question_text": "A：哥，刚才说的那个数学题怎么做啊？\nB：很简单，我（       ）你。", "options": ["A: 其实", "B: 疼", "C: 地方", "D: 爱好", "E: 要求", "F: 教"], "correct_answer": "F: 教"},
+        {"question_id": 57, "code": "H31004_Q57", "question_type": "single_choice", "question_text": "A：你都很长时间没锻炼了，下午和我去爬山吧。\nB：我昨天刚打了篮球，今天腿还（       ）呢。", "options": ["A: 其实", "B: 疼", "C: 地方", "D: 爱好", "E: 要求", "F: 教"], "correct_answer": "B: 疼"},
+        {"question_id": 58, "code": "H31004_Q58", "question_type": "single_choice", "question_text": "A：比赛（       ）很简单，5分钟，谁踢进的球最多，谁就是第一。\nB：明白了，可以开始了吗？", "options": ["A: 其实", "B: 疼", "C: 地方", "D: 爱好", "E: 要求", "F: 教"], "correct_answer": "E: 要求"},
+        {"question_id": 59, "code": "H31004_Q59", "question_type": "single_choice", "question_text": "A：晚上在哪儿见面？\nB：就上次我们去过的那个（       ），那儿附近有一家咖啡馆很安静。", "options": ["A: 其实", "B: 疼", "C: 地方", "D: 爱好", "E: 要求", "F: 教"], "correct_answer": "C: 地方"},
+        {"question_id": 60, "code": "H31004_Q60", "question_type": "single_choice", "question_text": "A：你喜欢这种音乐节目？\nB：（       ）我只想听听那些老歌。", "options": ["A: 其实", "B: 疼", "C: 地方", "D: 爱好", "E: 要求", "F: 教"], "correct_answer": "A: 其实"}
+      ]
+    },
+    {
+      "part_id": "reading_part_5",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 5 (câu 61–70)",
+      "part_order": 9,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1778597835/H31004_61-70_g39eqb.png",
+      "question_count": 10,
+      "questions": [
+        {"question_id": 61, "code": "H31004_Q61", "question_type": "single_choice", "question_text": "喂？你在哪儿呢？你声音大一点儿好吗？我刚才没听清楚你在说什么。\n那个人的声音很：", "options": ["A: 大", "B: 小", "C: 清楚"], "correct_answer": "B: 小"},
+        {"question_id": 62, "code": "H31004_Q62", "question_type": "single_choice", "question_text": "\"笑一笑，十年少。\"这是中国人常说的一句话，意思是笑的作用很大，笑一笑会让人年轻10岁。我们应该常笑，这样才能使自己年轻，不容易变老。\n根据这段话，可以知道：", "options": ["A: 人应该快乐", "B: 笑能使人聪明", "C: 爱笑的人更认真"], "correct_answer": "A: 人应该快乐"},
+        {"question_id": 63, "code": "H31004_Q63", "question_type": "single_choice", "question_text": "每年秋季的10月4日，这个城市都会举行\"啤酒节\"，会有很多国家的人前来参加。啤酒节上，除了喝啤酒，这儿的歌舞表演更是让人难忘，你还会在这儿遇到很多名人。\n在啤酒节上：", "options": ["A: 可以看电影", "B: 能看到表演", "C: 共有上千种啤酒"], "correct_answer": "B: 能看到表演"},
+        {"question_id": 64, "code": "H31004_Q64", "question_type": "single_choice", "question_text": "中午看新闻了没？我很快就可以坐15号地铁了。15号地铁经过我家附近，以后，我上班就方便多了，从我家到公司只要花20分钟，比坐公共汽车快多了。\n15号地铁：", "options": ["A: 离他家不远", "B: 车站有电梯", "C: 旁边有火车站"], "correct_answer": "A: 离他家不远"},
+        {"question_id": 65, "code": "H31004_Q65", "question_type": "single_choice", "question_text": "新买的这个空调比以前那个旧的好多了，它的声音非常小，几乎没有声音，不会影响我们的学习和休息。\n★新空调怎么样？", "options": ["A: 用电少", "B: 声音很小", "C: 出现了问题"], "correct_answer": "B: 声音很小"},
+        {"question_id": 66, "code": "H31004_Q66", "question_type": "single_choice", "question_text": "你手中拿着一件东西不放时，你只有这一件东西，如果你愿意放开，你就有机会选择其他的。\n★放开手中的东西，可以：", "options": ["A: 更了解它", "B: 有更多选择", "C: 更相信自己"], "correct_answer": "B: 有更多选择"},
+        {"question_id": 67, "code": "H31004_Q67", "question_type": "single_choice", "question_text": "猫和人不同，它们不怕黑，因为它们的眼睛在晚上更容易看清楚东西。我们家的那只猫就总是习惯白天睡觉，晚上出来走动。\n★关于那只猫，可以知道什么？", "options": ["A: 害怕晚上", "B: 喜欢换环境", "C: 喜欢白天休息"], "correct_answer": "C: 喜欢白天休息"},
+        {"question_id": 68, "code": "H31004_Q68", "question_type": "single_choice", "question_text": "茶是我的最爱，花茶、绿茶、红茶，我都喜欢，天冷了或者你工作累了的时候，喝杯热茶，真是舒服极了。\n★关于他，可以知道：", "options": ["A: 口渴了", "B: 没完成工作", "C: 很喜欢喝茶"], "correct_answer": "C: 很喜欢喝茶"},
+        {"question_id": 69, "code": "H31004_Q69", "question_type": "single_choice", "question_text": "你好，我今天早上才发现，昨天从你们这儿拿回去的衣服不是我的，衬衫和裤子都不是我的，这条裤子太长了，你帮我看一下，是谁拿错了。\n★根据这段话，可以知道他：", "options": ["A: 非常生气", "B: 是卖衣服的", "C: 拿错了衣服"], "correct_answer": "C: 拿错了衣服"},
+        {"question_id": 70, "code": "H31004_Q70", "question_type": "single_choice", "question_text": "孩子在学会说话以前，就已经懂得了哭和笑，他们借这样的办法来告诉别人自己饿了、生气了、不舒服或者很高兴、很满意。慢慢大一点以后，他们就开始用一些简单的词语来表示自己的意思了。\n★孩子笑可能表示：", "options": ["A: 很难过", "B: 很好吃", "C: 不想玩了"], "correct_answer": "B: 很好吃"}
+      ]
+    },
+    {
+      "part_id": "writing_part_1",
+      "skill": "writing",
+      "section_title": "Kỹ năng viết — Phần 1 (câu 71–75)",
+      "part_order": 10,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1778597836/H31004_71-75_tcjhaw.png",
+      "question_count": 5,
+      "questions": [
+        {"question_id": 71, "code": "H31004_Q71", "question_type": "single_choice", "question_text": "1.我的包 2.药 3.在 4.里", "options": ["A: 1-4-3-2", "B: 2-3-1-4", "C: 1-2-3-4"], "correct_answer": "A: 1-4-3-2"},
+        {"question_id": 72, "code": "H31004_Q72", "question_type": "single_choice", "question_text": "1.接女朋友 2.他 3.去 4.要 5.机场", "options": ["A: 2-4-3-1-5", "B: 2-3-1-5-4", "C: 2-4-1-5-3"], "correct_answer": "A: 2-4-3-1-5"},
+        {"question_id": 73, "code": "H31004_Q73", "question_type": "single_choice", "question_text": "1.还 2.你 3.脚下的路 4.长 5.很", "options": ["A: 2-3-5-4-1", "B: 2-3-1-5-4", "C: 1-2-3-4-5"], "correct_answer": "B: 2-3-1-5-4"},
+        {"question_id": 74, "code": "H31004_Q74", "question_type": "single_choice", "question_text": "1.她 2.用铅笔写字 3.不 4.喜欢", "options": ["A: 1-4-3-2", "B: 1-3-4-2", "C: 1-2-3-4"], "correct_answer": "B: 1-3-4-2"},
+        {"question_id": 75, "code": "H31004_Q75", "question_type": "single_choice", "question_text": "1.怎么了 2.鼻子 3.你 4.的 5.丈夫", "options": ["A: 3-5-4-2-1", "B: 3-4-5-2-1", "C: 1-3-4-5-2"], "correct_answer": "A: 3-5-4-2-1"}
+      ]
+    },
+    {
+      "part_id": "writing_part_2",
+      "skill": "writing",
+      "section_title": "Kỹ năng viết — Phần 2 (câu 76–80)",
+      "part_order": 11,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1778597837/H31004_76-80_lxzwk7.png",
+      "question_count": 5,
+      "questions": [
+        {"question_id": 76, "code": "H31004_Q76", "question_type": "single_choice", "question_text": "", "options": ["A: 手", "B: 首", "C: 守"], "correct_answer": "A: 手"},
+        {"question_id": 77, "code": "H31004_Q77", "question_type": "single_choice", "question_text": "", "options": ["A: 事", "B: 是", "C: 时"], "correct_answer": "B: 是"},
+        {"question_id": 78, "code": "H31004_Q78", "question_type": "single_choice", "question_text": "", "options": ["A: 家", "B: 佳", "C: 加"], "correct_answer": "A: 家"},
+        {"question_id": 79, "code": "H31004_Q79", "question_type": "single_choice", "question_text": "", "options": ["A: 回", "B: 会", "C: 灰"], "correct_answer": "B: 会"},
+        {"question_id": 80, "code": "H31004_Q80", "question_type": "single_choice", "question_text": "", "options": ["A: 化", "B: 花", "C: 画"], "correct_answer": "B: 花"}
+      ]
+    }
+  ]
+}

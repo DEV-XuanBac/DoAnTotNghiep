@@ -182,23 +182,56 @@ class CnViDictionaryDbService {
     return ranked.take(limit).map((item) => item.word).toList();
   }
 
-  // Tìm các từ liên quan (dựa vào phần nghĩa để tìm các từ có nghĩa tương tự hoặc liên quan).
+  // Tìm các từ liên quan, ưu tiên các từ sát nghĩa tiếng Việt.
   Future<List<Word>> getRelatedWords(Word baseWord, {int limit = 10}) async {
     final db = await _getDatabase();
-    final seed = _extractMeaningSeed(baseWord.meaning);
-    if (seed.isEmpty) {
+    final normalizedMeaning = _normalizeSearchText(baseWord.meaning);
+    final meaningTokens = _extractMeaningTokens(baseWord.meaning);
+    if (normalizedMeaning.isEmpty || meaningTokens.isEmpty) {
       return const [];
     }
+
+    // Lấy một tập ứng viên đủ rộng theo các token trong nghĩa tiếng Việt.
+    final whereParts = List.filled(meaningTokens.length, 'LOWER(meaning) LIKE ?');
+    final whereClause = '${whereParts.join(' OR ')} AND word != ?';
+    final whereArgs = <Object?>[
+      ...meaningTokens.map((token) => '%$token%'),
+      baseWord.hanzi,
+    ];
 
     final rows = await db.query(
       'words',
       columns: ['id', 'word', 'pinyin', 'meaning'],
-      where: 'meaning LIKE ? AND word != ?',
-      whereArgs: ['%$seed%', baseWord.hanzi],
-      limit: limit,
-    ); // Tìm các từ có chứa phần nghĩa giống nhau nhưng không phải chính nó
+      where: whereClause,
+      whereArgs: whereArgs,
+      limit: 120,
+    );
 
-    return rows.map(_toWord).toList();
+    final ranked =
+        rows
+            .map(_toWord)
+            .where((candidate) => candidate.hanzi != baseWord.hanzi)
+            .map(
+              (candidate) => _ScoredWord(
+                word: candidate,
+                score: _scoreRelatedMeaning(
+                  baseMeaning: normalizedMeaning,
+                  baseTokens: meaningTokens,
+                  candidateMeaning: _normalizeSearchText(candidate.meaning),
+                ),
+              ),
+            )
+            .where((item) => item.score > 0)
+            .toList()
+          ..sort((a, b) {
+            final byScore = b.score.compareTo(a.score);
+            if (byScore != 0) {
+              return byScore;
+            }
+            return a.word.hanzi.length.compareTo(b.word.hanzi.length);
+          });
+
+    return ranked.take(limit).map((item) => item.word).toList();
   }
 
   Future<String?> lookMeaning(String phrase) async {
@@ -314,23 +347,88 @@ class CnViDictionaryDbService {
     );
   }
 
-  // Trích phần đầu tiên của nghĩa để làm từ khóa tìm kiếm
-  String _extractMeaningSeed(String meaning) {
-    final cleaned = meaning.trim();
-    if (cleaned.isEmpty) {
-      return '';
+  // Tách các token tiếng Việt có ý nghĩa để so khớp mức độ sát nghĩa.
+  List<String> _extractMeaningTokens(String meaning) {
+    final normalized = _normalizeSearchText(
+      meaning
+          .replaceAll(RegExp(r'[()/;,\-]'), ' ')
+          .replaceAll(RegExp(r'\s+'), ' '),
+    );
+    if (normalized.isEmpty) {
+      return const [];
     }
 
-    final normalized = cleaned
-        .replaceAll('/', ' ')
-        .replaceAll(',', ' ')
-        .replaceAll(RegExp(r'\s+'), ' ')
-        .trim();
-    final parts = normalized.split(' ');
-    if (parts.isEmpty) {
-      return '';
+    const stopWords = {
+      'là',
+      'của',
+      'và',
+      'hoặc',
+      'được',
+      'cho',
+      'với',
+      'trong',
+      'khi',
+      'để',
+      'một',
+      'các',
+      'những',
+      'sự',
+      'việc',
+      'người',
+      'cái',
+      'con',
+      'này',
+      'kia',
+    };
+
+    final seen = <String>{};
+    final tokens = <String>[];
+    for (final token in normalized.split(' ')) {
+      if (token.length < 2 || stopWords.contains(token) || seen.contains(token)) {
+        continue;
+      }
+      seen.add(token);
+      tokens.add(token);
     }
-    return parts.first;
+    return tokens;
+  }
+
+  int _scoreRelatedMeaning({
+    required String baseMeaning,
+    required List<String> baseTokens,
+    required String candidateMeaning,
+  }) {
+    if (candidateMeaning.isEmpty) {
+      return 0;
+    }
+
+    var score = 0;
+    if (candidateMeaning == baseMeaning) {
+      score += 1200;
+    }
+    if (candidateMeaning.startsWith(baseMeaning)) {
+      score += 600;
+    } else if (candidateMeaning.contains(baseMeaning)) {
+      score += 400;
+    }
+
+    for (final token in baseTokens) {
+      if (candidateMeaning.startsWith('$token ') ||
+          candidateMeaning.startsWith('$token,') ||
+          candidateMeaning.startsWith('$token;') ||
+          candidateMeaning.startsWith('$token/')) {
+        score += 220;
+      } else if (candidateMeaning.contains(' $token ') ||
+          candidateMeaning.contains('/$token') ||
+          candidateMeaning.contains('$token/')) {
+        score += 150;
+      } else if (candidateMeaning.contains(token)) {
+        score += 80;
+      }
+    }
+
+    // Nghĩa ngắn thường sát nghĩa hơn trong danh sách gợi ý.
+    return score - candidateMeaning.length ~/ 2;
   }
 
   // Chuẩn hóa chuỗi tìm kiếm: loại bỏ khoảng trắng thừa, chuyển về chữ thường, và thay thế nhiều khoảng trắng bằng một khoảng trắng duy nhất.
@@ -409,8 +507,7 @@ class CnViDictionaryDbService {
     }
 
     // Nghĩa ngắn thường sát nghĩa hơn cho gợi ý từ vựng cơ bản.
-    score -= meaning.length;
-    return score;
+    return score - meaning.length;
   }
 }
 

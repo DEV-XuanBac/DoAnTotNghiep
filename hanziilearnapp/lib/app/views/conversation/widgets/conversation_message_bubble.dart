@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/core/constants/conversation_constants.dart';
 import 'package:hanziilearnapp/app/models/conversation_model.dart';
 import 'package:hanziilearnapp/app/models/pronunciation_result.dart';
@@ -32,7 +32,7 @@ class ConversationMessageBubble extends StatelessWidget {
         mainAxisAlignment: me ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (!me) _avatarChip('AI', AppColors.darkBlueCard),
+          if (!me) _avatarChip(context, 'AI', context.palette.darkBlueCard),
           if (!me) SizedBox(width: 8.w),
           Flexible(
             child: Column(
@@ -48,7 +48,7 @@ class ConversationMessageBubble extends StatelessWidget {
                         : ConversationConstants.speakerBot,
                     style: TextStyle(
                       fontSize: 12.sp,
-                      color: AppColors.secondaryText,
+                      color: context.palette.secondaryText,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -57,8 +57,8 @@ class ConversationMessageBubble extends StatelessWidget {
                   padding: EdgeInsets.all(14.w),
                   decoration: BoxDecoration(
                     color: me
-                        ? AppColors.darkBlueCard.withValues(alpha: 0.1)
-                        : AppColors.backgroundWhite,
+                        ? context.palette.darkBlueCard.withValues(alpha: 0.1)
+                        : context.palette.backgroundWhite,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(me ? 16.r : 4.r),
                       topRight: Radius.circular(me ? 4.r : 16.r),
@@ -67,12 +67,12 @@ class ConversationMessageBubble extends StatelessWidget {
                     ),
                     border: active
                         ? Border.all(
-                            color: AppColors.darkBlueCard.withValues(
+                            color: context.palette.darkBlueCard.withValues(
                               alpha: 0.5,
                             ),
                             width: 1.5,
                           )
-                        : Border.all(color: AppColors.borderDefault),
+                        : Border.all(color: context.palette.borderDefault),
                   ),
                   child: Column(
                     crossAxisAlignment: me
@@ -84,7 +84,7 @@ class ConversationMessageBubble extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.primaryText,
+                          color: context.palette.primaryText,
                         ),
                       ),
                       SizedBox(height: 4.h),
@@ -92,7 +92,7 @@ class ConversationMessageBubble extends StatelessWidget {
                         msg.pinyin,
                         style: TextStyle(
                           fontSize: 12.sp,
-                          color: AppColors.blueDarkText,
+                          color: context.palette.blueDarkText,
                         ),
                       ),
                       SizedBox(height: 4.h),
@@ -100,7 +100,7 @@ class ConversationMessageBubble extends StatelessWidget {
                         msg.vietnamese,
                         style: TextStyle(
                           fontSize: 12.sp,
-                          color: AppColors.secondaryText,
+                          color: context.palette.secondaryText,
                           fontStyle: FontStyle.italic,
                         ),
                       ),
@@ -113,14 +113,14 @@ class ConversationMessageBubble extends StatelessWidget {
                             Icon(
                               Icons.volume_up_rounded,
                               size: 18.sp,
-                              color: AppColors.toolButton,
+                              color: context.palette.toolButton,
                             ),
                             SizedBox(width: 4.w),
                             Text(
                               ConversationConstants.listen,
                               style: TextStyle(
                                 fontSize: 12.sp,
-                                color: AppColors.toolButton,
+                                color: context.palette.toolButton,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -141,7 +141,7 @@ class ConversationMessageBubble extends StatelessWidget {
     );
   }
 
-  Widget _avatarChip(String label, Color bg) {
+  Widget _avatarChip(BuildContext context, String label, Color bg) {
     return Container(
       width: 36.w,
       height: 36.w,
@@ -150,7 +150,7 @@ class ConversationMessageBubble extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-          color: AppColors.whiteText,
+          color: context.palette.whiteText,
           fontSize: 14.sp,
           fontWeight: FontWeight.bold,
         ),
@@ -171,17 +171,17 @@ class _PronRow extends StatelessWidget {
         padding: EdgeInsets.only(top: 6.h),
         child: Text(
           '${ConversationConstants.scoreErrPrefix} ${pron.errorMessage}',
-          style: TextStyle(color: AppColors.errorText, fontSize: 12.sp),
+          style: TextStyle(color: context.palette.errorText, fontSize: 12.sp),
         ),
       );
     }
 
     final pts = pron.overallScore.round();
     final color = pts >= 80
-        ? AppColors.greenText
+        ? context.palette.greenText
         : pts >= 60
-        ? AppColors.blueDarkText
-        : AppColors.errorText;
+        ? context.palette.blueDarkText
+        : context.palette.errorText;
 
     return Container(
       margin: EdgeInsets.only(top: 8.h),
@@ -201,13 +201,13 @@ class _PronRow extends StatelessWidget {
                 ? Icons.thumb_up_alt_rounded
                 : Icons.refresh_rounded,
             color: color,
-            size: 18.sp,
+            size: 16.sp,
           ),
           SizedBox(width: 6.w),
           Text(
             '${ConversationConstants.scorePrefix} $pts/100',
             style: TextStyle(
-              fontSize: 14.sp,
+              fontSize: 12.sp,
               fontWeight: FontWeight.bold,
               color: color,
             ),
@@ -217,7 +217,7 @@ class _PronRow extends StatelessWidget {
             '${ConversationConstants.scoreCxPrefix}'
             '${pron.accuracyScore.round()} TC:${pron.fluencyScore.round()} '
             'HT:${pron.completenessScore.round()}',
-            style: TextStyle(fontSize: 10.sp, color: AppColors.secondaryText),
+            style: TextStyle(fontSize: 10.sp, color: context.palette.secondaryText),
           ),
         ],
       ),

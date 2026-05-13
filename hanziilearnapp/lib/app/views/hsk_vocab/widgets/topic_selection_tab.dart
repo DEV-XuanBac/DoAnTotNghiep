@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/constants/color_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/providers/lesson_provider.dart';
+import 'package:hanziilearnapp/app/providers/review_provider.dart';
 import 'package:provider/provider.dart';
 
 class TopicSelectionTab extends StatelessWidget {
@@ -16,8 +17,8 @@ class TopicSelectionTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LessonProvider>(
-      builder: (context, provider, _) {
+    return Consumer2<LessonProvider, ReviewProvider>(
+      builder: (context, provider, review, _) {
         if (provider.loading && provider.topics.isEmpty) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -55,13 +56,13 @@ class TopicSelectionTab extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.primaryText,
+                  color: context.palette.primaryText,
                 ),
               ),
               SizedBox(height: 6.h),
               Text(
                 'Chọn 1 đề tài để học từ vựng theo đúng ngữ cảnh.',
-                style: TextStyle(color: AppColors.secondaryText, fontSize: 13.sp),
+                style: TextStyle(color: context.palette.secondaryText, fontSize: 13.sp),
               ),
               SizedBox(height: 12.h),
               Expanded(
@@ -70,8 +71,8 @@ class TopicSelectionTab extends StatelessWidget {
                   separatorBuilder: (_, __) => SizedBox(height: 10.h),
                   itemBuilder: (_, index) {
                     final topic = provider.topics[index];
-                    final completed = provider.isTopicCompleted(topic);
-                    final percent = provider.getTopicCompletionPercent(topic);
+                    final completed = review.isTopicCompleted(topic);
+                    final percent = review.getTopicCompletionPercent(topic);
                     return InkWell(
                       borderRadius: BorderRadius.circular(14.r),
                       onTap: () => onTapTopic(topic),
@@ -81,12 +82,12 @@ class TopicSelectionTab extends StatelessWidget {
                           vertical: 14.h,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.backgroundWhite,
+                          color: context.palette.backgroundWhite,
                           borderRadius: BorderRadius.circular(14.r),
                           border: Border.all(
                             color: completed
-                                ? AppColors.greenText
-                                : AppColors.borderDefault.withValues(alpha: 0.6),
+                                ? context.palette.greenText
+                                : context.palette.borderDefault.withValues(alpha: 0.6),
                             width: completed ? 1.4 : 1.0,
                           ),
                         ),
@@ -107,7 +108,7 @@ class TopicSelectionTab extends StatelessWidget {
                                 child: Text(
                                   '${percent.toStringAsFixed(0)}%',
                                   style: TextStyle(
-                                    color: AppColors.greenText,
+                                    color: context.palette.greenText,
                                     fontWeight: FontWeight.w700,
                                     fontSize: 13.sp,
                                   ),
@@ -116,7 +117,7 @@ class TopicSelectionTab extends StatelessWidget {
                             Icon(
                               Icons.arrow_forward_ios_rounded,
                               size: 16.sp,
-                              color: AppColors.secondaryText,
+                              color: context.palette.secondaryText,
                             ),
                           ],
                         ),

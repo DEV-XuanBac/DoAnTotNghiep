@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:hanziilearnapp/app/core/router/app_router.dart';
 import 'package:hanziilearnapp/app/providers/auth_provider.dart';
-import 'package:hanziilearnapp/app/routes/app_routes.dart';
 import 'package:hanziilearnapp/app/views/authencation/controllers/login_controller.dart';
 import 'package:hanziilearnapp/app/views/authencation/login/login_form_section.dart';
-import 'package:hanziilearnapp/app/views/authencation/signup_view.dart';
 import 'package:hanziilearnapp/app/views/authencation/widgets/auth_header.dart';
 import 'package:provider/provider.dart';
 
@@ -45,12 +46,7 @@ class _LoginViewState extends State<LoginView> {
                     loading: isLoading,
                     onTogglePw: _ctl.togglePw,
                     onLogin: _onLoginPressed,
-                    onGoSignup: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const SigninView()),
-                      );
-                    },
+                    onGoSignup: () => AppRouter.pushSignup(context),
                     validateMail: _ctl.validateEmail,
                     validatePass: _ctl.validatePassword,
                   );
@@ -67,13 +63,11 @@ class _LoginViewState extends State<LoginView> {
     FocusScope.of(context).unfocus();
     final authPrv = context.read<AuthProvider>();
     final errMsg = await _ctl.submit(authPrv);
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     if (errMsg == null) {
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        AppRoutes.main,
-        (route) => false,
-      );
+      unawaited(AppRouter.goToMainTab(context));
       return;
     }
     ScaffoldMessenger.of(
