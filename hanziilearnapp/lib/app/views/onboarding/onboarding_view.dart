@@ -55,7 +55,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  'Hanzi Learn',
+                  'Hanzi Learning',
                   style: TextStyle(
                     fontSize: 28.sp,
                     fontWeight: FontWeight.w600,

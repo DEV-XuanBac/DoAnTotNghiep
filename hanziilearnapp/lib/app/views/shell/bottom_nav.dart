@@ -1,7 +1,10 @@
-﻿import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+﻿import 'dart:async';
+
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
+import 'package:hanziilearnapp/app/datasource/services/vocabulary_reminder_service.dart';
 import 'package:hanziilearnapp/app/views/community/community_view.dart';
 import 'package:hanziilearnapp/app/views/home/home_view.dart';
 import 'package:hanziilearnapp/app/views/lesson/lesson_view.dart';
@@ -32,6 +35,9 @@ class _BottomNavState extends State<BottomNav> {
   void initState() {
     super.initState();
     _selectedIndex = widget.initialIndex.clamp(0, _icons.length - 1);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(VocabularyReminderService.syncScheduleWithPrefs());
+    });
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hanziilearnapp/app/core/config/app_config.dart';
 import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
+import 'package:hanziilearnapp/app/datasource/services/vocabulary_reminder_service.dart';
 import 'package:hanziilearnapp/app/providers/providers_list.dart';
 import 'package:hanziilearnapp/app/providers/theme_provider.dart';
 import 'package:hanziilearnapp/app/routes/app_pages.dart';
@@ -15,6 +16,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await VocabularyReminderService.setup();
   runApp(const MyApp());
 }
 

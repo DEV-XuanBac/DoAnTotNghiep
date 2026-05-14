@@ -2,7 +2,7 @@
 abstract class AppConfig {
   AppConfig._();
 
-  static const String appNm = 'Hanzi Learn';
+  static const String appNm = 'Hanzii Learning';
   static const String cloudName = 'diehvorme';
   static const String uploadPreset = 'uploadPictures';
 }

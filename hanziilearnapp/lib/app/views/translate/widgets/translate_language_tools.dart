@@ -38,7 +38,7 @@ class TranslateLanguageTools extends StatelessWidget {
               Flexible(
                 child: _buildLangChip(
                   context,
-                  isVietnameseToChinese ? 'Việt' : 'Trung (Giản thể)',
+                  isVietnameseToChinese ? 'Việt' : 'Trung (GT)',
                 ),
               ),
               Padding(
@@ -55,7 +55,7 @@ class TranslateLanguageTools extends StatelessWidget {
               Flexible(
                 child: _buildLangChip(
                   context,
-                  isVietnameseToChinese ? 'Trung (Giản thể)' : 'Việt',
+                  isVietnameseToChinese ? 'Trung (GT)' : 'Việt',
                 ),
               ),
             ],
@@ -108,7 +108,10 @@ class TranslateLanguageTools extends StatelessWidget {
           decoration: BoxDecoration(
             color: context.palette.whiteCard,
             borderRadius: BorderRadius.circular(10.r),
-            border: Border.all(color: context.palette.borderEnable, width: 0.8.w),
+            border: Border.all(
+              color: context.palette.borderEnable,
+              width: 0.8.w,
+            ),
           ),
           child: Center(
             child: Text(
@@ -140,9 +143,14 @@ class TranslateLanguageTools extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
-          color: isActive ? context.palette.blueDarkText : context.palette.toolButton,
+          color: isActive
+              ? context.palette.blueDarkText
+              : context.palette.toolButton,
           borderRadius: BorderRadius.circular(50.r),
-          border: Border.all(color: context.palette.backgroundWhite, width: 2.w),
+          border: Border.all(
+            color: context.palette.backgroundWhite,
+            width: 2.w,
+          ),
           boxShadow: isActive
               ? [
                   BoxShadow(

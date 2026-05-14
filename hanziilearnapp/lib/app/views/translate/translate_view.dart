@@ -268,8 +268,7 @@ class _TranslateViewState extends State<TranslateView> {
           body: Padding(
             padding: EdgeInsets.all(14.w),
             child: SingleChildScrollView(
-              keyboardDismissBehavior:
-                  ScrollViewKeyboardDismissBehavior.onDrag,
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: Column(
                 children: [
                   SizedBox(height: 45.h),
