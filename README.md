@@ -191,7 +191,7 @@ DATN/
 - [ ] Hoàn thiện bộ test cho các luồng quan trọng (hiện mới có test cơ bản).
 
 ### Giai đoạn 4 - Hoàn thiện đồ án
-- [ ] Tối ưu hiệu năng và chất lượng mã nguồn.
+- [x] Tối ưu hiệu năng và chất lượng mã nguồn.
 - [x] Chuẩn hóa README kỹ thuật cơ bản (mô tả, cài đặt, kiến trúc, roadmap).
 - [ ] Hoàn thiện bộ tài liệu kỹ thuật/báo cáo đầy đủ cho nghiệm thu.
 - [ ] Đóng gói bản phát hành phục vụ nghiệm thu.
