@@ -45,34 +45,14 @@ class HomeController extends ChangeNotifier {
   int streak = 1;
   Set<int> checkedDays = {DateTime.now().weekday - 1};
 
-  late DateTime _sessionStartedAt;
-  int onlineMins = 0;
-  int _lastSyncedMins = 0;
-  Timer? _onlineTimer;
-
   Future<void> initialize() async {
-    _sessionStartedAt = DateTime.now();
-    _onlineTimer = Timer.periodic(const Duration(seconds: 20), (_) {
-      onlineMins = DateTime.now().difference(_sessionStartedAt).inMinutes;
-      notifyListeners();
-      unawaited(syncOnlineIfNeeded());
-    });
-
     final prefs = await SharedPreferences.getInstance();
     await _loadLoginStreak(prefs);
     await _loadHistory(prefs);
   }
 
   Future<void> disposeCtrl() async {
-    await syncOnlineIfNeeded(force: true);
-    _onlineTimer?.cancel();
     await _speechService.cancel();
-  }
-
-  @override
-  void dispose() {
-    _onlineTimer?.cancel();
-    super.dispose();
   }
 
   void clearSearch() {
@@ -217,26 +197,6 @@ class HomeController extends ChangeNotifier {
   Future<void> setHandwritingBusy(bool value) async {
     handwritingBusy = value;
     notifyListeners();
-  }
-
-  Future<void> syncOnlineIfNeeded({bool force = false}) async {
-    final user = _auth.currentUser;
-    if (user == null) {
-      return;
-    }
-    final delta = onlineMins - _lastSyncedMins;
-    if (!force && delta < 1) {
-      return;
-    }
-    if (delta <= 0) {
-      return;
-    }
-
-    _lastSyncedMins = onlineMins;
-    await _firestore.collection('users').doc(user.uid).set({
-      'total_online_minutes': FieldValue.increment(delta),
-      'updated_at': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
   }
 
   Future<void> _loadLoginStreak(SharedPreferences prefs) async {

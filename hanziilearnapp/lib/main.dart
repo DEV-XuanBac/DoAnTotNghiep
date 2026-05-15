@@ -6,6 +6,7 @@ import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/datasource/services/vocabulary_reminder_service.dart';
 import 'package:hanziilearnapp/app/providers/providers_list.dart';
 import 'package:hanziilearnapp/app/providers/theme_provider.dart';
+import 'package:hanziilearnapp/app/widgets/online_session_binder.dart';
 import 'package:hanziilearnapp/app/routes/app_pages.dart';
 import 'package:hanziilearnapp/app/routes/app_routes.dart';
 import 'package:hanziilearnapp/firebase_options.dart';
@@ -32,14 +33,16 @@ class MyApp extends StatelessWidget {
         builder: (context, child) {
           return Consumer<ThemeProvider>(
             builder: (context, themeProvider, _) {
-              return MaterialApp(
-                title: AppConfig.appNm,
-                debugShowCheckedModeBanner: false,
-                initialRoute: AppRoutes.splash,
-                routes: AppPages.routes,
-                themeMode: themeProvider.themeMode,
-                theme: _buildLightTheme(),
-                darkTheme: _buildDarkTheme(),
+              return OnlineSessionBinder(
+                child: MaterialApp(
+                  title: AppConfig.appNm,
+                  debugShowCheckedModeBanner: false,
+                  initialRoute: AppRoutes.splash,
+                  routes: AppPages.routes,
+                  themeMode: themeProvider.themeMode,
+                  theme: _buildLightTheme(),
+                  darkTheme: _buildDarkTheme(),
+                ),
               );
             },
           );

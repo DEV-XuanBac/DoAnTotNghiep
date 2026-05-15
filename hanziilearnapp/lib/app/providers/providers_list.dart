@@ -5,6 +5,7 @@ import 'package:hanziilearnapp/app/datasource/repository/notebook_repository.dar
 import 'package:hanziilearnapp/app/datasource/repository/post_repository.dart';
 import 'package:hanziilearnapp/app/datasource/repository/review_repository.dart';
 import 'package:hanziilearnapp/app/providers/auth_provider.dart';
+import 'package:hanziilearnapp/app/providers/online_session_provider.dart';
 import 'package:hanziilearnapp/app/providers/dictionary_provider.dart';
 import 'package:hanziilearnapp/app/providers/lesson_provider.dart';
 import 'package:hanziilearnapp/app/providers/notebook_provider.dart';
@@ -50,6 +51,10 @@ List<SingleChildWidget> get appProviders => <SingleChildWidget>[
     create: (ctx) => ReviewProvider(repository: ctx.read<IReviewRepository>()),
   ),
   ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
+  ChangeNotifierProvider<OnlineSessionProvider>(
+    create: (_) => OnlineSessionProvider(),
+    lazy: false,
+  ),
   ChangeNotifierProvider<PostProvider>(
     create: (ctx) => PostProvider(repository: ctx.read<IPostRepository>()),
   ),

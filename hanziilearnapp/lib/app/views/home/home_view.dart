@@ -10,7 +10,9 @@ import 'package:hanziilearnapp/app/core/router/app_router.dart';
 import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/datasource/network_services/google_vision_handwriting_service.dart';
 import 'package:hanziilearnapp/app/datasource/network_services/vocabulary_context_ai_service.dart';
+import 'package:hanziilearnapp/app/providers/online_session_provider.dart';
 import 'package:hanziilearnapp/app/views/home/controllers/home_controller.dart';
+import 'package:provider/provider.dart';
 import 'package:hanziilearnapp/app/views/home/home_handwriting_recognition.dart';
 import 'package:hanziilearnapp/app/views/home/widgets/home_personal_section.dart';
 import 'package:hanziilearnapp/app/views/home/widgets/home_result_panel.dart';
@@ -213,6 +215,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    final onlineMins = context.watch<OnlineSessionProvider>().onlineMins;
     return ListenableBuilder(
       listenable: _ctl,
       builder: (context, _) {
@@ -306,7 +309,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                       SizedBox(height: 16.h),
                       HomePersonalSection(
-                        onlineMins: _ctl.onlineMins,
+                        onlineMins: onlineMins,
                         streak: _ctl.streak,
                         checkedDays: _ctl.checkedDays,
                       ),
