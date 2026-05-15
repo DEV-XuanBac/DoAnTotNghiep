@@ -13,9 +13,6 @@ class ExamAttemptStatus {
   final int attemptCount;
 }
 
-/// Truy cập sub-collection `users/{uid}/exam_attempts` để lưu lịch sử
-/// làm đề HSK của user, đồng thời cập nhật counter `hsk_exam_completed_count`
-/// trên document user khi lần đầu hoàn thành 1 đề.
 abstract class IExamAttemptRepository {
   /// Số lần làm tiếp theo cho 1 đề (current + 1, mặc định 1 nếu chưa có).
   Future<int> peekNextAttemptNumber({
@@ -24,7 +21,6 @@ abstract class IExamAttemptRepository {
   });
 
   /// Lưu kết quả 1 lượt thi (transaction): set/update exam_attempts/{examId}
-  /// và tăng counter trên user nếu lần đầu completed.
   Future<void> saveExamCompletion({
     required String userId,
     required String examId,
@@ -35,7 +31,6 @@ abstract class IExamAttemptRepository {
     required double scoreOn10,
   });
 
-  /// Lấy map `examId -> ExamAttemptStatus` cho user theo level.
   Future<Map<String, ExamAttemptStatus>> listAttemptsForUserByLevel({
     required String userId,
     required String level,

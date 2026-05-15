@@ -3,11 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Persist & expose theme preference (`light` / `dark`) cho [MaterialApp].
-///
-/// Provider này **không** đụng đến token màu — toàn bộ màu được lấy qua
-/// `context.palette` (`AppPalette` ThemeExtension), Flutter sẽ tự rebuild khi
-/// [themeMode] thay đổi.
 class ThemeProvider extends ChangeNotifier {
   ThemeProvider() {
     unawaited(_loadThemeMode());

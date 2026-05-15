@@ -93,23 +93,20 @@ class DictionaryRepository implements IDictionaryRepository {
 
   @override
   Future<List<Word>> getWordsByHskLevel(String hskLevel) async {
-    final result = await _ref
-        .where('hskLevel', isEqualTo: hskLevel)
-        .get();
+    final result = await _ref.where('hskLevel', isEqualTo: hskLevel).get();
     return _sortedByStt(result.docs);
   }
 
   @override
   Future<List<String>> getTopicsByHskLevel(String hskLevel) async {
-    final result = await _ref
-        .where('hskLevel', isEqualTo: hskLevel)
-        .get();
-    final topics = result.docs
-        .map((doc) => _toString(doc.data()['topic']).trim())
-        .where((topic) => topic.isNotEmpty)
-        .toSet()
-        .toList()
-      ..sort();
+    final result = await _ref.where('hskLevel', isEqualTo: hskLevel).get();
+    final topics =
+        result.docs
+            .map((doc) => _toString(doc.data()['topic']).trim())
+            .where((topic) => topic.isNotEmpty)
+            .toSet()
+            .toList()
+          ..sort();
     return topics;
   }
 
@@ -129,21 +126,19 @@ class DictionaryRepository implements IDictionaryRepository {
 
   @override
   Future<int> getWordCountByLvl(String hskLevel) async {
-    final result = await _ref
-        .where('hskLevel', isEqualTo: hskLevel)
-        .get();
+    final result = await _ref.where('hskLevel', isEqualTo: hskLevel).get();
     return result.docs.length;
   }
 
   List<Word> _sortedByStt(
     List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
   ) {
-    final words = docs.map(_toWord).toList();
-    words.sort((a, b) {
-      final left = int.tryParse(a.stt) ?? 0;
-      final right = int.tryParse(b.stt) ?? 0;
-      return left.compareTo(right);
-    });
+    final words = docs.map(_toWord).toList()
+      ..sort((a, b) {
+        final left = int.tryParse(a.stt) ?? 0;
+        final right = int.tryParse(b.stt) ?? 0;
+        return left.compareTo(right);
+      });
     return words;
   }
 

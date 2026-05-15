@@ -6,7 +6,6 @@ import 'package:hanziilearnapp/app/models/word_model.dart';
 
 export 'package:hanziilearnapp/app/models/notebook_word_item.dart';
 
-/// Quản lý UI state cho sổ tay từ vựng; persistence qua [INotebookRepository].
 class NotebookProvider extends ChangeNotifier {
   NotebookProvider({FirebaseAuth? auth, INotebookRepository? repository})
     : _auth = auth ?? FirebaseAuth.instance,

@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hanziilearnapp/app/datasource/repository/review_repository.dart';
 
-/// UI state cho ôn tập; persistence qua [IReviewRepository].
 class ReviewProvider extends ChangeNotifier {
   ReviewProvider({FirebaseAuth? auth, IReviewRepository? repository})
     : _auth = auth ?? FirebaseAuth.instance,

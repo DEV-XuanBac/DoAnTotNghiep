@@ -4,8 +4,6 @@ import 'package:hanziilearnapp/app/models/community_post_model.dart';
 
 /// Truy cập collection `posts` cộng đồng (post + sub-collection `comments`).
 abstract class IPostRepository {
-  /// Stream raw user profile data từ `users/{uid}`. Trả `null` khi không
-  /// có user (caller compose fallback name/avatar).
   Stream<Map<String, dynamic>?> watchUserProfile(String? userId);
 
   Stream<List<CommunityPostModel>> watchAllPosts();
@@ -67,10 +65,13 @@ class PostRepository implements IPostRepository {
 
   @override
   Stream<List<CommunityPostModel>> watchAllPosts() {
-    return _posts.orderBy('created_at', descending: true).snapshots().map(
-      (snapshot) =>
-          snapshot.docs.map(CommunityPostModel.fromFirestore).toList(),
-    );
+    return _posts
+        .orderBy('created_at', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs.map(CommunityPostModel.fromFirestore).toList(),
+        );
   }
 
   @override
@@ -81,9 +82,8 @@ class PostRepository implements IPostRepository {
         .orderBy('created_at')
         .snapshots()
         .map(
-          (snapshot) => snapshot.docs
-              .map(CommunityCommentModel.fromFirestore)
-              .toList(),
+          (snapshot) =>
+              snapshot.docs.map(CommunityCommentModel.fromFirestore).toList(),
         );
   }
 
@@ -92,14 +92,12 @@ class PostRepository implements IPostRepository {
     return _posts.where('user_id', isEqualTo: userId).snapshots().map((
       snapshot,
     ) {
-      final posts = snapshot.docs
-          .map(CommunityPostModel.fromFirestore)
-          .toList();
-      posts.sort((a, b) {
-        final at = a.createdAt?.millisecondsSinceEpoch ?? 0;
-        final bt = b.createdAt?.millisecondsSinceEpoch ?? 0;
-        return bt.compareTo(at);
-      });
+      final posts = snapshot.docs.map(CommunityPostModel.fromFirestore).toList()
+        ..sort((a, b) {
+          final at = a.createdAt?.millisecondsSinceEpoch ?? 0;
+          final bt = b.createdAt?.millisecondsSinceEpoch ?? 0;
+          return bt.compareTo(at);
+        });
       return posts;
     });
   }
@@ -110,15 +108,16 @@ class PostRepository implements IPostRepository {
         .where('interacted_user_ids', arrayContains: userId)
         .snapshots()
         .map((snapshot) {
-          final posts = snapshot.docs
-              .map(CommunityPostModel.fromFirestore)
-              .where((post) => post.userId != userId)
-              .toList();
-          posts.sort((a, b) {
-            final at = a.createdAt?.millisecondsSinceEpoch ?? 0;
-            final bt = b.createdAt?.millisecondsSinceEpoch ?? 0;
-            return bt.compareTo(at);
-          });
+          final posts =
+              snapshot.docs
+                  .map(CommunityPostModel.fromFirestore)
+                  .where((post) => post.userId != userId)
+                  .toList()
+                ..sort((a, b) {
+                  final at = a.createdAt?.millisecondsSinceEpoch ?? 0;
+                  final bt = b.createdAt?.millisecondsSinceEpoch ?? 0;
+                  return bt.compareTo(at);
+                });
           return posts;
         });
   }
@@ -156,10 +155,7 @@ class PostRepository implements IPostRepository {
   Future<({String ownerId, bool exists})> readPostOwner(String postId) async {
     final doc = await _posts.doc(postId).get();
     final data = doc.data();
-    return (
-      ownerId: (data?['user_id'] ?? '').toString(),
-      exists: doc.exists,
-    );
+    return (ownerId: (data?['user_id'] ?? '').toString(), exists: doc.exists);
   }
 
   @override
@@ -227,24 +223,25 @@ class PostRepository implements IPostRepository {
         interactedUsers.add(userId);
       }
 
-      transaction.set(commentRef, {
-        'comment_id': commentRef.id,
-        'post_id': postId,
-        'user_id': userId,
-        'user_name': userName,
-        'user_avatar': userAvatar,
-        'content': content,
-        'created_at': FieldValue.serverTimestamp(),
-        'parent_comment_id': parentCommentId,
-        'parent_user_id': parentUserId,
-        'parent_user_name': parentUserName,
-        'is_reply': parentCommentId.isNotEmpty,
-      });
-      transaction.update(postRef, {
-        'comment_count': ((data['comment_count'] as num?)?.toInt() ?? 0) + 1,
-        'commented_user_ids': commentedUsers,
-        'interacted_user_ids': interactedUsers,
-      });
+      transaction
+        ..set(commentRef, {
+          'comment_id': commentRef.id,
+          'post_id': postId,
+          'user_id': userId,
+          'user_name': userName,
+          'user_avatar': userAvatar,
+          'content': content,
+          'created_at': FieldValue.serverTimestamp(),
+          'parent_comment_id': parentCommentId,
+          'parent_user_id': parentUserId,
+          'parent_user_name': parentUserName,
+          'is_reply': parentCommentId.isNotEmpty,
+        })
+        ..update(postRef, {
+          'comment_count': ((data['comment_count'] as num?)?.toInt() ?? 0) + 1,
+          'commented_user_ids': commentedUsers,
+          'interacted_user_ids': interactedUsers,
+        });
     });
   }
 

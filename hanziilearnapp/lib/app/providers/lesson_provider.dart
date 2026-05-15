@@ -3,9 +3,6 @@ import 'package:hanziilearnapp/app/datasource/repository/dictionary_repository.d
 import 'package:hanziilearnapp/app/datasource/repository/hsk_exam_repository.dart';
 import 'package:hanziilearnapp/app/models/word_model.dart';
 
-/// Provider phụ trách "bài học" (HSK level → topics → words) cùng count
-/// tổng/số đề. Notebook & Review đã tách sang `NotebookProvider` /
-/// `ReviewProvider`.
 class LessonProvider extends ChangeNotifier {
   LessonProvider({
     IDictionaryRepository? dictionaryRepository,

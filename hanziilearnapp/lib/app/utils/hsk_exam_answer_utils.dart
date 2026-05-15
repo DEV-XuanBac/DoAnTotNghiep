@@ -1,6 +1,5 @@
 import 'package:hanziilearnapp/app/models/hsk_exam_model.dart';
 
-/// Chuẩn hóa và so sánh đáp án theo từng [HskExamQuestion.questionType].
 class HskExamAnswerUtils {
   HskExamAnswerUtils._();
 

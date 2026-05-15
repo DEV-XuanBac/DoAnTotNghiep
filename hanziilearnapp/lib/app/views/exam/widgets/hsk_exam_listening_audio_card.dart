@@ -54,7 +54,10 @@ class HskExamListeningAudioCard extends StatelessWidget {
           if (audioAssetPath == null) ...[
             Text(
               'Phần nghe này chưa được cập nhật file audio.',
-              style: TextStyle(fontSize: 12.sp, color: context.palette.secondaryText),
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: context.palette.secondaryText,
+              ),
             ),
           ] else ...[
             Row(
@@ -81,7 +84,10 @@ class HskExamListeningAudioCard extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: Text(
               '${formatDuration(audioPosition)} / ${formatDuration(audioDuration)}',
-              style: TextStyle(fontSize: 11.sp, color: context.palette.secondaryText),
+              style: TextStyle(
+                fontSize: 11.sp,
+                color: context.palette.secondaryText,
+              ),
             ),
           ),
         ],

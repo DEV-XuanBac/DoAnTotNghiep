@@ -12,12 +12,12 @@ class AdminVocabularyService {
         .where('hskLevel', isEqualTo: hskLevel)
         .snapshots()
         .map((snapshot) {
-          final rows = snapshot.docs.map((doc) => doc.data()).toList();
-          rows.sort((a, b) {
-            final left = int.tryParse((a['stt'] ?? '').toString()) ?? 0;
-            final right = int.tryParse((b['stt'] ?? '').toString()) ?? 0;
-            return left.compareTo(right);
-          });
+          final rows = snapshot.docs.map((doc) => doc.data()).toList()
+            ..sort((a, b) {
+              final left = int.tryParse((a['stt'] ?? '').toString()) ?? 0;
+              final right = int.tryParse((b['stt'] ?? '').toString()) ?? 0;
+              return left.compareTo(right);
+            });
           return rows;
         });
   }
@@ -69,10 +69,11 @@ class AdminVocabularyService {
     required String stt,
     required String hanzi,
   }) {
-    final segments = [hskLevel, stt, hanzi]
-        .map(_slugify)
-        .where((segment) => segment.isNotEmpty)
-        .toList();
+    final segments = [
+      hskLevel,
+      stt,
+      hanzi,
+    ].map(_slugify).where((segment) => segment.isNotEmpty).toList();
     return segments.isEmpty
         ? DateTime.now().millisecondsSinceEpoch.toString()
         : segments.join('_');

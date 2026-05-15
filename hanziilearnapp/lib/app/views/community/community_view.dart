@@ -1,8 +1,8 @@
 ﻿import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/core/constants/community_constants.dart';
+import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/models/community_post_model.dart';
 import 'package:hanziilearnapp/app/providers/post_provider.dart';
 import 'package:hanziilearnapp/app/views/community/community_tab_type.dart';

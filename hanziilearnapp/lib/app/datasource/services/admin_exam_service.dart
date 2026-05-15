@@ -12,12 +12,12 @@ class AdminExamService {
         .where('level', isEqualTo: level)
         .snapshots()
         .map((snapshot) {
-          final rows = snapshot.docs.map((doc) => doc.data()).toList();
-          rows.sort((a, b) {
-            final left = (a['examCode'] ?? '').toString();
-            final right = (b['examCode'] ?? '').toString();
-            return left.compareTo(right);
-          });
+          final rows = snapshot.docs.map((doc) => doc.data()).toList()
+            ..sort((a, b) {
+              final left = (a['examCode'] ?? '').toString();
+              final right = (b['examCode'] ?? '').toString();
+              return left.compareTo(right);
+            });
           return rows;
         });
   }

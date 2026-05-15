@@ -14,11 +14,6 @@ import 'package:hanziilearnapp/app/views/onboarding/onboarding_view.dart';
 import 'package:hanziilearnapp/app/views/profile/profile_view.dart';
 import 'package:hanziilearnapp/app/views/shell/bottom_nav.dart';
 
-/// Bản đồ tên route → builder.
-///
-/// Truy cập arguments qua [ModalRoute.of] và `as` cast tới typed arg class
-/// tương ứng (xem [route_arguments.dart]). Việc parse arguments tập trung tại
-/// đây giúp tất cả call site chỉ phải biết route name + typed args.
 abstract class AppPages {
   AppPages._();
 
@@ -65,7 +60,6 @@ abstract class AppPages {
     );
   }
 
-  /// Đọc arguments của route hiện tại; trả `null` nếu sai kiểu hoặc không có.
   static T? _argsOf<T extends Object>(BuildContext context) {
     final raw = ModalRoute.of(context)?.settings.arguments;
     return raw is T ? raw : null;

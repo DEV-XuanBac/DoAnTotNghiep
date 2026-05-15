@@ -1,7 +1,6 @@
 library;
 import 'package:hanziilearnapp/app/models/lookup_history_item.dart';
 
-/// Arguments cho [AppRoutes.main] khi muốn mở [BottomNav] ở tab cụ thể.
 class MainShellArgs {
   const MainShellArgs({this.initialIndex = 0});
 

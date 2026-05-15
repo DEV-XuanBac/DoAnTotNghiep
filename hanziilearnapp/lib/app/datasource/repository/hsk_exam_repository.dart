@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hanziilearnapp/app/models/hsk_exam_model.dart';
 
-/// Đọc đề thi HSK từ Firestore (collection `hsk_exams`).
 abstract class IHskExamRepository {
   Future<List<HskExam>> getExamsByLevel(String level);
 

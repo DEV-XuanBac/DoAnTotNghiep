@@ -16,15 +16,6 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 /// Danh sách provider đăng ký trong [MultiProvider].
-///
-/// Thứ tự:
-/// 1. **Repository singletons** (Provider<IXxxRepository>) — đăng ký TRƯỚC
-///    để các ChangeNotifierProvider phía sau có thể `context.read<IXxx>()`
-///    trong `create:`. Repos là stateless wrapper quanh Firestore, mock-able
-///    qua constructor `FirebaseFirestore?`.
-/// 2. **ChangeNotifier providers** — inject repo từ context khi tạo. Tất cả
-///    đặt `lazy: true` (mặc định) trừ `ThemeProvider` để [MaterialApp] đọc
-///    `themeMode` ngay khi root build.
 List<SingleChildWidget> get appProviders => <SingleChildWidget>[
   Provider<IDictionaryRepository>(create: (_) => DictionaryRepository()),
   Provider<IHskExamRepository>(create: (_) => HskExamRepository()),

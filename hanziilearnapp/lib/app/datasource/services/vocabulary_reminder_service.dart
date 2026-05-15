@@ -146,7 +146,6 @@ abstract final class VocabularyReminderService {
         _kAndroidChannelId,
         'Nhắc nhở học tập',
         description: 'Nhắc ngẫu nhiên một từ yêu thích trong sổ tay mỗi 3 giờ',
-        importance: Importance.defaultImportance,
       );
       await _fln
           .resolvePlatformSpecificImplementation<
@@ -184,7 +183,7 @@ abstract final class VocabularyReminderService {
       return;
     }
 
-    User? user = FirebaseAuth.instance.currentUser;
+    var user = FirebaseAuth.instance.currentUser;
     if (user == null || user.uid != savedUid) {
       for (var i = 0; i < 8; i++) {
         await Future<void>.delayed(const Duration(milliseconds: 350));
@@ -225,8 +224,6 @@ abstract final class VocabularyReminderService {
       _kAndroidChannelId,
       'Nhắc nhở học tập',
       channelDescription: 'Nhắc từ yêu thích trong sổ tay',
-      importance: Importance.defaultImportance,
-      priority: Priority.defaultPriority,
       styleInformation: BigTextStyleInformation(body),
     );
     const iosDetails = DarwinNotificationDetails(

@@ -4,7 +4,6 @@ import 'package:hanziilearnapp/app/datasource/repository/post_repository.dart';
 import 'package:hanziilearnapp/app/models/community_comment_model.dart';
 import 'package:hanziilearnapp/app/models/community_post_model.dart';
 
-/// UI state cho cộng đồng (posts/comments); persistence qua [IPostRepository].
 class PostProvider extends ChangeNotifier {
   PostProvider({FirebaseAuth? auth, IPostRepository? repository})
     : _auth = auth ?? FirebaseAuth.instance,
