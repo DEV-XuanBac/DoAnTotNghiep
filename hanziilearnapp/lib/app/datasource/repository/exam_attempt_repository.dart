@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hanziilearnapp/app/models/exam_attempt_model.dart';
 
 /// Snapshot 1 lượt thi của user cho 1 đề HSK.
 class ExamAttemptStatus {
@@ -29,6 +30,12 @@ abstract class IExamAttemptRepository {
     required int correctCount,
     required int totalQuestions,
     required double scoreOn10,
+    required List<ExamQuestionResult> questionResults,
+  });
+
+  Future<ExamAttemptDetail?> getAttemptDetail({
+    required String userId,
+    required String examId,
   });
 
   Future<Map<String, ExamAttemptStatus>> listAttemptsForUserByLevel({
@@ -76,6 +83,7 @@ class ExamAttemptRepository implements IExamAttemptRepository {
     required int correctCount,
     required int totalQuestions,
     required double scoreOn10,
+    required List<ExamQuestionResult> questionResults,
   }) {
     final attemptRef = _attemptRef(userId, examId);
     final userRef = _userRef(userId);
@@ -97,6 +105,7 @@ class ExamAttemptRepository implements IExamAttemptRepository {
         'correct_count': correctCount,
         'total_questions': totalQuestions,
         'score_10': scoreOn10,
+        'question_results': questionResults.map((r) => r.toFirestore()).toList(),
         'completed_at': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
 
@@ -107,6 +116,47 @@ class ExamAttemptRepository implements IExamAttemptRepository {
         }, SetOptions(merge: true));
       }
     });
+  }
+
+  @override
+  Future<ExamAttemptDetail?> getAttemptDetail({
+    required String userId,
+    required String examId,
+  }) async {
+    final snap = await _attemptRef(userId, examId).get();
+    final data = snap.data();
+    if (data == null || (data['completed'] ?? false) != true) {
+      return null;
+    }
+
+    final rawResults = data['question_results'];
+    final questionResults = <ExamQuestionResult>[];
+    if (rawResults is List) {
+      for (final item in rawResults) {
+        if (item is Map<String, dynamic>) {
+          questionResults.add(ExamQuestionResult.fromFirestore(item));
+        } else if (item is Map) {
+          questionResults.add(
+            ExamQuestionResult.fromFirestore(Map<String, dynamic>.from(item)),
+          );
+        }
+      }
+    }
+
+    final attemptNumber =
+        (data['last_attempt_number'] as num?)?.toInt() ??
+        (data['attempt_count'] as num?)?.toInt() ??
+        0;
+    final rawScore = data['score_10'];
+
+    return ExamAttemptDetail(
+      examId: examId,
+      attemptNumber: attemptNumber,
+      scoreOutOf10: rawScore is num ? rawScore.toDouble() : 0,
+      correctCount: (data['correct_count'] as num?)?.toInt() ?? 0,
+      totalQuestions: (data['total_questions'] as num?)?.toInt() ?? 0,
+      questionResults: questionResults,
+    );
   }
 
   @override

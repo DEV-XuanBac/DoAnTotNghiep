@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hanziilearnapp/app/core/router/route_arguments.dart';
 import 'package:hanziilearnapp/app/models/lookup_history_item.dart';
 import 'package:hanziilearnapp/app/routes/app_routes.dart';
+import 'package:hanziilearnapp/app/views/exam/hsk_exam_result_view.dart';
 import 'package:hanziilearnapp/app/views/exam/hsk_exam_take_view.dart';
+import 'package:hanziilearnapp/main.dart' show appNavigatorKey;
 
 abstract class AppRouter {
   AppRouter._();
@@ -67,10 +69,49 @@ abstract class AppRouter {
     required String examId,
     required String level,
   }) {
-    return Navigator.of(context).push<bool>(
-      MaterialPageRoute<bool>(
-        builder: (_) => HskExamTakeView(examId: examId, level: level),
-      ),
+    return Navigator.of(context).push<bool>(_examTakeRoute(examId, level));
+  }
+
+  static Future<bool?> pushHskExamTakeFromRoot({
+    required String examId,
+    required String level,
+  }) {
+    final navigator = appNavigatorKey.currentState;
+    if (navigator == null) {
+      return Future.value(null);
+    }
+    return navigator.push<bool>(_examTakeRoute(examId, level));
+  }
+
+  /// Xem kết quả đề đã làm. Trả về `true` nếu user làm lại và hoàn thành.
+  static Future<bool?> pushHskExamResult(
+    BuildContext context, {
+    required String examId,
+    required String level,
+  }) {
+    return Navigator.of(context).push<bool>(_examResultRoute(examId, level));
+  }
+
+  static Future<bool?> pushHskExamResultFromRoot({
+    required String examId,
+    required String level,
+  }) {
+    final navigator = appNavigatorKey.currentState;
+    if (navigator == null) {
+      return Future.value(null);
+    }
+    return navigator.push<bool>(_examResultRoute(examId, level));
+  }
+
+  static MaterialPageRoute<bool> _examTakeRoute(String examId, String level) {
+    return MaterialPageRoute<bool>(
+      builder: (_) => HskExamTakeView(examId: examId, level: level),
+    );
+  }
+
+  static MaterialPageRoute<bool> _examResultRoute(String examId, String level) {
+    return MaterialPageRoute<bool>(
+      builder: (_) => HskExamResultView(examId: examId, level: level),
     );
   }
 

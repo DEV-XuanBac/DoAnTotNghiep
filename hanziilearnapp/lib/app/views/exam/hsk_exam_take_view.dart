@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/datasource/repository/exam_attempt_repository.dart';
 import 'package:hanziilearnapp/app/datasource/repository/hsk_exam_repository.dart';
+import 'package:hanziilearnapp/app/models/exam_attempt_model.dart';
 import 'package:hanziilearnapp/app/models/hsk_exam_model.dart';
 import 'package:hanziilearnapp/app/utils/hsk_exam_answer_utils.dart';
 import 'package:hanziilearnapp/app/views/exam/hsk_exam_audio_bytes.dart';
@@ -97,22 +98,7 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
     return Scaffold(
       backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Làm đề ${widget.level}'),
-            if (_examTimeLimitMinutes != null && _examTimeLimitMinutes! > 0)
-              Text(
-                'Giới hạn: $_examTimeLimitMinutes phút (theo đề)',
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w500,
-                  color: context.palette.secondaryText,
-                ),
-              ),
-          ],
-        ),
+        title: Text('Làm đề ${widget.level}'),
         backgroundColor: context.palette.backgroundLight,
         elevation: 0,
         actions: [
@@ -139,7 +125,7 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
                     ),
                   ),
                   child: Text(
-                    '$_timerLabel ${_formatDuration(_remainingTime!)}',
+                    _formatDuration(_remainingTime!),
                     style: TextStyle(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w700,
@@ -175,9 +161,7 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
           final sections = exam.sections;
           final questions = exam.allQuestions;
           if (questions.isEmpty || sections.isEmpty) {
-            return const HskExamEmptyState(
-              message: 'Đề thi chưa có câu hỏi.',
-            );
+            return const HskExamEmptyState(message: 'Đề thi chưa có câu hỏi.');
           }
 
           return Padding(
@@ -522,9 +506,11 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
 
     var correctCount = 0;
     final wrongLines = <String>[];
+    final questionResults = <ExamQuestionResult>[];
     for (final question in questions) {
       final selected = _selectedAnswers[question.questionId];
-      if (HskExamAnswerUtils.isAnswerCorrect(question, selected)) {
+      final isCorrect = HskExamAnswerUtils.isAnswerCorrect(question, selected);
+      if (isCorrect) {
         correctCount++;
       } else {
         final selectedLabel = !HskExamAnswerUtils.hasAnswer(question, selected)
@@ -534,6 +520,16 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
           'Câu ${question.questionId}: Bạn chọn $selectedLabel - Đúng: ${question.correctAnswer}',
         );
       }
+      questionResults.add(
+        ExamQuestionResult(
+          questionId: question.questionId,
+          selectedAnswer: HskExamAnswerUtils.hasAnswer(question, selected)
+              ? selected
+              : null,
+          correctAnswer: question.correctAnswer,
+          isCorrect: isCorrect,
+        ),
+      );
     }
 
     final unanswered = questions
@@ -571,9 +567,7 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
                   ),
                   if (forcedByTimer) ...[
                     const SizedBox(height: 10),
-                    const Text(
-                      'Đã hết thời gian, hệ thống tự động nộp bài.',
-                    ),
+                    const Text('Đã hết thời gian, hệ thống tự động nộp bài.'),
                   ],
                   if (wrongLines.isNotEmpty) ...[
                     const SizedBox(height: 12),
@@ -608,6 +602,7 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
                     exam: exam,
                     correctCount: correctCount,
                     totalQuestions: questions.length,
+                    questionResults: questionResults,
                   );
                   _isSubmitting = false;
                   if (!mounted) {
@@ -628,6 +623,7 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
     required HskExamDetail exam,
     required int correctCount,
     required int totalQuestions,
+    required List<ExamQuestionResult> questionResults,
   }) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
@@ -645,6 +641,7 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
       correctCount: correctCount,
       totalQuestions: totalQuestions,
       scoreOn10: scoreOn10,
+      questionResults: questionResults,
     );
   }
 

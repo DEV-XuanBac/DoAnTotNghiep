@@ -76,32 +76,47 @@ class _HskExamListViewState extends State<HskExamListView> {
                 isCompleted: attempt?.isCompleted ?? false,
                 scoreOutOf10: attempt?.scoreOutOf10,
                 attemptCount: attempt?.attemptCount ?? 0,
-                onTap: () async {
-                  if (exam.id.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Không mở được đề thi. Vui lòng thử lại.'),
-                      ),
-                    );
-                    return;
-                  }
-                  final didComplete = await AppRouter.pushHskExamTake(
-                    context,
-                    examId: exam.id,
-                    level: widget.hskLevel,
-                  );
-                  if (didComplete == true && mounted) {
-                    setState(() {
-                      _examFuture = _loadExamsWithAttemptStatus();
-                    });
-                  }
-                },
+                onTap: () => _onExamTap(exam, attempt),
               );
             },
           );
         },
       ),
     );
+  }
+
+  Future<void> _onExamTap(HskExam exam, ExamAttemptStatus? attempt) async {
+    if (exam.id.isEmpty) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Không mở được đề thi. Vui lòng thử lại.'),
+        ),
+      );
+      return;
+    }
+
+    final isCompleted = attempt?.isCompleted ?? false;
+    final didUpdate = isCompleted
+        ? await AppRouter.pushHskExamResultFromRoot(
+            examId: exam.id,
+            level: widget.hskLevel,
+          )
+        : await AppRouter.pushHskExamTakeFromRoot(
+            examId: exam.id,
+            level: widget.hskLevel,
+          );
+
+    if (!mounted) {
+      return;
+    }
+    if (didUpdate == true) {
+      setState(() {
+        _examFuture = _loadExamsWithAttemptStatus();
+      });
+    }
   }
 
   Future<_ExamListPayload> _loadExamsWithAttemptStatus() async {
