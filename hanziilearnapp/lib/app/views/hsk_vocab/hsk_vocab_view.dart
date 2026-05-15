@@ -110,129 +110,131 @@ class _HskVocabViewState extends State<HskVocabView> {
     context.read<ReviewProvider>().clearCurrent();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildTopicContent(
+    LessonProvider provider,
+    ReviewProvider review,
+  ) {
     return DefaultTabController(
       length: 3,
-      child: Scaffold(
-        backgroundColor: context.palette.backgroundLight,
-        appBar: AppBar(
-          leading: Consumer<LessonProvider>(
-            builder: (context, provider, _) {
-              return IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  if (provider.currentTopic.isNotEmpty) {
-                    _returnToTopicSelection();
-                    return;
-                  }
-                  Navigator.of(context).maybePop();
-                },
-              );
-            },
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 14.w),
+            child: Container(
+              height: 52.h,
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: context.palette.backgroundWhite,
+                borderRadius: BorderRadius.circular(30.r),
+              ),
+              child: TabBar(
+                indicator: BoxDecoration(
+                  color: context.palette.blueDarkText,
+                  borderRadius: BorderRadius.circular(26.r),
+                ),
+                labelColor: context.palette.whiteText,
+                unselectedLabelColor: context.palette.primaryText,
+                indicatorSize: TabBarIndicatorSize.tab,
+                dividerColor: Colors.transparent,
+                tabs: const [
+                  Tab(text: 'Từ vựng'),
+                  Tab(text: 'Ví dụ'),
+                  Tab(text: 'Ôn tập'),
+                ],
+              ),
+            ),
           ),
-          title: Consumer<LessonProvider>(
-            builder: (context, provider, _) {
-              final title = provider.currentTopic.isEmpty
-                  ? widget.hskLevel
-                  : '${widget.hskLevel} - ${provider.currentTopic}';
-              return Text(title);
-            },
+          SizedBox(height: 10.h),
+          Expanded(
+            child: TabBarView(
+              children: [
+                VocabularyTab(
+                  hskLevel: widget.hskLevel,
+                  onPlayAudio: _playWordAudio,
+                  onSaveWord: _toggleSaveWord,
+                ),
+                ExampleTab(onPlayAudio: _playWordAudio),
+                ReviewTab(
+                  words: provider.words,
+                  hskLevel: widget.hskLevel,
+                  topic: provider.currentTopic,
+                  isCompleted: review.reviewCompleted,
+                  savedResult: review.reviewResult,
+                  onComplete:
+                      ({
+                        required int totalQuestions,
+                        required int correctAnswers,
+                        required List<Map<String, dynamic>> wrongItems,
+                        required List<Map<String, dynamic>> reviewedWords,
+                      }) => review.saveReviewResult(
+                        level: widget.hskLevel,
+                        topic: provider.currentTopic,
+                        totalQuestions: totalQuestions,
+                        correctAnswers: correctAnswers,
+                        wrongItems: wrongItems,
+                        reviewedWords: reviewedWords,
+                      ),
+                  onPlayAudio: _playWordAudio,
+                ),
+              ],
+            ),
           ),
-          centerTitle: true,
-          backgroundColor: context.palette.backgroundLight,
-          elevation: 0,
-        ),
-        body: Consumer2<LessonProvider, ReviewProvider>(
-          builder: (context, provider, review, _) {
-            return PopScope(
-              canPop: provider.currentTopic.isEmpty,
-              onPopInvokedWithResult: (didPop, _) {
-                if (didPop) {
-                  return;
-                }
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: context.palette.backgroundLight,
+      appBar: AppBar(
+        leading: Consumer<LessonProvider>(
+          builder: (context, provider, _) {
+            return IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
                 if (provider.currentTopic.isNotEmpty) {
                   _returnToTopicSelection();
+                  return;
                 }
+                Navigator.of(context).maybePop();
               },
-              child: provider.currentTopic.isEmpty
-                  ? TopicSelectionTab(
-                      hskLevel: widget.hskLevel,
-                      onTapTopic: _onChooseTopic,
-                    )
-                  : Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 14.w),
-                          child: Container(
-                            height: 52.h,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8.w,
-                              vertical: 6.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: context.palette.backgroundWhite,
-                              borderRadius: BorderRadius.circular(30.r),
-                            ),
-                            child: TabBar(
-                              indicator: BoxDecoration(
-                                color: context.palette.blueDarkText,
-                                borderRadius: BorderRadius.circular(26.r),
-                              ),
-                              labelColor: context.palette.whiteText,
-                              unselectedLabelColor: context.palette.primaryText,
-                              indicatorSize: TabBarIndicatorSize.tab,
-                              dividerColor: Colors.transparent,
-                              tabs: const [
-                                Tab(text: 'Từ vựng'),
-                                Tab(text: 'Ví dụ'),
-                                Tab(text: 'Ôn tập'),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10.h),
-                        Expanded(
-                          child: TabBarView(
-                            children: [
-                              VocabularyTab(
-                                hskLevel: widget.hskLevel,
-                                onPlayAudio: _playWordAudio,
-                                onSaveWord: _toggleSaveWord,
-                              ),
-                              ExampleTab(onPlayAudio: _playWordAudio),
-                              ReviewTab(
-                                words: provider.words,
-                                hskLevel: widget.hskLevel,
-                                topic: provider.currentTopic,
-                                isCompleted: review.reviewCompleted,
-                                savedResult: review.reviewResult,
-                                onComplete:
-                                    ({
-                                      required int totalQuestions,
-                                      required int correctAnswers,
-                                      required List<Map<String, dynamic>>
-                                          wrongItems,
-                                      required List<Map<String, dynamic>>
-                                          reviewedWords,
-                                    }) => review.saveReviewResult(
-                                      level: widget.hskLevel,
-                                      topic: provider.currentTopic,
-                                      totalQuestions: totalQuestions,
-                                      correctAnswers: correctAnswers,
-                                      wrongItems: wrongItems,
-                                      reviewedWords: reviewedWords,
-                                    ),
-                                onPlayAudio: _playWordAudio,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
             );
           },
         ),
+        title: Consumer<LessonProvider>(
+          builder: (context, provider, _) {
+            final title = provider.currentTopic.isEmpty
+                ? widget.hskLevel
+                : '${widget.hskLevel} - ${provider.currentTopic}';
+            return Text(title);
+          },
+        ),
+        centerTitle: true,
+        backgroundColor: context.palette.backgroundLight,
+        elevation: 0,
+      ),
+      body: Consumer2<LessonProvider, ReviewProvider>(
+        builder: (context, provider, review, _) {
+          return PopScope(
+            canPop: provider.currentTopic.isEmpty,
+            onPopInvokedWithResult: (didPop, _) {
+              if (didPop) {
+                return;
+              }
+              if (provider.currentTopic.isNotEmpty) {
+                _returnToTopicSelection();
+              }
+            },
+            child: provider.currentTopic.isEmpty
+                ? TopicSelectionTab(
+                    hskLevel: widget.hskLevel,
+                    onTapTopic: _onChooseTopic,
+                  )
+                : _buildTopicContent(provider, review),
+          );
+        },
       ),
     );
   }

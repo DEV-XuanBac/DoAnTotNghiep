@@ -167,7 +167,11 @@ class _HskExamTakeViewState extends State<HskExamTakeView> {
           }
 
           final exam = snapshot.data!;
-          _ensureExamTimer(exam);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              _ensureExamTimer(exam);
+            }
+          });
           final sections = exam.sections;
           final questions = exam.allQuestions;
           if (questions.isEmpty || sections.isEmpty) {

@@ -77,6 +77,14 @@ class _HskExamListViewState extends State<HskExamListView> {
                 scoreOutOf10: attempt?.scoreOutOf10,
                 attemptCount: attempt?.attemptCount ?? 0,
                 onTap: () async {
+                  if (exam.id.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Không mở được đề thi. Vui lòng thử lại.'),
+                      ),
+                    );
+                    return;
+                  }
                   final didComplete = await AppRouter.pushHskExamTake(
                     context,
                     examId: exam.id,

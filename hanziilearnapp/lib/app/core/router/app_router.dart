@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hanziilearnapp/app/core/router/route_arguments.dart';
 import 'package:hanziilearnapp/app/models/lookup_history_item.dart';
 import 'package:hanziilearnapp/app/routes/app_routes.dart';
+import 'package:hanziilearnapp/app/views/exam/hsk_exam_take_view.dart';
 
 abstract class AppRouter {
   AppRouter._();
@@ -66,9 +67,10 @@ abstract class AppRouter {
     required String examId,
     required String level,
   }) {
-    return Navigator.of(context).pushNamed<bool>(
-      AppRoutes.hskExamTake,
-      arguments: HskExamTakeArgs(examId: examId, level: level),
+    return Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => HskExamTakeView(examId: examId, level: level),
+      ),
     );
   }
 

@@ -12,6 +12,9 @@ import 'package:hanziilearnapp/app/routes/app_routes.dart';
 import 'package:hanziilearnapp/firebase_options.dart';
 import 'package:provider/provider.dart';
 
+/// Giữ stack điều hướng khi [MaterialApp] rebuild (đổi theme, v.v.).
+final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -31,18 +34,19 @@ class MyApp extends StatelessWidget {
       child: ScreenUtilInit(
         designSize: const Size(360, 800),
         builder: (context, child) {
-          return Consumer<ThemeProvider>(
-            builder: (context, themeProvider, _) {
+          final themeMode = context.watch<ThemeProvider>().themeMode;
+          return MaterialApp(
+            navigatorKey: appNavigatorKey,
+            title: AppConfig.appNm,
+            debugShowCheckedModeBanner: false,
+            initialRoute: AppRoutes.splash,
+            routes: AppPages.routes,
+            themeMode: themeMode,
+            theme: _buildLightTheme(),
+            darkTheme: _buildDarkTheme(),
+            builder: (context, child) {
               return OnlineSessionBinder(
-                child: MaterialApp(
-                  title: AppConfig.appNm,
-                  debugShowCheckedModeBanner: false,
-                  initialRoute: AppRoutes.splash,
-                  routes: AppPages.routes,
-                  themeMode: themeProvider.themeMode,
-                  theme: _buildLightTheme(),
-                  darkTheme: _buildDarkTheme(),
-                ),
+                child: child ?? const SizedBox.shrink(),
               );
             },
           );

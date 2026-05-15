@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 /// Theo dõi thời gian online trong phiên app và đồng bộ lên Firestore.
 class OnlineSessionProvider extends ChangeNotifier {
@@ -33,7 +34,13 @@ class OnlineSessionProvider extends ChangeNotifier {
     _onlineTimer = Timer.periodic(const Duration(seconds: 20), (_) {
       _tick();
     });
-    notifyListeners();
+    _notifyAfterFrame();
+  }
+
+  void _notifyAfterFrame() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 
   void _tick() {
@@ -53,7 +60,7 @@ class OnlineSessionProvider extends ChangeNotifier {
     if (sync) {
       await syncOnlineIfNeeded(force: true);
     }
-    notifyListeners();
+    _notifyAfterFrame();
   }
 
   Future<void> syncOnlineIfNeeded({bool force = false}) async {
