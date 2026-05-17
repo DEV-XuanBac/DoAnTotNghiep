@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hanziilearnapp/app/models/community_announcement_model.dart';
 import 'package:hanziilearnapp/app/models/community_comment_model.dart';
 import 'package:hanziilearnapp/app/models/community_post_model.dart';
 
@@ -13,6 +14,8 @@ abstract class IPostRepository {
   Stream<List<CommunityPostModel>> watchManagedPosts(String userId);
 
   Stream<List<CommunityPostModel>> watchInteractedPosts(String userId);
+
+  Stream<CommunityAnnouncementModel?> watchCommunityAnnouncement();
 
   Future<Map<String, dynamic>?> getUserProfile(String userId);
 
@@ -49,6 +52,8 @@ class PostRepository implements IPostRepository {
     : _firestore = firestore ?? FirebaseFirestore.instance;
 
   final FirebaseFirestore _firestore;
+
+  static const String _announcementDocPath = 'community_config/announcement';
 
   CollectionReference<Map<String, dynamic>> get _posts =>
       _firestore.collection('posts');
@@ -120,6 +125,16 @@ class PostRepository implements IPostRepository {
                 });
           return posts;
         });
+  }
+
+  @override
+  Stream<CommunityAnnouncementModel?> watchCommunityAnnouncement() {
+    return _firestore.doc(_announcementDocPath).snapshots().map((snapshot) {
+      if (!snapshot.exists) {
+        return null;
+      }
+      return CommunityAnnouncementModel.fromFirestore(snapshot);
+    });
   }
 
   @override

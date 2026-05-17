@@ -6,6 +6,7 @@ import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 import 'package:hanziilearnapp/app/models/community_post_model.dart';
 import 'package:hanziilearnapp/app/providers/post_provider.dart';
 import 'package:hanziilearnapp/app/views/community/community_tab_type.dart';
+import 'package:hanziilearnapp/app/views/community/widgets/community_announcement_banner.dart';
 import 'package:hanziilearnapp/app/views/community/widgets/community_avatar.dart';
 import 'package:hanziilearnapp/app/views/community/widgets/community_comment_sheet.dart';
 import 'package:hanziilearnapp/app/views/community/widgets/community_create_post_dialog.dart';
@@ -103,6 +104,19 @@ class _CommunityViewState extends State<CommunityView> {
         }
         return provider.watchManagedPosts(userId);
     }
+  }
+
+  Widget _buildAnnouncementBanner() {
+    return StreamBuilder(
+      stream: context.read<PostProvider>().watchCommunityAnnouncement(),
+      builder: (context, snapshot) {
+        final announcement = snapshot.data;
+        if (announcement == null || !announcement.isVisible) {
+          return const SizedBox.shrink();
+        }
+        return CommunityAnnouncementBanner(announcement: announcement);
+      },
+    );
   }
 
   Widget _buildComposer() {
@@ -225,7 +239,9 @@ class _CommunityViewState extends State<CommunityView> {
                 currentTab: _currentTab,
                 onChanged: (tab) => setState(() => _currentTab = tab),
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 10.h),
+              _buildAnnouncementBanner(),
+              SizedBox(height: 10.h),
               Expanded(child: _buildPostList()),
             ],
           ),

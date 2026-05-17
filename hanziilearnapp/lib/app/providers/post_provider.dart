@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hanziilearnapp/app/datasource/repository/post_repository.dart';
+import 'package:hanziilearnapp/app/models/community_announcement_model.dart';
 import 'package:hanziilearnapp/app/models/community_comment_model.dart';
 import 'package:hanziilearnapp/app/models/community_post_model.dart';
 
@@ -39,6 +40,9 @@ class PostProvider extends ChangeNotifier {
 
   Stream<List<CommunityPostModel>> watchInteractedPosts(String userId) =>
       _repo.watchInteractedPosts(userId);
+
+  Stream<CommunityAnnouncementModel?> watchCommunityAnnouncement() =>
+      _repo.watchCommunityAnnouncement();
 
   Future<void> createPost(String content) async {
     final user = _auth.currentUser;

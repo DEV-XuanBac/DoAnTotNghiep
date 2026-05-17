@@ -1,6 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hanziilearnapp/admin/exam_upload_tab.dart';
+import 'package:hanziilearnapp/admin/post_management_tab.dart';
 import 'package:hanziilearnapp/admin/vocabulary_create_tab.dart';
 import 'package:hanziilearnapp/app/core/theme/app_palette.dart';
 
@@ -18,7 +19,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -69,6 +70,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView>
                   tabs: const [
                     Tab(text: 'Thêm đề thi HSK'),
                     Tab(text: 'Thêm từ vựng HSK'),
+                    Tab(text: 'Quản lý bài đăng'),
                   ],
                 ),
               ),
@@ -80,6 +82,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView>
                 children: const [
                   ExamUploadTab(),
                   VocabularyCreateTab(),
+                  PostManagementTab(),
                 ],
               ),
             ),
