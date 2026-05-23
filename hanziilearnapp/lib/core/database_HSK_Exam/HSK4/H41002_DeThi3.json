@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "exam_code": "H41002",
+  "level": "HSK4",
+  "title": "Đề thi 3",
+  "total_questions": 100,
+  "time_limit_minutes": 105,
+  "audio_listening": "https://res.cloudinary.com/diehvorme/video/upload/v1779028361/H41002_jpgz3l.mp3",
+  "sections": [
+    {
+      "part_id": "listening_part_1",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 1 (câu 1–10)",
+      "part_order": 1,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1779028355/H41002_1-10_iodesy.png",
+      "question_count": 10,
+      "questions": [
+        {"question_id": 1, "code": "H41002_Q01", "question_type": "true_false", "question_text": "★ 签证已经办好了。", "options": ["true", "false"], "correct_answer": "false"},
+        {"question_id": 2, "code": "H41002_Q02", "question_type": "true_false", "question_text": "★ 现在她也做妈妈了。", "options": ["true", "false"], "correct_answer": "true"},
+        {"question_id": 3, "code": "H41002_Q03", "question_type": "true_false", "question_text": "★ 小王今天要加班。", "options": ["true", "false"], "correct_answer": "true"},
+        {"question_id": 4, "code": "H41002_Q04", "question_type": "true_false", "question_text": "★ 节日是文化的一部分。", "options": ["true", "false"], "correct_answer": "true"},
+        {"question_id": 5, "code": "H41002_Q05", "question_type": "true_false", "question_text": "★ 王教授脾气很大。", "options": ["true", "false"], "correct_answer": "false"},
+        {"question_id": 6, "code": "H41002_Q06", "question_type": "true_false", "question_text": "★ 真正的爱情不需要浪漫。", "options": ["true", "false"], "correct_answer": "false"},
+        {"question_id": 7, "code": "H41002_Q07", "question_type": "true_false", "question_text": "★ 年轻人喜欢早上锻炼身体。", "options": ["true", "false"], "correct_answer": "false"},
+        {"question_id": 8, "code": "H41002_Q08", "question_type": "true_false", "question_text": "★ 小林正在找工作。", "options": ["true", "false"], "correct_answer": "false"},
+        {"question_id": 9, "code": "H41002_Q09", "question_type": "true_false", "question_text": "★ 应该总结过去的经验。", "options": ["true", "false"], "correct_answer": "true"},
+        {"question_id": 10, "code": "H41002_Q10", "question_type": "true_false", "question_text": "★ 广告词应该简短。", "options": ["true", "false"], "correct_answer": "true"}
+      ]
+    },
+    {
+      "part_id": "listening_part_2",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 2 (câu 11–25)",
+      "part_order": 2,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1779028355/H41002_11-25_graxls.png",
+      "question_count": 15,
+      "questions": [
+        {"question_id": 11, "code": "H41002_Q11", "question_type": "single_choice", "question_text": "", "options": ["A: 正在做饭", "B: 正在购物", "C: 在擦窗户", "D: 在收拾厨房"], "correct_answer": "A: 正在做饭"},
+        {"question_id": 12, "code": "H41002_Q12", "question_type": "single_choice", "question_text": "", "options": ["A: 能力", "B: 数量", "C: 知识", "D: 专业"], "correct_answer": "A: 能力"},
+        {"question_id": 13, "code": "H41002_Q13", "question_type": "single_choice", "question_text": "", "options": ["A: 非常鲜", "B: 很好喝", "C: 太辣了", "D: 太咸了"], "correct_answer": "D: 太咸了"},
+        {"question_id": 14, "code": "H41002_Q14", "question_type": "single_choice", "question_text": "", "options": ["A: 没兴趣", "B: 票很贵", "C: 票不好买", "D: 喜欢打网球"], "correct_answer": "C: 票不好买"},
+        {"question_id": 15, "code": "H41002_Q15", "question_type": "single_choice", "question_text": "", "options": ["A: 换裤子", "B: 戴帽子", "C: 洗个澡", "D: 散散步"], "correct_answer": "A: 换裤子"},
+        {"question_id": 16, "code": "H41002_Q16", "question_type": "single_choice", "question_text": "", "options": ["A: 夫妻", "B: 母子", "C: 父女", "D: 姐弟"], "correct_answer": "D: 姐弟"},
+        {"question_id": 17, "code": "H41002_Q17", "question_type": "single_choice", "question_text": "", "options": ["A: 今天上午", "B: 明天下午", "C: 明天晚上", "D: 后天上午"], "correct_answer": "D: 后天上午"},
+        {"question_id": 18, "code": "H41002_Q18", "question_type": "single_choice", "question_text": "", "options": ["A: 太旧了", "B: 是货梯", "C: 电梯坏了", "D: 他们去二层"], "correct_answer": "B: 是货梯"},
+        {"question_id": 19, "code": "H41002_Q19", "question_type": "single_choice", "question_text": "", "options": ["A: 送给邻居", "B: 要多运动", "C: 搬到院子里", "D: 再多买几朵"], "correct_answer": "C: 搬到院子里"},
+        {"question_id": 20, "code": "H41002_Q20", "question_type": "single_choice", "question_text": "", "options": ["A: 一刻钟", "B: 20分钟", "C: 40分钟", "D: 一个小时"], "correct_answer": "B: 20分钟"},
+        {"question_id": 21, "code": "H41002_Q21", "question_type": "single_choice", "question_text": "", "options": ["A: 人与自然", "B: 动物世界", "C: 经济与法", "D: 体育新闻"], "correct_answer": "B: 动物世界"},
+        {"question_id": 22, "code": "H41002_Q22", "question_type": "single_choice", "question_text": "", "options": ["A: 饺子", "B: 米饭", "C: 面条", "D: 面包"], "correct_answer": "A: 饺子"},
+        {"question_id": 23, "code": "H41002_Q23", "question_type": "single_choice", "question_text": "", "options": ["A: 很顺利", "B: 天气很热", "C: 时间很紧张", "D: 遇到些麻烦"], "correct_answer": "A: 很顺利"},
+        {"question_id": 24, "code": "H41002_Q24", "question_type": "single_choice", "question_text": "", "options": ["A: 商店", "B: 宾馆", "C: 教室", "D: 办公室"], "correct_answer": "D: 办公室"},
+        {"question_id": 25, "code": "H41002_Q25", "question_type": "single_choice", "question_text": "", "options": ["A: 减肥", "B: 爬山", "C: 踢足球", "D: 打篮球"], "correct_answer": "B: 爬山"}
+      ]
+    },
+    {
+      "part_id": "listening_part_3",
+      "skill": "listening",
+      "section_title": "Kỹ năng nghe — Phần 3 (câu 26–45)",
+      "part_order": 3,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1779028356/H41002_26-45_byqmhv.png",
+      "question_count": 20,
+      "questions": [
+        {"question_id": 26, "code": "H41002_Q26", "question_type": "single_choice", "question_text": "", "options": ["A: 他是警察", "B: 他是负责人", "C: 他熟悉上海", "D: 他放暑假了"], "correct_answer": "C: 他熟悉上海"},
+        {"question_id": 27, "code": "H41002_Q27", "question_type": "single_choice", "question_text": "", "options": ["A: 女的刚回来", "B: 他们在机场", "C: 男的很失望", "D: 男的要去上班"], "correct_answer": "A: 女的刚回来"},
+        {"question_id": 28, "code": "H41002_Q28", "question_type": "single_choice", "question_text": "", "options": ["A: 被批评了", "B: 被人骗了", "C: 赚了很多钱", "D: 找到一百元"], "correct_answer": "D: 找到一百元"},
+        {"question_id": 29, "code": "H41002_Q29", "question_type": "single_choice", "question_text": "", "options": ["A: 银行", "B: 洗手间", "C: 小商店", "D: 吸烟室"], "correct_answer": "C: 小商店"},
+        {"question_id": 30, "code": "H41002_Q30", "question_type": "single_choice", "question_text": "", "options": ["A: 健康", "B: 旅游", "C: 饮食", "D: 花费"], "correct_answer": "D: 花费"},
+        {"question_id": 31, "code": "H41002_Q31", "question_type": "single_choice", "question_text": "", "options": ["A: 收到短信了", "B: 她今天结婚", "C: 衣服很漂亮", "D: 得到一个礼物"], "correct_answer": "D: 得到一个礼物"},
+        {"question_id": 32, "code": "H41002_Q32", "question_type": "single_choice", "question_text": "", "options": ["A: 4月", "B: 5月", "C: 8月", "D: 10月"], "correct_answer": "C: 8月"},
+        {"question_id": 33, "code": "H41002_Q33", "question_type": "single_choice", "question_text": "", "options": ["A: 很勇敢", "B: 很诚实", "C: 很可爱", "D: 很有礼貌"], "correct_answer": "B: 很诚实"},
+        {"question_id": 34, "code": "H41002_Q34", "question_type": "single_choice", "question_text": "", "options": ["A: 他很热情", "B: 他力气大", "C: 他是研究生", "D: 他文章写得好"], "correct_answer": "C: 他是研究生"},
+        {"question_id": 35, "code": "H41002_Q35", "question_type": "single_choice", "question_text": "", "options": ["A: 迟到", "B: 赢不了", "C: 会下雨", "D: 不认识路"], "correct_answer": "A: 迟到"},
+        {"question_id": 36, "code": "H41002_Q36", "question_type": "single_choice", "question_text": "", "options": ["A: 很瘦", "B: 个子矮", "C: 十分骄傲", "D: 爱好历史"], "correct_answer": "B: 个子矮"},
+        {"question_id": 37, "code": "H41002_Q37", "question_type": "single_choice", "question_text": "", "options": ["A: 15岁", "B: 16岁", "C: 25岁", "D: 26岁"], "correct_answer": "A: 15岁"},
+        {"question_id": 38, "code": "H41002_Q38", "question_type": "single_choice", "question_text": "", "options": ["A: 老师", "B: 班长", "C: 校长", "D: 院长"], "correct_answer": "B: 班长"},
+        {"question_id": 39, "code": "H41002_Q39", "question_type": "single_choice", "question_text": "", "options": ["A: 要考数学", "B: 作业很多", "C: 考试提前了", "D: 考试成绩不好"], "correct_answer": "C: 考试提前了"},
+        {"question_id": 40, "code": "H41002_Q40", "question_type": "single_choice", "question_text": "", "options": ["A: 游泳", "B: 骑马", "C: 表演", "D: 画画儿"], "correct_answer": "C: 表演"},
+        {"question_id": 41, "code": "H41002_Q41", "question_type": "single_choice", "question_text": "", "options": ["A: 比赛很乱", "B: 大家都很笨", "C: 他们都很胖", "D: 他没得第一名"], "correct_answer": "D: 他没得第一名"},
+        {"question_id": 42, "code": "H41002_Q42", "question_type": "single_choice", "question_text": "", "options": ["A: 让人更成熟", "B: 让皮肤湿润", "C: 让空气湿润", "D: 让人很凉快"], "correct_answer": "B: 让皮肤湿润"},
+        {"question_id": 43, "code": "H41002_Q43", "question_type": "single_choice", "question_text": "", "options": ["A: 免费试用", "B: 买一送一", "C: 半价出售", "D: 九折出售"], "correct_answer": "A: 免费试用"},
+        {"question_id": 44, "code": "H41002_Q44", "question_type": "single_choice", "question_text": "", "options": ["A: 压力不大", "B: 已按时完成", "C: 质量有问题", "D: 完成速度太慢"], "correct_answer": "B: 已按时完成"},
+        {"question_id": 45, "code": "H41002_Q45", "question_type": "single_choice", "question_text": "", "options": ["A: 接受道歉", "B: 感谢同事", "C: 解释原因", "D: 接受任务"], "correct_answer": "B: 感谢同事"}
+      ]
+    },
+    {
+      "part_id": "reading_part_1",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 1 (câu 46–50)",
+      "part_order": 4,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1779028356/H41002_46-50_q493nc.png",
+      "question_count": 5,
+      "questions": [
+        {"question_id": 46, "code": "H41002_Q46", "question_type": "single_choice", "question_text": "他从网站上看到了这个激动人心的（       ）。", "options": ["A: 冷静", "B: 地址", "C: 引起", "D: 坚持", "E: 禁止", "F: 消息"], "correct_answer": "F: 消息"},
+        {"question_id": 47, "code": "H41002_Q47", "question_type": "single_choice", "question_text": "这儿写着“（       ）停车”，他们只好把车停在那边了。", "options": ["A: 冷静", "B: 地址", "C: 引起", "D: 坚持", "E: 禁止", "F: 消息"], "correct_answer": "E: 禁止"},
+        {"question_id": 48, "code": "H41002_Q48", "question_type": "single_choice", "question_text": "喂，告诉我你的（       ），我准备给你寄几本书。", "options": ["A: 冷静", "B: 地址", "C: 引起", "D: 坚持", "E: 禁止", "F: 消息"], "correct_answer": "B: 地址"},
+        {"question_id": 49, "code": "H41002_Q49", "question_type": "single_choice", "question_text": "人与人之间如果缺少交流，可能就会（       ）误会。", "options": ["A: 冷静", "B: 地址", "C: 引起", "D: 坚持", "E: 禁止", "F: 消息"], "correct_answer": "C: 引起"},
+        {"question_id": 50, "code": "H41002_Q50", "question_type": "single_choice", "question_text": "问题越是复杂时，你越要（       ），千万别着急。", "options": ["A: 冷静", "B: 地址", "C: 引起", "D: 坚持", "E: 禁止", "F: 消息"], "correct_answer": "A: 冷静"}
+      ]
+    },
+    {
+      "part_id": "reading_part_2",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 2 (câu 51–55)",
+      "part_order": 5,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1779028356/H41002_51-55_uqlgai.png",
+      "question_count": 5,
+      "questions": [
+        {"question_id": 51, "code": "H41002_Q51", "question_type": "single_choice", "question_text": "A：我的（       ）在叫了，早上只吃了一小块儿蛋糕。\nB：饿了？我包里有巧克力，给你。", "options": ["A: 填", "B: 正式", "C: 温度", "D: 酸", "E: 广播", "F: 肚子"], "correct_answer": "F: 肚子"},
+        {"question_id": 52, "code": "H41002_Q52", "question_type": "single_choice", "question_text": "A：这两瓶饮料有什么区别吗？\nB：左边这瓶有点儿（       ），右边这瓶是甜的。", "options": ["A: 填", "B: 正式", "C: 温度", "D: 酸", "E: 广播", "F: 肚子"], "correct_answer": "D: 酸"},
+        {"question_id": 53, "code": "H41002_Q53", "question_type": "single_choice", "question_text": "A：快点儿，咱们的飞机就要起飞了。\nB：没事，（       ）里说，国际航班都推迟起飞了，咱可以再逛逛。", "options": ["A: 填", "B: 正式", "C: 温度", "D: 酸", "E: 广播", "F: 肚子"], "correct_answer": "E: 广播"},
+        {"question_id": 54, "code": "H41002_Q54", "question_type": "single_choice", "question_text": "A：最近怎么穿得这么（       ）？很精神啊。\nB：我现在开始上班了，这是公司的规定。", "options": ["A: 填", "B: 正式", "C: 温度", "D: 酸", "E: 广播", "F: 肚子"], "correct_answer": "B: 正式"},
+        {"question_id": 55, "code": "H41002_Q55", "question_type": "single_choice", "question_text": "A：你好，我想办一张信用卡。\nB：好的，先生，请您先（       ）一下这张申请表。", "options": ["A: 填", "B: 正式", "C: 温度", "D: 酸", "E: 广播", "F: 肚子"], "correct_answer": "A: 填"}
+      ]
+    },
+    {
+      "part_id": "reading_part_3",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 3 (câu 56–65) — sắp xếp câu",
+      "part_order": 6,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1779028357/H41002_56-65_wdmcoh.png",
+      "question_count": 10,
+      "questions": [
+        {"question_id": 56, "code": "H41002_Q56", "question_type": "sort_sentences", "question_text": "", "options": ["A: 做事情往往需要照顾大的方面", "B: 而放弃掉“森林”", "C: 换句话说，就是不要仅仅为了一棵“大树”"], "correct_answer": "A-C-B"},
+        {"question_id": 57, "code": "H41002_Q57", "question_type": "sort_sentences", "question_text": "", "options": ["A: 于是大家都以为他是一个骄傲的人", "B: 他从来不主动和别人说话", "C: 其实他只是有点儿害羞"], "correct_answer": "B-A-C"},
+        {"question_id": 58, "code": "H41002_Q58", "question_type": "sort_sentences", "question_text": "", "options": ["A: 语法是语言学习中很重要的一部分", "B: 却不是语言学习的全部", "C: 文化在语言学习中也很重要"], "correct_answer": "A-B-C"},
+        {"question_id": 59, "code": "H41002_Q59", "question_type": "sort_sentences", "question_text": "", "options": ["A: 选择在电视上做广告", "B: 扩大我们葡萄酒的影响力", "C: 是因为它可以在较短的时间内"], "correct_answer": "A-C-B"},
+        {"question_id": 60, "code": "H41002_Q60", "question_type": "sort_sentences", "question_text": "", "options": ["A: 这种树叶宽、厚的绿色植物", "B: 也能给我们带来一个好的心情", "C: 不仅可以使室内空气更新鲜"], "correct_answer": "A-C-B"},
+        {"question_id": 61, "code": "H41002_Q61", "question_type": "sort_sentences", "question_text": "", "options": ["A: 就受到人们的普遍欢迎", "B: 当时的人们没想到它会给环境带来严重的污染", "C: 100年前，塑料一出现"], "correct_answer": "C-A-B"},
+        {"question_id": 62, "code": "H41002_Q62", "question_type": "sort_sentences", "question_text": "", "options": ["A: 首先要学会像扔垃圾一样把烦恼扔掉", "B: 生活中总会有烦恼", "C: 要想让自己轻松、愉快"], "correct_answer": "B-C-A"},
+        {"question_id": 63, "code": "H41002_Q63", "question_type": "sort_sentences", "question_text": "", "options": ["A: \"明\"由两个字组成", "B: 左边的\"日\"代表太阳，而右边的\"月\"代表月亮", "C: 所以\"明\"在汉语中表示有光亮的意思"], "correct_answer": "A-B-C"},
+        {"question_id": 64, "code": "H41002_Q64", "question_type": "sort_sentences", "question_text": "", "options": ["A: 河水不深，非常清", "B: 我记得，以前村子的旁边有一条小河", "C: 清得可以看见河底的水草和成群的小鱼"], "correct_answer": "B-A-C"},
+        {"question_id": 65, "code": "H41002_Q65", "question_type": "sort_sentences", "question_text": "", "options": ["A: 可惜到现在仍然没有一个科学的说法", "B: 有些人甚至专门写过这方面的书", "C: 很多人都曾经试着对梦进行解释"], "correct_answer": "C-B-A"}
+      ]
+    },
+    {
+      "part_id": "reading_part_4",
+      "skill": "reading",
+      "section_title": "Kỹ năng đọc — Phần 4 (câu 66–85) — đọc hiểu",
+      "part_order": 7,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1779028358/H41002_66-85_ndbeup.png",
+      "question_count": 20,
+      "questions": [
+        {"question_id": 66, "code": "H41002_Q66", "question_type": "single_choice", "question_text": "司机喝酒后不允许开车。因为无论对自己还是对其他人，这样做都是极其危险的。\n★根据这段话，司机：", "options": ["A: 很危险", "B: 爱喝啤酒", "C: 都很友好", "D: 酒后不能开车"], "correct_answer": "D: 酒后不能开车"},
+        {"question_id": 67, "code": "H41002_Q67", "question_type": "single_choice", "question_text": "最有用的人，不一定是最能说的人。上天给我们两只耳朵、一个嘴，就是让我们多听少说的。学会多听，说明一个人真正成熟了。\n★这段话告诉我们：", "options": ["A: 要多听", "B: 要准时", "C: 要多表扬别人", "D: 要严格要求自己"], "correct_answer": "A: 要多听"},
+        {"question_id": 68, "code": "H41002_Q68", "question_type": "single_choice", "question_text": "孩子从小就要养成管理自己的好习惯。管理自己不但指自己的事情自己做，更重要的是时间管理，让孩子会计划自己的时间，今天应该完成的事情就不能留到明天，不要总说“来不及了”。\n★为什么有的孩子总说“来不及了”？", "options": ["A: 太懒", "B: 很孤单", "C: 爱开玩笑", "D: 不会管理时间"], "correct_answer": "D: 不会管理时间"},
+        {"question_id": 69, "code": "H41002_Q69", "question_type": "single_choice", "question_text": "您看这个沙发怎么样？我们年底有活动，正在打折，比平时便宜了一千块。不过您放心，质量肯定不“打折”，这种沙发是今年最流行的，有很多种颜色可以选择，您可以考虑一下。\n★这种沙发：", "options": ["A: 不打折", "B: 特别软", "C: 样子很流行", "D: 质量不合格"], "correct_answer": "C: 样子很流行"},
+        {"question_id": 70, "code": "H41002_Q70", "question_type": "single_choice", "question_text": "当我觉得累的时候，我就找一个安静的地方，一边喝茶一边听音乐。弟弟正好和我相反，这种时候，他喜欢去热闹的地方，和别人一起唱歌、跳舞。\n★弟弟累的时候：", "options": ["A: 讨厌约会", "B: 喜欢玩电脑", "C: 会找我聊天", "D: 会去唱歌跳舞"], "correct_answer": "D: 会去唱歌跳舞"},
+        {"question_id": 71, "code": "H41002_Q71", "question_type": "single_choice", "question_text": "只有动作没有感情的表演是没有生命力的，一个好的演员，想要拉近和观众的距离，就要学会用感情和观众进行对话与交流。\n★表演要具有生命力，应该重视什么？", "options": ["A: 生命", "B: 感情", "C: 动作", "D: 感觉"], "correct_answer": "B: 感情"},
+        {"question_id": 72, "code": "H41002_Q72", "question_type": "single_choice", "question_text": "这是一家在当地非常有名的面馆儿，历史已经超过50年了。它一直只卖一种东西：牛肉面。由于面的味道很特别，在众多食客中名气很大。\n★这家面馆儿：", "options": ["A: 顾客不多", "B: 只卖羊肉汤", "C: 在全国很有名", "D: 有半个世纪了"], "correct_answer": "D: 有半个世纪了"},
+        {"question_id": 73, "code": "H41002_Q73", "question_type": "single_choice", "question_text": "晚上，我刚刚躺下，就响起了敲门声。一猜就知道是和我一起租房的那个人又没带钥匙。他好像特别马虎，虽然每次都红着脸向我说抱歉、打扰了，可过不了几天，就又能听到他的敲门声了。\n★敲门的那个人怎么了？", "options": ["A: 生病了", "B: 走错了门", "C: 工作太忙", "D: 忘拿钥匙了"], "correct_answer": "D: 忘拿钥匙了"},
+        {"question_id": 74, "code": "H41002_Q74", "question_type": "single_choice", "question_text": "同情是最美好的情感之一，然而同情并不是高高在上的关心，它应该是对别人经历的情感的理解、尊重和支持。\n★这段话认为，同情：", "options": ["A: 很无聊", "B: 让人难受", "C: 不是可怜", "D: 是暂时的"], "correct_answer": "C: 不是可怜"},
+        {"question_id": 75, "code": "H41002_Q75", "question_type": "single_choice", "question_text": "猜猜我奶奶给了我什么生日礼物？一个照相机！正好明天去海洋馆，我来给你们照相吧。\n★奶奶给孙子买照相机，是因为：", "options": ["A: 想鼓励他", "B: 他过生日", "C: 春节快到了", "D: 要去海洋馆"], "correct_answer": "B: 他过生日"},
+        {"question_id": 76, "code": "H41002_Q76", "question_type": "single_choice", "question_text": "这座楼一共有28层，为了节约您的时间，3号、4号电梯17层以下不停，直接到17-28层，如果您要到1-16层，请乘坐西边的1号和2号电梯。\n★1号电梯可以去哪层？", "options": ["A: 16", "B: 17", "C: 18", "D: 19"], "correct_answer": "A: 16"},
+        {"question_id": 77, "code": "H41002_Q77", "question_type": "single_choice", "question_text": "我姓李，是各位的导游。这是大家的护照和房卡，放下行李后请到这里集合，我们一会儿去吃饭。晚上有京剧，座位要提前联系，想看的现在报名。\n★导游让大家报名去：", "options": ["A: 参观", "B: 吃饭", "C: 看京剧", "D: 参加演出"], "correct_answer": "C: 看京剧"},
+        {"question_id": 78, "code": "H41002_Q78", "question_type": "single_choice", "question_text": "经过他的努力，公司的生意越做越大，最近又在三个城市开了新的分公司。一切都在往好的方向发展，他也更有信心了。\n★公司现在怎么样？", "options": ["A: 收入减少", "B: 发展很快", "C: 主要制造家具", "D: 不适应市场变化"], "correct_answer": "B: 发展很快"},
+        {"question_id": 79, "code": "H41002_Q79", "question_type": "single_choice", "question_text": "我们对失败应该有正确的认识。偶尔的失败其实可以让我们清楚自己还有什么地方需要提高，这可以帮助我们走向最后的成功。\n★“这”指的是：", "options": ["A: 仔细", "B: 认真", "C: 失败", "D: 准确的判断"], "correct_answer": "C: 失败"},
+        {"question_id": 80, "code": "H41002_Q80", "question_type": "single_choice", "question_text": "年轻人刚刚进入社会的时候，不要太急着赚钱，不要眼睛里只有工资和奖金。实际上，正确的做法应该是，在工作的前几年，重点要丰富自己的工作经验，学习与同事们交流的方法，积累专业的知识和技术，还有，要懂得什么是职业的态度等。这些比收入重要多了。\n★什么更重要？", "options": ["A: 经验", "B: 友谊", "C: 标准", "D: 过程"], "correct_answer": "A: 经验"},
+        {"question_id": 81, "code": "H41002_Q81", "question_type": "single_choice", "question_text": "年轻人刚刚进入社会的时候...\n★这段话主要提醒刚进入社会的年轻人：", "options": ["A: 要有耐心", "B: 要信任别人", "C: 人都有缺点", "D: 不要怀疑自己"], "correct_answer": "A: 要有耐心"},
+        {"question_id": 82, "code": "H41002_Q82", "question_type": "single_choice", "question_text": "《富爸爸，穷爸爸》讲了这样一个故事，作者的父亲和朋友的父亲对金钱的看法完全不同，这使他对金钱有了兴趣，最终，他接受了朋友的父亲的看法，也就是书中所说的\"富爸爸\"的看法：人们不应该为钱工作，而要让钱为我们工作。\n★这本书中的穷爸爸是指：", "options": ["A: 金钱", "B: 工作", "C: 作者的爸爸", "D: 朋友的爸爸"], "correct_answer": "C: 作者的爸爸"},
+        {"question_id": 83, "code": "H41002_Q83", "question_type": "single_choice", "question_text": "《富爸爸，穷爸爸》讲了这样一个故事...\n★富爸爸对金钱的看法是：", "options": ["A: 先赚再花", "B: 钱并不重要", "C: 钱让人快乐", "D: 让钱为我们服务"], "correct_answer": "D: 让钱为我们服务"},
+        {"question_id": 84, "code": "H41002_Q84", "question_type": "single_choice", "question_text": "中国南北距离约5500公里，因此南北气候有很大区别。南方很多地方的冬天一点儿也不冷，温度跟北方春天差不多，2月份的时候已经很暖和，可以只穿一件毛衣了，树开始长出新叶子，路边的花也开了，非常漂亮。所以很多北方人都喜欢这个时候出发去南方旅游。不过可惜的是，南方很多地方冬天都看不到雪，孩子们少了玩雪的快乐。\n★南方很多地方，2月：", "options": ["A: 树变绿了", "B: 都是晴天", "C: 逐渐变冷", "D: 会突然下雪"], "correct_answer": "A: 树变绿了"},
+        {"question_id": 85, "code": "H41002_Q85", "question_type": "single_choice", "question_text": "中国南北距离约5500公里...\n★这段话主要介绍什么？", "options": ["A: 2月的天气", "B: 南北的不同", "C: 南方的冬天", "D: 南方的风景"], "correct_answer": "C: 南方的冬天"}
+      ]
+    },
+    {
+      "part_id": "writing_part_1",
+      "skill": "writing",
+      "section_title": "Kỹ năng viết — Phần 1 (câu 86–95) — hoàn thành câu",
+      "part_order": 8,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1779028358/H41002_86-95_asnol6.png",
+      "question_count": 10,
+      "questions": [
+        {"question_id": 86, "code": "H41002_Q86", "question_type": "sort_word", "question_text": "好处 抽烟 对身体 没有", "options": [], "correct_answer": "抽烟对身体没有好处。"},
+        {"question_id": 87, "code": "H41002_Q87", "question_type": "sort_word", "question_text": "我 陪叔叔 去长城 看看 打算", "options": [], "correct_answer": "我打算陪叔叔去长城看看。"},
+        {"question_id": 88, "code": "H41002_Q88", "question_type": "sort_word", "question_text": "个 又脏又破 那 白色的盒子", "options": [], "correct_answer": "那个白色的盒子又脏又破。"},
+        {"question_id": 89, "code": "H41002_Q89", "question_type": "sort_word", "question_text": "妹妹 弹钢琴的声音 吵醒了 把爷爷", "options": [], "correct_answer": "妹妹弹钢琴的声音把爷爷吵醒了。"},
+        {"question_id": 90, "code": "H41002_Q90", "question_type": "sort_word", "question_text": "语言表达能力 经常阅读报纸 提高 能", "options": [], "correct_answer": "经常阅读报纸能提高语言表达能力。"},
+        {"question_id": 91, "code": "H41002_Q91", "question_type": "sort_word", "question_text": "举行 这次电影艺术节 在北京 也许 会", "options": [], "correct_answer": "这次电影艺术节也许会在北京举行。"},
+        {"question_id": 92, "code": "H41002_Q92", "question_type": "sort_word", "question_text": "整理 儿子的复习笔记 得 很详细", "options": [], "correct_answer": "儿子的复习笔记整理得很详细。"},
+        {"question_id": 93, "code": "H41002_Q93", "question_type": "sort_word", "question_text": "请假休息 重感冒 让他 不得不", "options": [], "correct_answer": "重感冒让他不得不请假休息。"},
+        {"question_id": 94, "code": "H41002_Q94", "question_type": "sort_word", "question_text": "范围 他说的问题 今天讨论的 超出了", "options": [], "correct_answer": "他说的问题超出了今天讨论的范围。"},
+        {"question_id": 95, "code": "H41002_Q95", "question_type": "sort_word", "question_text": "告诉他 答案 你 最好 别", "options": [], "correct_answer": "你最好别告诉他答案。"}
+      ]
+    },
+    {
+      "part_id": "writing_part_2",
+      "skill": "writing",
+      "section_title": "Kỹ năng viết — Phần 2 (câu 96–100) — đặt câu với từ gợi ý (kèm ảnh)",
+      "part_order": 9,
+      "question_image": "https://res.cloudinary.com/diehvorme/image/upload/v1779028358/H41002_96-100_hnqgi7.png",
+      "question_count": 5,
+      "questions": [
+        {"question_id": 96, "code": "H41002_Q96", "question_type": "write_sentence", "question_text": "吃惊", "options": [], "correct_answer": "她听了以后很吃惊。"},
+        {"question_id": 97, "code": "H41002_Q97", "question_type": "write_sentence", "question_text": "汗", "options": [], "correct_answer": "她出了许多汗。"},
+        {"question_id": 98, "code": "H41002_Q98", "question_type": "write_sentence", "question_text": "挂", "options": [], "correct_answer": "他想把画挂在墙上。"},
+        {"question_id": 99, "code": "H41002_Q99", "question_type": "write_sentence", "question_text": "香", "options": [], "correct_answer": "这些花闻起来很香。"},
+        {"question_id": 100, "code": "H41002_Q100", "question_type": "write_sentence", "question_text": "杂志", "options": [], "correct_answer": "他坐在沙发上看杂志。"}
+      ]
+    }
+  ]
+}
